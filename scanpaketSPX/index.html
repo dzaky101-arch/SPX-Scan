@@ -1464,16 +1464,15 @@
                     const dateStr = `${now.getDate()} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
 
                     let report = [];
-                    report.push(`Daftar Pickup SPX`);
-                    report.push(`Tanggal: ${dateStr}`);
-                    report.push(`Trip: ${currentTrip}`);
-                    report.push(`Seller: ${currentSeller}`);
-                    report.push(``);
+                    report.push(`Pickup ${currentSeller}`);
+                    report.push(dateStr);
+                    report.push(`Trip ${currentTrip}`);
                     
                     groupRecords.sort((a,b) => a.noUrut - b.noUrut);
                     groupRecords.forEach(item => {
                         report.push(`${item.noUrut}. ${item.resi}`);
                     });
+                    report.push('Keterangan: Paket sudah di-pickup');
                     
                     const finalString = report.join('\n').trim();
 
