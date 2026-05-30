@@ -1383,15 +1383,15 @@
 
                 for (const key in groups) {
                     const g = groups[key];
-                    report.push(`Data Return Paket SPX`);
+                    report.push(`Return ${g.seller}`);
                     report.push(dateStr);
-                    report.push(`Trip ${g.trip} | Seller: ${g.seller}`);
+                    report.push(`Trip ${g.trip}`);
                     
                     g.resis.sort((a,b) => a.noUrut - b.noUrut);
                     g.resis.forEach(item => {
                         report.push(`${item.noUrut}. ${item.resi}`);
                     });
-                    report.push('Keterangan: Paket sudah dikembalikan.');
+                    report.push('Keterangan: ');
                     report.push(''); // blank line
                 }
 
@@ -1721,3 +1721,4 @@
     </script>
 </body>
 </html>
+
