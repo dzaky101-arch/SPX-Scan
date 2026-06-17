@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tool Monitor Pickup Pakdhe - Auto Scan</title>
-    <!-- Memuat Library TesseractJS untuk Scan Teks dari Gambar -->
+    <title>Tool Monitor Pickup Pakdhe - Auto Scan V2</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
         body {
@@ -63,7 +62,6 @@
             border: none;
             font-size: 14px;
         }
-        /* Tombol Reset Baru */
         .reset-btn {
             background-color: #6c757d;
             color: white;
@@ -162,9 +160,8 @@
 
 <div class="container">
     <h2>📋 Tool Monitor & Scan Pickup SPX</h2>
-    <div class="sub-title">Upload screenshot aplikasi untuk ekstraksi otomatis</div>
+    <div class="sub-title">Perbaikan Akurasi Jumlah Paket - Masukkan Screenshot Terbaru</div>
 
-    <!-- AREA MASUKKAN GAMBAR -->
     <div class="upload-section">
         <p style="margin: 0; color: #555;">📸 Ambil foto atau upload file gambar screenshot pickup baru</p>
         <div class="action-buttons">
@@ -176,20 +173,16 @@
         <img id="previewImg" alt="Pratinjau Gambar">
     </div>
 
-    <!-- STATUS PEMROSESAN -->
     <div id="statusScan">⏳ Menghubungkan ke sistem Scanner...</div>
 
-    <!-- KOTAK TOTAL UTAMA -->
     <div class="summary-card">
         <div class="title">Total Paket Semuanya</div>
         <div class="counter" id="totalPaketBesar">0 Paket</div>
         <div class="sub-text" id="totalTokoText">Dari total 0 lokasi toko terdaftar</div>
     </div>
 
-    <!-- Kotak Pencarian -->
     <input type="text" id="searchInput" class="search-box" onkeyup="filterTable()" placeholder="🔍 Ketik nama seller untuk menyaring...">
 
-    <!-- Tabel Data -->
     <table id="pickupTable">
         <thead>
             <tr>
@@ -198,8 +191,7 @@
             </tr>
         </thead>
         <tbody id="tableBody">
-            <!-- Dimulai dari kosong, siap menerima gambar input -->
-        </tbody>
+            </tbody>
     </table>
 </div>
 
@@ -209,7 +201,6 @@
         const file = event.target.files[0];
         if (!file) return;
 
-        // Tampilkan pratinjau gambar
         const reader = new FileReader();
         reader.onload = function(e) {
             const preview = document.getElementById('previewImg');
@@ -218,34 +209,31 @@
         }
         reader.readAsDataURL(file);
 
-        // Aktifkan indikator loading
         const statusDiv = document.getElementById('statusScan');
         statusDiv.style.display = 'block';
         statusDiv.style.color = '#333';
         statusDiv.innerHTML = "⏳ Sedang memproses dan membaca teks gambar...";
 
-        // Menjalankan OCR Menggunakan Tesseract.js
         Tesseract.recognize(
             file,
-            'ind', // Menggunakan bahasa Indonesia
+            'ind',
             { logger: m => {
                 if(m.status === 'recognizing text') {
-                    statusDiv.innerHTML = `⏳ Mengonversi teks: ${Math.round(m.progress * 100)}%`;
+                    statusDiv.innerHTML = `⏳ Mengonversi teks pasar: ${Math.round(m.progress * 100)}%`;
                 }
             }}
         ).then(({ data: { text } }) => {
             statusDiv.innerHTML = "✅ Pemindaian Selesai!";
             statusDiv.style.color = "green";
-            
             ekstrakDataTeks(text);
         }).catch(err => {
             console.error(err);
-            statusDiv.innerHTML = "❌ Gagal memproses gambar. Pastikan koneksi internet aktif.";
+            statusDiv.innerHTML = "❌ Gagal memproses gambar. Coba pastikan koneksi internet lancar.";
             statusDiv.style.color = "red";
         });
     }
 
-    // Fungsi Ekstraksi Algoritma Teks SPX ke Tabel
+    // Perbaikan Utama: Algoritma Ekstraksi Teks Jauh Lebih Akurat Mengatur Jumlah Paket
     function ekstrakDataTeks(mentahTeks) {
         const baris = mentahTeks.split('\n');
         const tBody = document.getElementById('tableBody');
@@ -254,58 +242,75 @@
         let namaSellerSementara = "";
         let isMissed = false;
 
-        baris.forEach(line => {
-            let cleanLine = line.trim();
-            if (cleanLine.length < 3) return;
+        for (let i = 0; i < baris.length; i++) {
+            let cleanLine = baris[i].trim();
+            if (cleanLine.length < 2) continue;
 
+            // Deteksi penanda missed untuk toko yang sedang diproses
             if (cleanLine.toLowerCase().includes('missed')) {
                 isMissed = true;
+                continue;
             }
 
+            // Aturan 1: Deteksi alamat. Jika baris mengandung penanda alamat, berarti baris SEBELUMNYA adalah Nama Seller.
             if (cleanLine.toLowerCase().includes('jalan') || cleanLine.toLowerCase().includes('villa') || cleanLine.toLowerCase().includes('blok') || cleanLine.toLowerCase().includes('jl.')) {
+                // Tarik baris sebelumnya (mundur ke belakang) untuk mencari nama seller murni
+                let j = i - 1;
+                while (j >= 0) {
+                    let prevLine = baris[j].trim();
+                    // Lewati baris kosong atau indikator missed saat mencari nama toko
+                    if (prevLine.length > 2 && !prevLine.toLowerCase().includes('missed') && !prevLine.toLowerCase().includes('pickup') && !prevLine.toLowerCase().includes('return')) {
+                        namaSellerSementara = prevLine.replace(/[^a-zA-Z0-9\s\.\-_]/g, '');
+                        break;
+                    }
+                    j--;
+                }
+                continue;
+            }
+
+            // Aturan 2: Deteksi Jumlah Paket dari Tombol "Pickup [Angka]"
+            if (cleanLine.toLowerCase().includes('pickup') || cleanLine.toLowerCase().includes('picup')) {
+                let jumlahPaket = 1; // Default pengaman standar jika angka gagal ter-scan
+                
+                // Ambil semua angka yang ada di baris "Pickup" tersebut
+                let angkaMatch = cleanLine.match(/\d+/);
+                if (angkaMatch) {
+                    jumlahPaket = parseInt(angkaMatch[0]);
+                }
+
+                // Masukkan data ke array jika nama seller valid ditemukan
                 if (namaSellerSementara !== "" && !dataDitemukan.some(d => d.seller === namaSellerSementara)) {
                     dataDitemukan.push({
                         seller: namaSellerSementara,
                         missed: isMissed,
-                        paket: 1 
+                        paket: jumlahPaket
                     });
-                }
-            } else {
-                if (!cleanLine.toLowerCase().includes('pickup') && 
-                    !cleanLine.toLowerCase().includes('return') && 
-                    !cleanLine.toLowerCase().includes('handover') &&
-                    !cleanLine.toLowerCase().includes('operasional') &&
-                    !cleanLine.toLowerCase().includes('lihat titik')) {
                     
-                    let matchAngka = cleanLine.match(/(\d+)\s*$/);
-                    if (matchAngka && namaSellerSementara !== "") {
-                        let idx = dataDitemukan.findIndex(d => d.seller === namaSellerSementara);
-                        if (idx !== -1) dataDitemukan[idx].paket = parseInt(matchAngka[1]);
-                    } else {
-                        namaSellerSementara = cleanLine.replace(/[^a-zA-Z0-9\s\.]/g, '');
-                    }
+                    // Reset variabel penanda untuk toko berikutnya
+                    namaSellerSementara = "";
+                    isMissed = false;
                 }
             }
-        });
+        }
 
+        // Tampilkan hasil perbaikan scan ke tabel web
         if (dataDitemukan.length > 0) {
             tBody.innerHTML = ""; 
             dataDitemukan.forEach(item => {
                 let row = document.createElement('tr');
                 let badge = item.missed ? ` <br><span class="badge-missed">Missed</span>` : '';
                 row.innerHTML = `
-                    <td>${item.seller}${badge}</td>
-                    <td class="text-center data-paket">${item.paket}</td>
+                    <td><strong>${item.seller}</strong>${badge}</td>
+                    <td class="text-center data-paket" style="font-weight: bold; color: #ee4d2d;">${item.paket}</td>
                 `;
                 tBody.appendChild(row);
             });
             hitungTotal();
         } else {
-            alert("Teks nama seller kurang terbaca jelas. Coba gunakan foto dengan resolusi yang lebih tajam/terang, Pakdhe!");
+            alert("Sistem kesulitan memilah nama seller. Mohon gunakan foto screen yang tegak lurus dan jelas, Pakdhe!");
         }
     }
 
-    // Fungsi Hitung Total Otomatis Dinamis
     function hitungTotal() {
         let rows = document.querySelectorAll("#pickupTable tbody tr");
         let totalPaket = 0;
@@ -323,7 +328,6 @@
         document.getElementById("totalTokoText").innerText = "Dari total " + totalTokoTerlihat + " lokasi toko terdaftar";
     }
 
-    // Fungsi Filter Pencarian Nama Seller
     function filterTable() {
         let input = document.getElementById("searchInput");
         let filter = input.value.toUpperCase();
@@ -344,26 +348,14 @@
         hitungTotal();
     }
 
-    // FUNGSI RESET DATA (BARU)
     function resetData() {
-        // Kosongkan Input File Gambar
         document.getElementById('imageInput').value = "";
-        
-        // Sembunyikan dan hapus pratinjau foto
         const preview = document.getElementById('previewImg');
         preview.src = "";
         preview.style.display = 'none';
-        
-        // Sembunyikan status teks pemindaian
         document.getElementById('statusScan').style.display = 'none';
-        
-        // Kosongkan isi kolom pencarian
         document.getElementById('searchInput').value = "";
-        
-        // Bersihkan seluruh baris di dalam tabel
         document.getElementById('tableBody').innerHTML = "";
-        
-        // Hitung ulang total (akan otomatis menjadi 0)
         hitungTotal();
     }
 
