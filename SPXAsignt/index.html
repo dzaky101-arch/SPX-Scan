@@ -41,7 +41,6 @@
             border-radius: 10px;
             text-align: center;
             margin-bottom: 20px;
-            cursor: pointer;
             transition: 0.3s;
         }
         .upload-section:hover {
@@ -50,6 +49,9 @@
         .upload-section input[type="file"] {
             display: none;
         }
+        .action-buttons {
+            margin-top: 15px;
+        }
         .upload-btn {
             background-color: #ee4d2d;
             color: white;
@@ -57,7 +59,26 @@
             border-radius: 6px;
             font-weight: bold;
             display: inline-block;
-            margin-top: 10px;
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+        }
+        /* Tombol Reset Baru */
+        .reset-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: inline-block;
+            cursor: pointer;
+            border: none;
+            margin-left: 10px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .reset-btn:hover {
+            background-color: #5a6268;
         }
         /* Status Loading Scan */
         #statusScan {
@@ -131,10 +152,9 @@
         #previewImg {
             max-width: 150px;
             max-height: 150px;
-            margin-top: 10px;
+            margin-top: 15px;
             border-radius: 6px;
             display: none;
-            display: inline-block;
         }
     </style>
 </head>
@@ -145,9 +165,12 @@
     <div class="sub-title">Upload screenshot aplikasi untuk ekstraksi otomatis</div>
 
     <!-- AREA MASUKKAN GAMBAR -->
-    <div class="upload-section" onclick="document.getElementById('imageInput').click()">
-        <p style="margin: 0; color: #555;">📸 Klik di sini untuk mengambil foto / upload file gambar</p>
-        <span class="upload-btn">Pilih Gambar</span>
+    <div class="upload-section">
+        <p style="margin: 0; color: #555;">📸 Ambil foto atau upload file gambar screenshot pickup baru</p>
+        <div class="action-buttons">
+            <button class="upload-btn" onclick="document.getElementById('imageInput').click()">Pilih Gambar</button>
+            <button class="reset-btn" onclick="resetData()">Reset Data</button>
+        </div>
         <input type="file" id="imageInput" accept="image/*" onchange="prosesGambar(event)">
         <br>
         <img id="previewImg" alt="Pratinjau Gambar">
@@ -159,8 +182,8 @@
     <!-- KOTAK TOTAL UTAMA -->
     <div class="summary-card">
         <div class="title">Total Paket Semuanya</div>
-        <div class="counter" id="totalPaketBesar">2.029 Paket</div>
-        <div class="sub-text" id="totalTokoText">Dari total 10 lokasi toko terdaftar</div>
+        <div class="counter" id="totalPaketBesar">0 Paket</div>
+        <div class="sub-text" id="totalTokoText">Dari total 0 lokasi toko terdaftar</div>
     </div>
 
     <!-- Kotak Pencarian -->
@@ -175,47 +198,7 @@
             </tr>
         </thead>
         <tbody id="tableBody">
-            <!-- Data Bawaan dari picup.jpeg -->
-            <tr>
-                <td>47auto</td>
-                <td class="text-center data-paket">1</td>
-            </tr>
-            <tr>
-                <td>MSOtomotif <br><span class="badge-missed">Missed</span></td>
-                <td class="text-center data-paket">1971</td>
-            </tr>
-            <tr>
-                <td>shopiversee (Lokasi 1) <br><span class="badge-missed">Missed</span></td>
-                <td class="text-center data-paket">2</td>
-            </tr>
-            <tr>
-                <td>Toserba Indo Surabaya</td>
-                <td class="text-center data-paket">1</td>
-            </tr>
-            <tr>
-                <td>Dagangan Cece</td>
-                <td class="text-center data-paket">1</td>
-            </tr>
-            <tr>
-                <td>tokomoko753 <br><span class="badge-missed">Missed</span></td>
-                <td class="text-center data-paket">13</td>
-            </tr>
-            <tr>
-                <td>SPX Express Service Point Kalijuda... <br><span class="badge-missed">Missed</span></td>
-                <td class="text-center data-paket">1</td>
-            </tr>
-            <tr>
-                <td>shopiversee (Lokasi 2) <br><span class="badge-missed">Missed</span></td>
-                <td class="text-center data-paket">12</td>
-            </tr>
-            <tr>
-                <td>Best Shop Official Grosir <br><span class="badge-missed">Missed</span></td>
-                <td class="text-center data-paket">10</td>
-            </tr>
-            <tr>
-                <td>angelitanabeela <br><span class="badge-missed">Missed</span></td>
-                <td class="text-center data-paket">17</td>
-            </tr>
+            <!-- Dimulai dari kosong, siap menerima gambar input -->
         </tbody>
     </table>
 </div>
@@ -238,12 +221,13 @@
         // Aktifkan indikator loading
         const statusDiv = document.getElementById('statusScan');
         statusDiv.style.display = 'block';
+        statusDiv.style.color = '#333';
         statusDiv.innerHTML = "⏳ Sedang memproses dan membaca teks gambar...";
 
         // Menjalankan OCR Menggunakan Tesseract.js
         Tesseract.recognize(
             file,
-            'ind', // Menggunakan database bahasa Indonesia agar lebih akurat membaca alamat/nama
+            'ind', // Menggunakan bahasa Indonesia
             { logger: m => {
                 if(m.status === 'recognizing text') {
                     statusDiv.innerHTML = `⏳ Mengonversi teks: ${Math.round(m.progress * 100)}%`;
@@ -253,7 +237,6 @@
             statusDiv.innerHTML = "✅ Pemindaian Selesai!";
             statusDiv.style.color = "green";
             
-            // Kirim teks mentah hasil scanner untuk diubah menjadi baris tabel
             ekstrakDataTeks(text);
         }).catch(err => {
             console.error(err);
@@ -275,46 +258,38 @@
             let cleanLine = line.trim();
             if (cleanLine.length < 3) return;
 
-            // Logika deteksi status missed
             if (cleanLine.toLowerCase().includes('missed')) {
                 isMissed = true;
             }
 
-            // Pola Aplikasi SPX: Nama seller biasanya berdiri sendiri sebelum teks jalan/alamat
-            // Jika baris berisi alamat, simpan baris sebelumnya sebagai nama seller valid
             if (cleanLine.toLowerCase().includes('jalan') || cleanLine.toLowerCase().includes('villa') || cleanLine.toLowerCase().includes('blok') || cleanLine.toLowerCase().includes('jl.')) {
                 if (namaSellerSementara !== "" && !dataDitemukan.some(d => d.seller === namaSellerSementara)) {
-                    // Cari angka jumlah paket di sekitar baris atau baris setelahnya
                     dataDitemukan.push({
                         seller: namaSellerSementara,
                         missed: isMissed,
-                        paket: 1 // Nilai bawaan jika OCR gagal menangkap angka detail di pojok kanan bawah
+                        paket: 1 
                     });
                 }
             } else {
-                // Abaikan kata bawaan aplikasi menu atas/bawah agar tidak terbaca sebagai nama toko
                 if (!cleanLine.toLowerCase().includes('pickup') && 
                     !cleanLine.toLowerCase().includes('return') && 
                     !cleanLine.toLowerCase().includes('handover') &&
                     !cleanLine.toLowerCase().includes('operasional') &&
                     !cleanLine.toLowerCase().includes('lihat titik')) {
                     
-                    // Cek jika baris mengandung angka penentu kuantitas di akhir baris (misal: "Pickup 17")
                     let matchAngka = cleanLine.match(/(\d+)\s*$/);
                     if (matchAngka && namaSellerSementara !== "") {
                         let idx = dataDitemukan.findIndex(d => d.seller === namaSellerSementara);
                         if (idx !== -1) dataDitemukan[idx].paket = parseInt(matchAngka[1]);
                     } else {
-                        // Ambil teks murni bersihkan dari karakter simbol aneh sisa OCR
                         namaSellerSementara = cleanLine.replace(/[^a-zA-Z0-9\s\.]/g, '');
                     }
                 }
             }
         });
 
-        // Jika berhasil mendeteksi data baru dari scan, bersihkan tabel lama dan ganti dengan yang baru
         if (dataDitemukan.length > 0) {
-            tBody.innerHTML = ""; // Kosongkan tabel bawaan asli
+            tBody.innerHTML = ""; 
             dataDitemukan.forEach(item => {
                 let row = document.createElement('tr');
                 let badge = item.missed ? ` <br><span class="badge-missed">Missed</span>` : '';
@@ -366,6 +341,29 @@
                 }
             }
         }
+        hitungTotal();
+    }
+
+    // FUNGSI RESET DATA (BARU)
+    function resetData() {
+        // Kosongkan Input File Gambar
+        document.getElementById('imageInput').value = "";
+        
+        // Sembunyikan dan hapus pratinjau foto
+        const preview = document.getElementById('previewImg');
+        preview.src = "";
+        preview.style.display = 'none';
+        
+        // Sembunyikan status teks pemindaian
+        document.getElementById('statusScan').style.display = 'none';
+        
+        // Kosongkan isi kolom pencarian
+        document.getElementById('searchInput').value = "";
+        
+        // Bersihkan seluruh baris di dalam tabel
+        document.getElementById('tableBody').innerHTML = "";
+        
+        // Hitung ulang total (akan otomatis menjadi 0)
         hitungTotal();
     }
 
