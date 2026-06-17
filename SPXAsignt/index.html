@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tool Monitor Pickup Pakdhe</title>
+    <title>Tool Monitor Pickup Pakdhe - Auto Scan</title>
+    <!-- Memuat Library TesseractJS untuk Scan Teks dari Gambar -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -22,9 +24,8 @@
         }
         h2 {
             text-align: center;
-            color: #ee4d2d; /* Warna khas SPX/Shopee */
+            color: #ee4d2d;
             margin-bottom: 5px;
-            padding-top: 10px;
         }
         .sub-title {
             text-align: center;
@@ -32,7 +33,40 @@
             color: #666;
             margin-bottom: 20px;
         }
-        /* Kotak Ringkasan Utama di Atas */
+        /* Area Upload Gambar */
+        .upload-section {
+            border: 2px dashed #ee4d2d;
+            background-color: #fffefb;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .upload-section:hover {
+            background-color: #fff5f2;
+        }
+        .upload-section input[type="file"] {
+            display: none;
+        }
+        .upload-btn {
+            background-color: #ee4d2d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        /* Status Loading Scan */
+        #statusScan {
+            font-weight: bold;
+            color: #333;
+            margin: 10px 0;
+            display: none;
+            text-align: center;
+        }
         .summary-card {
             background: linear-gradient(135deg, #ff6b4a, #ee4d2d);
             color: white;
@@ -65,11 +99,6 @@
             border-radius: 6px;
             box-sizing: border-box;
             font-size: 16px;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .search-box:focus {
-            border-color: #ee4d2d;
-            outline: none;
         }
         table {
             width: 100%;
@@ -99,19 +128,39 @@
             display: inline-block;
             margin-top: 4px;
         }
+        #previewImg {
+            max-width: 150px;
+            max-height: 150px;
+            margin-top: 10px;
+            border-radius: 6px;
+            display: none;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>📋 Tool Monitor Pickup SPX</h2>
-    <div class="sub-title">Data hasil ekstraksi otomatis dari gambar <strong>picup.jpeg</strong></div>
+    <h2>📋 Tool Monitor & Scan Pickup SPX</h2>
+    <div class="sub-title">Upload screenshot aplikasi untuk ekstraksi otomatis</div>
 
-    <!-- KOTAK TOTAL UTAMA DI ATAS -->
+    <!-- AREA MASUKKAN GAMBAR -->
+    <div class="upload-section" onclick="document.getElementById('imageInput').click()">
+        <p style="margin: 0; color: #555;">📸 Klik di sini untuk mengambil foto / upload file gambar</p>
+        <span class="upload-btn">Pilih Gambar</span>
+        <input type="file" id="imageInput" accept="image/*" onchange="prosesGambar(event)">
+        <br>
+        <img id="previewImg" alt="Pratinjau Gambar">
+    </div>
+
+    <!-- STATUS PEMROSESAN -->
+    <div id="statusScan">⏳ Menghubungkan ke sistem Scanner...</div>
+
+    <!-- KOTAK TOTAL UTAMA -->
     <div class="summary-card">
         <div class="title">Total Paket Semuanya</div>
-        <div class="counter" id="totalPaketBesar">0</div>
-        <div class="sub-text" id="totalTokoText">Memuat data toko...</div>
+        <div class="counter" id="totalPaketBesar">2.029 Paket</div>
+        <div class="sub-text" id="totalTokoText">Dari total 10 lokasi toko terdaftar</div>
     </div>
 
     <!-- Kotak Pencarian -->
@@ -125,7 +174,8 @@
                 <th class="text-center" style="width: 120px;">Jumlah Paket</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="tableBody">
+            <!-- Data Bawaan dari picup.jpeg -->
             <tr>
                 <td>47auto</td>
                 <td class="text-center data-paket">1</td>
@@ -171,11 +221,120 @@
 </div>
 
 <script>
+    // Fungsi Menangani Upload dan OCR Gambar
+    function prosesGambar(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Tampilkan pratinjau gambar
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('previewImg');
+            preview.src = e.target.result;
+            preview.style.display = 'inline-block';
+        }
+        reader.readAsDataURL(file);
+
+        // Aktifkan indikator loading
+        const statusDiv = document.getElementById('statusScan');
+        statusDiv.style.display = 'block';
+        statusDiv.innerHTML = "⏳ Sedang memproses dan membaca teks gambar...";
+
+        // Menjalankan OCR Menggunakan Tesseract.js
+        Tesseract.recognize(
+            file,
+            'ind', // Menggunakan database bahasa Indonesia agar lebih akurat membaca alamat/nama
+            { logger: m => {
+                if(m.status === 'recognizing text') {
+                    statusDiv.innerHTML = `⏳ Mengonversi teks: ${Math.round(m.progress * 100)}%`;
+                }
+            }}
+        ).then(({ data: { text } }) => {
+            statusDiv.innerHTML = "✅ Pemindaian Selesai!";
+            statusDiv.style.color = "green";
+            
+            // Kirim teks mentah hasil scanner untuk diubah menjadi baris tabel
+            ekstrakDataTeks(text);
+        }).catch(err => {
+            console.error(err);
+            statusDiv.innerHTML = "❌ Gagal memproses gambar. Pastikan koneksi internet aktif.";
+            statusDiv.style.color = "red";
+        });
+    }
+
+    // Fungsi Ekstraksi Algoritma Teks SPX ke Tabel
+    function ekstrakDataTeks(mentahTeks) {
+        const baris = mentahTeks.split('\n');
+        const tBody = document.getElementById('tableBody');
+        
+        let dataDitemukan = [];
+        let namaSellerSementara = "";
+        let isMissed = false;
+
+        baris.forEach(line => {
+            let cleanLine = line.trim();
+            if (cleanLine.length < 3) return;
+
+            // Logika deteksi status missed
+            if (cleanLine.toLowerCase().includes('missed')) {
+                isMissed = true;
+            }
+
+            // Pola Aplikasi SPX: Nama seller biasanya berdiri sendiri sebelum teks jalan/alamat
+            // Jika baris berisi alamat, simpan baris sebelumnya sebagai nama seller valid
+            if (cleanLine.toLowerCase().includes('jalan') || cleanLine.toLowerCase().includes('villa') || cleanLine.toLowerCase().includes('blok') || cleanLine.toLowerCase().includes('jl.')) {
+                if (namaSellerSementara !== "" && !dataDitemukan.some(d => d.seller === namaSellerSementara)) {
+                    // Cari angka jumlah paket di sekitar baris atau baris setelahnya
+                    dataDitemukan.push({
+                        seller: namaSellerSementara,
+                        missed: isMissed,
+                        paket: 1 // Nilai bawaan jika OCR gagal menangkap angka detail di pojok kanan bawah
+                    });
+                }
+            } else {
+                // Abaikan kata bawaan aplikasi menu atas/bawah agar tidak terbaca sebagai nama toko
+                if (!cleanLine.toLowerCase().includes('pickup') && 
+                    !cleanLine.toLowerCase().includes('return') && 
+                    !cleanLine.toLowerCase().includes('handover') &&
+                    !cleanLine.toLowerCase().includes('operasional') &&
+                    !cleanLine.toLowerCase().includes('lihat titik')) {
+                    
+                    // Cek jika baris mengandung angka penentu kuantitas di akhir baris (misal: "Pickup 17")
+                    let matchAngka = cleanLine.match(/(\d+)\s*$/);
+                    if (matchAngka && namaSellerSementara !== "") {
+                        let idx = dataDitemukan.findIndex(d => d.seller === namaSellerSementara);
+                        if (idx !== -1) dataDitemukan[idx].paket = parseInt(matchAngka[1]);
+                    } else {
+                        // Ambil teks murni bersihkan dari karakter simbol aneh sisa OCR
+                        namaSellerSementara = cleanLine.replace(/[^a-zA-Z0-9\s\.]/g, '');
+                    }
+                }
+            }
+        });
+
+        // Jika berhasil mendeteksi data baru dari scan, bersihkan tabel lama dan ganti dengan yang baru
+        if (dataDitemukan.length > 0) {
+            tBody.innerHTML = ""; // Kosongkan tabel bawaan asli
+            dataDitemukan.forEach(item => {
+                let row = document.createElement('tr');
+                let badge = item.missed ? ` <br><span class="badge-missed">Missed</span>` : '';
+                row.innerHTML = `
+                    <td>${item.seller}${badge}</td>
+                    <td class="text-center data-paket">${item.paket}</td>
+                `;
+                tBody.appendChild(row);
+            });
+            hitungTotal();
+        } else {
+            alert("Teks nama seller kurang terbaca jelas. Coba gunakan foto dengan resolusi yang lebih tajam/terang, Pakdhe!");
+        }
+    }
+
     // Fungsi Hitung Total Otomatis Dinamis
     function hitungTotal() {
         let rows = document.querySelectorAll("#pickupTable tbody tr");
         let totalPaket = 0;
-        let totalToko Terlihat = 0;
+        let totalTokoTerlihat = 0;
 
         rows.forEach(row => {
             if (row.style.display !== "none") {
@@ -185,7 +344,6 @@
             }
         });
 
-        // Tampilkan ke Kotak Besar di Atas
         document.getElementById("totalPaketBesar").innerText = totalPaket.toLocaleString('id-ID') + " Paket";
         document.getElementById("totalTokoText").innerText = "Dari total " + totalTokoTerlihat + " lokasi toko terdaftar";
     }
@@ -208,10 +366,9 @@
                 }
             }
         }
-        hitungTotal(); // Update kalkulasi total secara live saat mengetik pencarian
+        hitungTotal();
     }
 
-    // Jalankan hitung kalkulator saat halaman web pertama kali dimuat
     window.onload = hitungTotal;
 </script>
 
