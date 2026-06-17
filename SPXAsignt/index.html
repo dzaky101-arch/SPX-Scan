@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tool Monitor Pickup Pakdhe - Auto Scan V2</title>
+    <title>Tool Monitor Pickup Pakdhe - Super OCR V3</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
         body {
@@ -160,10 +160,10 @@
 
 <div class="container">
     <h2>📋 Tool Monitor & Scan Pickup SPX</h2>
-    <div class="sub-title">Perbaikan Akurasi Jumlah Paket - Masukkan Screenshot Terbaru</div>
+    <div class="sub-title">Algoritma Akurasi Multi-Paket Diperbarui</div>
 
     <div class="upload-section">
-        <p style="margin: 0; color: #555;">📸 Ambil foto atau upload file gambar screenshot pickup baru</p>
+        <p style="margin: 0; color: #555;">📸 Masukkan foto/screenshot SPX terbaru Anda</p>
         <div class="action-buttons">
             <button class="upload-btn" onclick="document.getElementById('imageInput').click()">Pilih Gambar</button>
             <button class="reset-btn" onclick="resetData()">Reset Data</button>
@@ -196,7 +196,6 @@
 </div>
 
 <script>
-    // Fungsi Menangani Upload dan OCR Gambar
     function prosesGambar(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -212,28 +211,28 @@
         const statusDiv = document.getElementById('statusScan');
         statusDiv.style.display = 'block';
         statusDiv.style.color = '#333';
-        statusDiv.innerHTML = "⏳ Sedang memproses dan membaca teks gambar...";
+        statusDiv.innerHTML = "⏳ Sedang mengekstrak teks gambar secara detail...";
 
         Tesseract.recognize(
             file,
             'ind',
             { logger: m => {
                 if(m.status === 'recognizing text') {
-                    statusDiv.innerHTML = `⏳ Mengonversi teks pasar: ${Math.round(m.progress * 100)}%`;
+                    statusDiv.innerHTML = `⏳ Membaca data baris: ${Math.round(m.progress * 100)}%`;
                 }
             }}
         ).then(({ data: { text } }) => {
-            statusDiv.innerHTML = "✅ Pemindaian Selesai!";
+            statusDiv.innerHTML = "✅ Scan Selesai!";
             statusDiv.style.color = "green";
             ekstrakDataTeks(text);
         }).catch(err => {
             console.error(err);
-            statusDiv.innerHTML = "❌ Gagal memproses gambar. Coba pastikan koneksi internet lancar.";
+            statusDiv.innerHTML = "❌ Gagal memproses gambar.";
             statusDiv.style.color = "red";
         });
     }
 
-    // Perbaikan Utama: Algoritma Ekstraksi Teks Jauh Lebih Akurat Mengatur Jumlah Paket
+    // Perbaikan Logika: Penjebak Angka Paket yang Valid
     function ekstrakDataTeks(mentahTeks) {
         const baris = mentahTeks.split('\n');
         const tBody = document.getElementById('tableBody');
@@ -246,19 +245,16 @@
             let cleanLine = baris[i].trim();
             if (cleanLine.length < 2) continue;
 
-            // Deteksi penanda missed untuk toko yang sedang diproses
             if (cleanLine.toLowerCase().includes('missed')) {
                 isMissed = true;
                 continue;
             }
 
-            // Aturan 1: Deteksi alamat. Jika baris mengandung penanda alamat, berarti baris SEBELUMNYA adalah Nama Seller.
+            // Identifikasi Alamat SPX
             if (cleanLine.toLowerCase().includes('jalan') || cleanLine.toLowerCase().includes('villa') || cleanLine.toLowerCase().includes('blok') || cleanLine.toLowerCase().includes('jl.')) {
-                // Tarik baris sebelumnya (mundur ke belakang) untuk mencari nama seller murni
                 let j = i - 1;
                 while (j >= 0) {
                     let prevLine = baris[j].trim();
-                    // Lewati baris kosong atau indikator missed saat mencari nama toko
                     if (prevLine.length > 2 && !prevLine.toLowerCase().includes('missed') && !prevLine.toLowerCase().includes('pickup') && !prevLine.toLowerCase().includes('return')) {
                         namaSellerSementara = prevLine.replace(/[^a-zA-Z0-9\s\.\-_]/g, '');
                         break;
@@ -268,17 +264,25 @@
                 continue;
             }
 
-            // Aturan 2: Deteksi Jumlah Paket dari Tombol "Pickup [Angka]"
+            // FILTER PENANGKAP ANGKA: Mengambil angka asli pasca tulisan "Pickup"
             if (cleanLine.toLowerCase().includes('pickup') || cleanLine.toLowerCase().includes('picup')) {
-                let jumlahPaket = 1; // Default pengaman standar jika angka gagal ter-scan
+                let jumlahPaket = 1; 
                 
-                // Ambil semua angka yang ada di baris "Pickup" tersebut
+                // Cari angka di baris yang sama terlebih dahulu
                 let angkaMatch = cleanLine.match(/\d+/);
                 if (angkaMatch) {
                     jumlahPaket = parseInt(angkaMatch[0]);
+                } else {
+                    // Jika tidak ada angka di baris yang sama, cek 1 baris di bawahnya (antisipasi OCR memisah baris tulisan & angka)
+                    if (i + 1 < baris.length) {
+                        let nextLine = baris[i+1].trim();
+                        let angkaBawahMatch = nextLine.match(/^\d+/);
+                        if (angkaBawahMatch) {
+                            jumlahPaket = parseInt(angkaBawahMatch[0]);
+                        }
+                    }
                 }
 
-                // Masukkan data ke array jika nama seller valid ditemukan
                 if (namaSellerSementara !== "" && !dataDitemukan.some(d => d.seller === namaSellerSementara)) {
                     dataDitemukan.push({
                         seller: namaSellerSementara,
@@ -286,14 +290,13 @@
                         paket: jumlahPaket
                     });
                     
-                    // Reset variabel penanda untuk toko berikutnya
                     namaSellerSementara = "";
                     isMissed = false;
                 }
             }
         }
 
-        // Tampilkan hasil perbaikan scan ke tabel web
+        // Tampilkan ke web
         if (dataDitemukan.length > 0) {
             tBody.innerHTML = ""; 
             dataDitemukan.forEach(item => {
@@ -307,7 +310,7 @@
             });
             hitungTotal();
         } else {
-            alert("Sistem kesulitan memilah nama seller. Mohon gunakan foto screen yang tegak lurus dan jelas, Pakdhe!");
+            alert("Sistem tidak mendeteksi teks dengan format SPX. Gunakan foto yang lebih cerah, Pakdhe!");
         }
     }
 
