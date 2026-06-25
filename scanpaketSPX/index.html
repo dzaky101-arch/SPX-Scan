@@ -6,6 +6,13 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Scan SPX">
     <title>Scan Paket SPX</title>
+
+    <!-- META TAG AGAR LOGO KELIHATAN SAAT LINK DI SHARE (WHATSAPP/TELEGRAM) -->
+    <meta property="og:title" content="Scan Paket SPX">
+    <meta property="og:description" content="Optimasi Safari iPhone & Scanner">
+    <meta property="og:image" content="image_082f7c.png">
+    <meta property="og:type" content="website">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -66,7 +73,7 @@
             padding-top: 20px; 
         }
 
-        /* Tata letak fleksibel untuk menyejajarkan judul dan logo di sampingnya */
+        /* Tata letak fleksibel: judul dan logo berjajar rapi */
         .title-wrapper {
             display: inline-flex;
             align-items: center;
@@ -81,9 +88,10 @@
             font-weight: 700;
             letter-spacing: -0.5px;
             margin: 0;
+            order: 2; /* Menempatkan Judul di sebelah kanan */
         }
 
-        /* Kontainer logo kecil lingkaran putih di samping judul agar kontras */
+        /* Kontainer lingkaran putih diposisikan di sebelah kiri */
         .title-logo-box {
             width: 42px;
             height: 42px;
@@ -95,6 +103,7 @@
             padding: 6px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
             flex-shrink: 0;
+            order: 1; /* Menempatkan Logo di sebelah kiri */
         }
 
         .title-logo-display {
@@ -777,7 +786,7 @@
         <header style="position: relative;">
             <button id="btnThemeToggle" style="position: absolute; top: 10px; right: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border); z-index: 10;">☀️</button>
             
-            <!-- JUDUL DAN LOGO SAMA TINGGI BERJAJAR DI SAMPING -->
+            <!-- SUSUNAN BARU: LOGO DI KIRI, JUDUL H1 DI KANAN -->
             <div class="title-wrapper">
                 <h1>📦 Scan Paket SPX</h1>
                 <div class="title-logo-box">
