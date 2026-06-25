@@ -799,6 +799,18 @@
         </div>
     </div>
 
+    <!-- iOS Action Sheet Modal -->
+    <div class="ios-alert-overlay" id="iosActionSheet">
+        <div class="ios-alert-card" style="width: 320px; padding-bottom: 0;">
+            <h3 class="ios-alert-title">Pilih Data Untuk Share</h3>
+            <p class="ios-alert-message" style="border-bottom:none; padding-bottom: 10px;">Ada beberapa seller dalam riwayat scan.</p>
+            <div id="iosActionSheetButtons" style="display:flex; flex-direction:column; max-height: 40vh; overflow-y: auto; border-top: 0.5px solid rgba(255, 255, 255, 0.15);">
+                <!-- Buttons injected here -->
+            </div>
+            <button class="ios-btn-ok" id="btnCancelActionSheet" style="width: 100%; border-top: 5px solid rgba(0,0,0,0.2); color: var(--ios-red); padding: 14px; font-weight:600; background:none; border-left:none; border-right:none; border-bottom:none; border-radius:0;">Batal</button>
+        </div>
+    </div>
+
     <!-- iOS Custom Alert Dialog -->
     <div class="ios-alert-overlay" id="iosAlert">
         <div class="ios-alert-card">
@@ -1448,18 +1460,11 @@
                 document.body.removeChild(textArea);
             }
 
-            // SHARE RETURN TO WHATSAPP
-            btnCopy.addEventListener('click', async () => {
-                if (records.length === 0) {
-                    showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
-                    return;
-                }
-
-                const { groups, dateStr } = generateReportData();
+            // SHARE HELPER
+            async function processShareReturn(groupsToShare, dateStr) {
                 let report = [];
-
-                for (const key in groups) {
-                    const g = groups[key];
+                for (const key in groupsToShare) {
+                    const g = groupsToShare[key];
                     report.push(`Return ${g.seller}`);
                     report.push(dateStr);
                     report.push(`Trip ${g.trip}`);
@@ -1481,7 +1486,7 @@
                             text: finalString
                         };
                         
-                        if (currentPhotoFile && navigator.canShare) {
+                        if (typeof currentPhotoFile !== 'undefined' && currentPhotoFile && navigator.canShare) {
                             const filesArray = [new File([currentPhotoFile], "bukti_return.jpg", { type: currentPhotoFile.type })];
                             if (navigator.canShare({ files: filesArray })) {
                                 shareData.files = filesArray;
@@ -1489,9 +1494,13 @@
                         }
                         
                         await navigator.share(shareData);
-                        currentPhotoFile = null;
-                        photoLabel.innerHTML = '📷';
-                        photoInput.value = '';
+                        
+                        // Reset photo after share
+                        if (typeof currentPhotoFile !== 'undefined') currentPhotoFile = null;
+                        const photoLabel = document.getElementById('photoLabel');
+                        const photoInput = document.getElementById('photoInput');
+                        if (photoLabel) photoLabel.innerHTML = '📷';
+                        if (photoInput) photoInput.value = '';
                     } catch (err) {
                         if (err.name !== 'AbortError') {
                             copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
@@ -1500,6 +1509,60 @@
                 } else {
                     copyTextToClipboard(finalString, 'Laporan berhasil disalin! (Peramban tidak mendukung fitur Share gambar)');
                 }
+            }
+
+            document.getElementById('btnCancelActionSheet')?.addEventListener('click', () => {
+                document.getElementById('iosActionSheet').classList.remove('active');
+            });
+
+            // SHARE RETURN TO WHATSAPP
+            btnCopy.addEventListener('click', async () => {
+                if (records.length === 0) {
+                    showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
+                    return;
+                }
+
+                const { groups, dateStr } = generateReportData();
+                const groupKeys = Object.keys(groups);
+
+                if (groupKeys.length > 1) {
+                    const actionSheet = document.getElementById('iosActionSheet');
+                    const btnContainer = document.getElementById('iosActionSheetButtons');
+                    btnContainer.innerHTML = '';
+
+                    // Option: Share Semua
+                    const btnAll = document.createElement('button');
+                    btnAll.className = 'ios-btn-ok';
+                    btnAll.style.cssText = 'padding:14px; width:100%; font-size:16px; font-weight:600; border:none; border-bottom:0.5px solid rgba(255,255,255,0.15); background:none; color:#0a84ff; cursor:pointer; text-align:center;';
+                    btnAll.textContent = 'Share Semua Seller';
+                    btnAll.onclick = async () => {
+                        actionSheet.classList.remove('active');
+                        await processShareReturn(groups, dateStr);
+                    };
+                    btnContainer.appendChild(btnAll);
+
+                    // Option: Individual Sellers
+                    groupKeys.forEach(key => {
+                        const g = groups[key];
+                        const btn = document.createElement('button');
+                        btn.className = 'ios-btn-ok';
+                        btn.style.cssText = 'padding:14px; width:100%; font-size:15px; border:none; border-bottom:0.5px solid rgba(255,255,255,0.15); background:none; color:var(--ios-text); cursor:pointer; text-align:center; display:flex; justify-content:center; align-items:center; gap:8px; flex-direction:column;';
+                        btn.innerHTML = `<span>${g.seller} (Trip ${g.trip})</span> <span style="font-size:12px; color:var(--ios-text-muted); background:var(--ios-card-bg-active); padding:2px 6px; border-radius:10px;">${g.resis.length} resi</span>`;
+                        btn.onclick = async () => {
+                            actionSheet.classList.remove('active');
+                            const singleGroup = {};
+                            singleGroup[key] = g;
+                            await processShareReturn(singleGroup, dateStr);
+                        };
+                        btnContainer.appendChild(btn);
+                    });
+
+                    actionSheet.classList.add('active');
+                    return;
+                }
+
+                // If only 1 seller, share immediately
+                await processShareReturn(groups, dateStr);
             });
 
             // SHARE PICKUP TO WHATSAPP
