@@ -66,24 +66,6 @@
             padding-top: 20px; 
         }
 
-        .logo-container {
-            width: 100%;
-            max-width: 200px;
-            margin: 0 auto 16px;
-            padding: 12px 20px;
-            display: block;
-            background-color: #ffffff; 
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .logo-display {
-            width: 100%;
-            height: auto;
-            display: block;
-            object-fit: contain;
-        }
-
         h1 {
             font-size: 1.8rem;
             font-weight: 700;
@@ -706,11 +688,6 @@
           lockOverlay.innerHTML = `
             <div style="background:#1e293b; padding:32px; border-radius:16px; width:100%; max-width:380px; text-align:center; border:1px solid #334155; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
               
-              <!-- Menggunakan logo baru image_082f7c.png di lockscreen -->
-              <div style="background:#ffffff; max-width:160px; margin:0 auto 20px; padding:8px 14px; border-radius:8px;">
-                <img src="image_082f7c.png" alt="SPX Express" style="width:100%; height:auto; display:block; object-fit:contain;">
-              </div>
-
               <h2 style="color:#10b981; margin-bottom:8px; font-size:22px;">Aplikasi Terkunci</h2>
               <p style="color:#94a3b8; font-size:14px; margin-bottom:24px;">Silakan masukkan PIN Aktivasi dari Admin.</p>
               
@@ -765,12 +742,7 @@
         <header style="position: relative;">
             <button id="btnThemeToggle" style="position: absolute; top: 10px; right: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border); z-index: 10;">☀️</button>
             
-            <!-- Menggunakan logo baru image_082f7c.png di dashboard utama -->
-            <div class="logo-container">
-                <img src="image_082f7c.png" alt="SPX Express" class="logo-display">
-            </div>
-            
-            <!-- Mengembalikan judul aplikasi asli yang diminta -->
+            <!-- HANYA DIPASANG JUDUL H1 ASLI YANG RAPI -->
             <h1>📦 Scan Paket SPX</h1>
             <div class="subtitle">Optimasi Safari iPhone & Scanner</div>
             
