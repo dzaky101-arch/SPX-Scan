@@ -63,15 +63,19 @@
         header {
             margin-bottom: 1.5rem;
             text-align: center;
-            padding-top: 20px; /* Ruang tambahan agar logo tidak mepet batas atas browser */
+            padding-top: 20px; 
         }
 
+        /* PERBAIKAN: Ditambahkan background putih & border-radius agar logo transparan terlihat kontras */
         .logo-container {
             width: 100%;
-            max-width: 220px;
-            margin: 0 auto 12px;
-            padding: 10px;
+            max-width: 200px;
+            margin: 0 auto 16px;
+            padding: 12px 20px;
             display: block;
+            background-color: #ffffff; 
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .logo-display {
@@ -695,7 +699,12 @@
           
           lockOverlay.innerHTML = `
             <div style="background:#1e293b; padding:32px; border-radius:16px; width:100%; max-width:380px; text-align:center; border:1px solid #334155; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
-              <img src="image_08181d.png" alt="SPX Express" style="width:140px; height:auto; margin:0 auto 20px; display:block; object-fit:contain;">
+              
+              <!-- PERBAIKAN: Pembungkus logo di lockscreen agar kontras -->
+              <div style="background:#ffffff; max-width:160px; margin:0 auto 20px; padding:8px 14px; border-radius:8px;">
+                <img src="image_08181d.png" alt="SPX Express" style="width:100%; height:auto; display:block; object-fit:contain;">
+              </div>
+
               <h2 style="color:#10b981; margin-bottom:8px; font-size:22px;">Aplikasi Terkunci</h2>
               <p style="color:#94a3b8; font-size:14px; margin-bottom:24px;">Silakan masukkan PIN Aktivasi dari Admin.</p>
               
@@ -750,7 +759,7 @@
         <header style="position: relative;">
             <button id="btnThemeToggle" style="position: absolute; top: 10px; right: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border); z-index: 10;">☀️</button>
             
-            <!-- LOGO UTAMA DISET DALAM KOTAK PENYANGGA YANG AMAN -->
+            <!-- LOGO UTAMA DI SETIAP HALAMAN DASHBOARD SEKARANG TERANG DAN JELAS -->
             <div class="logo-container">
                 <img src="image_08181d.png" alt="SPX Express" class="logo-display">
             </div>
