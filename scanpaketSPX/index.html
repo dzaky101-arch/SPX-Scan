@@ -686,6 +686,7 @@
                 <button id="btnCopy" class="btn-success">📲 Share (Return)</button>
                 <button id="btnSharePickup" class="btn-warning" style="background-color: #ff9500; color: #fff;">📲 Share (Pickup)</button>
                 <button id="btnCopyResiOnly" class="btn-info">📋 Copy Hanya Resi</button>
+                <button id="btnImportText" class="btn-success" style="background-color: #5856d6; color: #fff;">📥 Import Data</button>
                 <button id="btnExport" class="btn-primary">⬇️ Export Excel</button>
             </div>
         </header>
@@ -796,6 +797,19 @@
             </div>
             
             <button type="button" id="qrCloseBtn" class="qr-btn-close">Tutup</button>
+        </div>
+    </div>
+
+    <!-- iOS Import Modal -->
+    <div class="ios-alert-overlay" id="iosImportModal">
+        <div class="ios-alert-card" style="width: 90%; max-width: 400px; padding: 20px;">
+            <h3 class="ios-alert-title" style="padding-top:0;">Import Data</h3>
+            <p class="ios-alert-message" style="border-bottom:none; margin-bottom: 10px;">Paste teks laporan (dari WhatsApp) ke bawah ini:</p>
+            <textarea id="importTextArea" rows="8" style="width: 100%; border-radius: 10px; border: 1px solid rgba(142, 142, 147, 0.3); padding: 10px; font-size: 14px; background: var(--ios-input-bg, rgba(142, 142, 147, 0.1)); color: var(--ios-text); resize: none; margin-bottom: 15px;" placeholder="Return Msotomotif..."></textarea>
+            <div style="display: flex; gap: 10px;">
+                <button class="ios-btn-ok" id="btnCancelImport" style="flex:1; border:none; background: var(--ios-card-bg-active, #e5e5ea); border-radius:10px; color: var(--ios-red); padding: 12px; font-weight:600;">Batal</button>
+                <button class="ios-btn-ok" id="btnProcessImport" style="flex:1; border:none; background: #007aff; border-radius:10px; color: #fff; padding: 12px; font-weight:600;">Proses Import</button>
+            </div>
         </div>
     </div>
 
@@ -1470,8 +1484,10 @@
                     report.push(`Trip ${g.trip}`);
                     
                     g.resis.sort((a,b) => a.noUrut - b.noUrut);
+                    let localCounter = 1;
                     g.resis.forEach(item => {
-                        report.push(`${item.noUrut}. ${item.resi}`);
+                        report.push(`${localCounter}. ${item.resi}`);
+                        localCounter++;
                     });
                     
                     if (shareType === 'Pickup') {
@@ -1626,6 +1642,98 @@
                 const finalString = resis.join('\n');
                 copyTextToClipboard(finalString, 'Resi berhasil disalin!');
             });
+
+            // IMPORT FROM TEXT
+            const btnImportText = document.getElementById('btnImportText');
+            const iosImportModal = document.getElementById('iosImportModal');
+            const importTextArea = document.getElementById('importTextArea');
+            const btnCancelImport = document.getElementById('btnCancelImport');
+            const btnProcessImport = document.getElementById('btnProcessImport');
+
+            if (btnImportText) {
+                btnImportText.addEventListener('click', () => {
+                    importTextArea.value = '';
+                    iosImportModal.classList.add('active');
+                });
+            }
+
+            if (btnCancelImport) {
+                btnCancelImport.addEventListener('click', () => {
+                    iosImportModal.classList.remove('active');
+                });
+            }
+
+            if (btnProcessImport) {
+                btnProcessImport.addEventListener('click', () => {
+                    const text = importTextArea.value.trim();
+                    if (!text) {
+                        showIosAlert('Gagal', 'Teks tidak boleh kosong.');
+                        return;
+                    }
+
+                    const lines = text.split('\n').map(l => l.trim());
+                    let currentSeller = '-';
+                    let currentTrip = '1';
+                    let importedCount = 0;
+                    
+                    let currentNoUrut = records.length > 0 ? Math.max(...records.map(r => r.noUrut)) : 0;
+                    
+                    for (let line of lines) {
+                        if (!line) continue;
+                        
+                        // Parse Seller
+                        const sellerMatch = line.match(/^(?:Return|Pickup)\s+(.+)$/i);
+                        if (sellerMatch) {
+                            currentSeller = sellerMatch[1].trim();
+                            continue;
+                        }
+                        
+                        // Parse Trip
+                        const tripMatch = line.match(/^Trip\s+(\d+)$/i);
+                        if (tripMatch) {
+                            currentTrip = tripMatch[1].trim();
+                            continue;
+                        }
+                        
+                        // Ignore date / Keterangan
+                        if (line.toLowerCase().startsWith('keterangan:')) continue;
+                        if (line.match(/^\d{1,2}\s+[A-Za-z]+\s+\d{4}$/)) continue;
+                        
+                        // Parse Resi
+                        const resiMatch = line.match(/^(?:\d+\.\s*)?([a-zA-Z0-9]+)$/);
+                        if (resiMatch) {
+                            const resi = resiMatch[1].trim();
+                            if (resi.length < 8) continue; // Minimum length for a valid resi
+                            
+                            const exists = records.find(r => r.resi === resi);
+                            if (!exists) {
+                                currentNoUrut++;
+                                const newRecord = {
+                                    id: Date.now() + Math.random().toString(),
+                                    resi: resi,
+                                    timestamp: new Date().toLocaleString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+                                    noUrut: currentNoUrut,
+                                    trip: currentTrip,
+                                    seller: currentSeller
+                                };
+                                records.unshift(newRecord);
+                                importedCount++;
+                            }
+                        }
+                    }
+                    
+                    iosImportModal.classList.remove('active');
+
+                    if (importedCount > 0) {
+                        saveData();
+                        renderRecords();
+                        updateCounter();
+                        showIosAlert('Berhasil', `${importedCount} Resi berhasil di-import!`);
+                    } else {
+                        showIosAlert('Info', 'Tidak ada data resi baru/valid yang ditemukan pada teks.');
+                    }
+                });
+            }
 
             // EXPORT TO EXCEL
             btnExport.addEventListener('click', () => {
