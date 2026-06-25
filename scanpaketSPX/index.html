@@ -65,6 +65,13 @@
             text-align: center;
         }
 
+        .logo-display {
+            width: 140px;
+            height: auto;
+            margin: 0 auto 0.5rem;
+            display: block;
+        }
+
         h1 {
             font-size: 1.8rem;
             font-weight: 700;
@@ -96,7 +103,7 @@
 
         button {
             font-family: inherit;
-            font-size: 16px; /* Avoid auto-zoom in iOS Safari */
+            font-size: 16px; 
             font-weight: 600;
             border: none;
             border-radius: 12px;
@@ -108,7 +115,7 @@
             align-items: center;
             gap: 0.5rem;
             width: 100%;
-            height: 48px; /* iOS standard touch target height */
+            height: 48px; 
         }
         button:active {
             transform: scale(0.97);
@@ -156,15 +163,14 @@
             border: 1px solid var(--ios-border);
             border-radius: 10px;
             padding: 0.75rem;
-            font-size: 16px; /* Critically avoids automatic zooming in iOS Safari */
+            font-size: 16px; 
             font-family: inherit;
             outline: none;
             transition: border-color 0.2s;
             height: 44px;
-            -webkit-appearance: none; /* Reset native select border/styles */
+            -webkit-appearance: none; 
             appearance: none;
         }
-        /* Custom dropdown arrow for select elements */
         select-wrapper {
             position: relative;
             display: block;
@@ -355,7 +361,7 @@
             -webkit-backdrop-filter: blur(10px);
             z-index: 100;
             justify-content: center;
-            align-items: flex-end; /* Bottom sheet on mobile */
+            align-items: flex-end; 
         }
         @media (min-width: 600px) {
             .modal-overlay {
@@ -388,7 +394,6 @@
             }
         }
 
-        /* Fullscreen Camera Modal for Mobile Devices */
         @media (max-width: 599px) {
             #cameraModal.modal-overlay {
                 align-items: stretch;
@@ -454,7 +459,7 @@
             border-radius: 10px;
             padding: 0.75rem;
             font-family: monospace;
-            font-size: 16px; /* Crucial for iOS Safari auto-zoom prevention */
+            font-size: 16px; 
             resize: none;
             margin-bottom: 1rem;
             outline: none;
@@ -550,7 +555,7 @@
             background-color: rgba(255, 255, 255, 0.15);
         }
 
-        /* QR CODE MODAL / SLIDESHOW STYLE */
+        /* QR CODE MODAL */
         .qr-modal-overlay {
             display: none;
             position: fixed;
@@ -567,7 +572,7 @@
             display: flex;
         }
         .qr-card-ios {
-            background: #ffffff; /* White background for QR visibility */
+            background: #ffffff; 
             color: #000000;
             border-radius: 20px;
             padding: 2rem 1.5rem 1.5rem;
@@ -662,6 +667,7 @@
     </style>
 </head>
 <body>
+    <!-- SCRIPT AKTIVASI LISENSI -->
     <script>
       (function() {
         if (sessionStorage.getItem("spx_activated") === "true") return;
@@ -677,8 +683,6 @@
         }
 
         const clientDeviceID = getDeviceID();
-        
-        // Sembunyikan window render utama saat dimuat
         document.documentElement.style.display = 'none';
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -688,6 +692,8 @@
           
           lockOverlay.innerHTML = `
             <div style="background:#1e293b; padding:32px; border-radius:16px; width:100%; max-width:380px; text-align:center; border:1px solid #334155; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
+              <!-- LOGO SPX DI LOCKSCREEN -->
+              <img src="image_08181d.png" alt="SPX Express" style="width:120px; height:auto; margin:0 auto 16px; display:block;">
               <h2 style="color:#10b981; margin-bottom:8px; font-size:22px;">Aplikasi Terkunci</h2>
               <p style="color:#94a3b8; font-size:14px; margin-bottom:24px;">Silakan masukkan PIN Aktivasi dari Admin.</p>
               
@@ -741,7 +747,11 @@
     <div class="container">
         <header style="position: relative;">
             <button id="btnThemeToggle" style="position: absolute; top: 0; right: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border);">☀️</button>
-            <h1>📦 Scan Paket SPX</h1>
+            
+            <!-- LOGO SPX DI DASHBOARD UTAMA -->
+            <img src="image_08181d.png" alt="SPX Express" class="logo-display">
+            
+            <h1>Scan Paket SPX</h1>
             <div class="subtitle">Optimasi Safari iPhone & Scanner</div>
             
             <div class="action-grid">
@@ -752,6 +762,7 @@
             </div>
         </header>
 
+        <!-- Selector Card -->
         <div class="card">
             <div class="form-row">
                 <div class="form-group" style="flex: 1;">
@@ -779,6 +790,7 @@
                 </div>
             </div>
 
+            <!-- Input Scan Form -->
             <form id="scanForm" class="form-group" style="margin-bottom: 0;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
                     <label for="scanInput" style="margin: 0;">Scan Resi / Barcode</label>
@@ -794,6 +806,7 @@
             </form>
         </div>
 
+        <!-- History/List Section -->
         <div>
             <div class="list-header">
                 <h2>Riwayat Scan</h2>
@@ -815,11 +828,13 @@
             </div>
         </div>
 
+        <!-- Footer -->
         <div style="text-align: center; margin-top: 2rem; margin-bottom: 1rem; font-size: 0.85rem; color: var(--ios-text-muted); opacity: 0.8;">
             &copy; 2026 <strong>Mbah Sugeng</strong>. All Rights Reserved.
         </div>
     </div>
 
+    <!-- Camera Modal (Bottom Sheet) -->
     <div class="modal-overlay" id="cameraModal">
         <div class="modal-card">
             <div class="modal-header">
@@ -832,6 +847,7 @@
         </div>
     </div>
 
+    <!-- QR Code / Slideshow Modal -->
     <div class="qr-modal-overlay" id="qrModalOverlay">
         <div class="qr-card-ios">
             <div class="qr-tag-ios" id="qrTagLabel">1 / 1</div>
@@ -853,6 +869,7 @@
         </div>
     </div>
 
+    <!-- iOS Custom Alert Dialog -->
     <div class="ios-alert-overlay" id="iosAlert">
         <div class="ios-alert-card">
             <h3 class="ios-alert-title" id="iosAlertTitle">Peringatan</h3>
@@ -1001,14 +1018,14 @@
 
                     if (type === 'success') {
                         oscillator.type = 'sine';
-                        oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); // High pitch beep
+                        oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); 
                         gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
                         oscillator.start();
                         gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
                         oscillator.stop(audioCtx.currentTime + 0.15);
                     } else if (type === 'error') {
                         oscillator.type = 'sawtooth';
-                        oscillator.frequency.setValueAtTime(150, audioCtx.currentTime); // Low buzz
+                        oscillator.frequency.setValueAtTime(150, audioCtx.currentTime); 
                         gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
                         oscillator.start();
                         gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
@@ -1019,7 +1036,6 @@
                 }
             }
 
-            // Voice generator (Female Indonesian)
             function playVoice(text) {
                 if (!soundEnabled) return;
                 try {
@@ -1033,7 +1049,6 @@
                 }
             }
 
-            // Custom iOS Alert Promise helper
             function showIosAlert(title, message) {
                 playBeep('error');
                 isAlertShowing = true;
@@ -1057,7 +1072,6 @@
                 });
             }
 
-            // Custom iOS Confirm Promise helper
             function showIosConfirm(title, message, confirmText = 'Hapus') {
                 return new Promise((resolve) => {
                     document.getElementById('iosAlertTitle').textContent = title;
@@ -1091,7 +1105,6 @@
                 });
             }
 
-            // Form Submit Scanner
             scanForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
@@ -1101,7 +1114,6 @@
 
                 if (!resi) return;
 
-                // Validasi awalan SPX atau ID
                 if (!resi.startsWith('SPX') && !resi.startsWith('ID')) {
                     playVoice('Resi tidak valid');
                     await showIosAlert('Resi Salah', '⚠️ PERINGATAN: Hanya resi dengan awalan "SPX" atau "ID" yang bisa di-scan!');
@@ -1110,7 +1122,6 @@
                     return;
                 }
 
-                // Anti Double Resi
                 const isDuplicate = records.some(r => r.resi === resi);
                 if (isDuplicate) {
                     playVoice('Paket Double');
@@ -1128,7 +1139,6 @@
 
             tripSelect.addEventListener('change', () => scanInput.focus());
 
-            // Auto-process pasted text in Scan Input
             scanInput.addEventListener('paste', async (e) => {
                 const text = (e.originalEvent || e).clipboardData.getData('text/plain');
                 const matches = text.match(/(?:SPX|ID)[A-Z0-9]+/gi);
