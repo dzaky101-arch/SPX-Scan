@@ -66,11 +66,42 @@
             padding-top: 20px; 
         }
 
+        /* Tata letak fleksibel untuk menyejajarkan judul dan logo di sampingnya */
+        .title-wrapper {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 0.5rem;
+            width: 100%;
+        }
+
         h1 {
             font-size: 1.8rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
             letter-spacing: -0.5px;
+            margin: 0;
+        }
+
+        /* Kontainer logo kecil lingkaran putih di samping judul agar kontras */
+        .title-logo-box {
+            width: 42px;
+            height: 42px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+
+        .title-logo-display {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
         }
 
         .subtitle {
@@ -688,6 +719,10 @@
           lockOverlay.innerHTML = `
             <div style="background:#1e293b; padding:32px; border-radius:16px; width:100%; max-width:380px; text-align:center; border:1px solid #334155; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
               
+              <div style="background:#ffffff; max-width:160px; margin:0 auto 20px; padding:8px 14px; border-radius:8px;">
+                <img src="image_082f7c.png" alt="SPX Express" style="width:100%; height:auto; display:block; object-fit:contain;">
+              </div>
+
               <h2 style="color:#10b981; margin-bottom:8px; font-size:22px;">Aplikasi Terkunci</h2>
               <p style="color:#94a3b8; font-size:14px; margin-bottom:24px;">Silakan masukkan PIN Aktivasi dari Admin.</p>
               
@@ -742,7 +777,14 @@
         <header style="position: relative;">
             <button id="btnThemeToggle" style="position: absolute; top: 10px; right: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border); z-index: 10;">☀️</button>
             
-            <h1>📦 Scan Paket SPX</h1>
+            <!-- JUDUL DAN LOGO SAMA TINGGI BERJAJAR DI SAMPING -->
+            <div class="title-wrapper">
+                <h1>📦 Scan Paket SPX</h1>
+                <div class="title-logo-box">
+                    <img src="image_082f7c.png" alt="SPX" class="title-logo-display">
+                </div>
+            </div>
+            
             <div class="subtitle">Optimasi Safari iPhone & Scanner</div>
             
             <div class="action-grid">
