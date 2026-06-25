@@ -1461,11 +1461,11 @@
             }
 
             // SHARE HELPER
-            async function processShareReturn(groupsToShare, dateStr) {
+            async function processShare(groupsToShare, dateStr, shareType = 'Return') {
                 let report = [];
                 for (const key in groupsToShare) {
                     const g = groupsToShare[key];
-                    report.push(`Return ${g.seller}`);
+                    report.push(`${shareType} ${g.seller}`);
                     report.push(dateStr);
                     report.push(`Trip ${g.trip}`);
                     
@@ -1473,7 +1473,12 @@
                     g.resis.forEach(item => {
                         report.push(`${item.noUrut}. ${item.resi}`);
                     });
-                    report.push('Keterangan: ');
+                    
+                    if (shareType === 'Pickup') {
+                        report.push('Keterangan: Paket sudah di-pickup');
+                    } else {
+                        report.push('Keterangan: ');
+                    }
                     report.push(''); // blank line
                 }
 
@@ -1482,12 +1487,12 @@
                 if (navigator.share) {
                     try {
                         const shareData = {
-                            title: 'Data Return',
+                            title: `Data ${shareType}`,
                             text: finalString
                         };
                         
                         if (typeof currentPhotoFile !== 'undefined' && currentPhotoFile && navigator.canShare) {
-                            const filesArray = [new File([currentPhotoFile], "bukti_return.jpg", { type: currentPhotoFile.type })];
+                            const filesArray = [new File([currentPhotoFile], `bukti_${shareType.toLowerCase()}.jpg`, { type: currentPhotoFile.type })];
                             if (navigator.canShare({ files: filesArray })) {
                                 shareData.files = filesArray;
                             }
@@ -1511,6 +1516,42 @@
                 }
             }
 
+            function showShareActionSheet(groups, dateStr, shareType) {
+                const actionSheet = document.getElementById('iosActionSheet');
+                const btnContainer = document.getElementById('iosActionSheetButtons');
+                btnContainer.innerHTML = '';
+                const groupKeys = Object.keys(groups);
+
+                // Option: Share Semua
+                const btnAll = document.createElement('button');
+                btnAll.className = 'ios-btn-ok';
+                btnAll.style.cssText = 'padding:14px; width:100%; font-size:16px; font-weight:600; border:none; border-bottom:0.5px solid rgba(255,255,255,0.15); background:none; color:#0a84ff; cursor:pointer; text-align:center;';
+                btnAll.textContent = 'Share Semua Seller';
+                btnAll.onclick = async () => {
+                    actionSheet.classList.remove('active');
+                    await processShare(groups, dateStr, shareType);
+                };
+                btnContainer.appendChild(btnAll);
+
+                // Option: Individual Sellers
+                groupKeys.forEach(key => {
+                    const g = groups[key];
+                    const btn = document.createElement('button');
+                    btn.className = 'ios-btn-ok';
+                    btn.style.cssText = 'padding:14px; width:100%; font-size:15px; border:none; border-bottom:0.5px solid rgba(255,255,255,0.15); background:none; color:var(--ios-text); cursor:pointer; text-align:center; display:flex; justify-content:center; align-items:center; gap:8px; flex-direction:column;';
+                    btn.innerHTML = `<span>${g.seller} (Trip ${g.trip})</span> <span style="font-size:12px; color:var(--ios-text-muted); background:var(--ios-card-bg-active); padding:2px 6px; border-radius:10px;">${g.resis.length} resi</span>`;
+                    btn.onclick = async () => {
+                        actionSheet.classList.remove('active');
+                        const singleGroup = {};
+                        singleGroup[key] = g;
+                        await processShare(singleGroup, dateStr, shareType);
+                    };
+                    btnContainer.appendChild(btn);
+                });
+
+                actionSheet.classList.add('active');
+            }
+
             document.getElementById('btnCancelActionSheet')?.addEventListener('click', () => {
                 document.getElementById('iosActionSheet').classList.remove('active');
             });
@@ -1526,43 +1567,11 @@
                 const groupKeys = Object.keys(groups);
 
                 if (groupKeys.length > 1) {
-                    const actionSheet = document.getElementById('iosActionSheet');
-                    const btnContainer = document.getElementById('iosActionSheetButtons');
-                    btnContainer.innerHTML = '';
-
-                    // Option: Share Semua
-                    const btnAll = document.createElement('button');
-                    btnAll.className = 'ios-btn-ok';
-                    btnAll.style.cssText = 'padding:14px; width:100%; font-size:16px; font-weight:600; border:none; border-bottom:0.5px solid rgba(255,255,255,0.15); background:none; color:#0a84ff; cursor:pointer; text-align:center;';
-                    btnAll.textContent = 'Share Semua Seller';
-                    btnAll.onclick = async () => {
-                        actionSheet.classList.remove('active');
-                        await processShareReturn(groups, dateStr);
-                    };
-                    btnContainer.appendChild(btnAll);
-
-                    // Option: Individual Sellers
-                    groupKeys.forEach(key => {
-                        const g = groups[key];
-                        const btn = document.createElement('button');
-                        btn.className = 'ios-btn-ok';
-                        btn.style.cssText = 'padding:14px; width:100%; font-size:15px; border:none; border-bottom:0.5px solid rgba(255,255,255,0.15); background:none; color:var(--ios-text); cursor:pointer; text-align:center; display:flex; justify-content:center; align-items:center; gap:8px; flex-direction:column;';
-                        btn.innerHTML = `<span>${g.seller} (Trip ${g.trip})</span> <span style="font-size:12px; color:var(--ios-text-muted); background:var(--ios-card-bg-active); padding:2px 6px; border-radius:10px;">${g.resis.length} resi</span>`;
-                        btn.onclick = async () => {
-                            actionSheet.classList.remove('active');
-                            const singleGroup = {};
-                            singleGroup[key] = g;
-                            await processShareReturn(singleGroup, dateStr);
-                        };
-                        btnContainer.appendChild(btn);
-                    });
-
-                    actionSheet.classList.add('active');
+                    showShareActionSheet(groups, dateStr, 'Return');
                     return;
                 }
 
-                // If only 1 seller, share immediately
-                await processShareReturn(groups, dateStr);
+                await processShare(groups, dateStr, 'Return');
             });
 
             // SHARE PICKUP TO WHATSAPP
@@ -1589,61 +1598,20 @@
 
             if (btnSharePickup) {
                 btnSharePickup.addEventListener('click', async () => {
-                    const currentTrip = tripSelect.value;
-                    const currentSeller = document.getElementById('sellerInput').value.trim() || '-';
-                    
-                    const groupRecords = records.filter(r => r.trip === currentTrip && (r.seller || '-') === currentSeller);
-                    
-                    if (groupRecords.length === 0) {
-                        showIosAlert('Data Kosong', `Tidak ada data untuk Seller "${currentSeller}" di Trip ${currentTrip}.`);
+                    if (records.length === 0) {
+                        showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
                         return;
                     }
 
-                    const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-                    const now = new Date();
-                    const dateStr = `${now.getDate()} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+                    const { groups, dateStr } = generateReportData();
+                    const groupKeys = Object.keys(groups);
 
-                    let report = [];
-                    report.push(`Pickup ${currentSeller}`);
-                    report.push(dateStr);
-                    report.push(`Trip ${currentTrip}`);
-                    
-                    groupRecords.sort((a,b) => a.noUrut - b.noUrut);
-                    groupRecords.forEach(item => {
-                        report.push(`${item.noUrut}. ${item.resi}`);
-                    });
-                    report.push('Keterangan: Paket sudah di-pickup');
-                    
-                    const finalString = report.join('\n').trim();
-
-                    // Web Share API
-                    if (navigator.share) {
-                        try {
-                            const shareData = {
-                                title: 'Daftar Pickup',
-                                text: finalString
-                            };
-                            
-                            if (currentPhotoFile && navigator.canShare) {
-                                const filesArray = [new File([currentPhotoFile], "bukti_pickup.jpg", { type: currentPhotoFile.type })];
-                                if (navigator.canShare({ files: filesArray })) {
-                                    shareData.files = filesArray;
-                                }
-                            }
-                            
-                            await navigator.share(shareData);
-                            // Clear photo after successful share
-                            currentPhotoFile = null;
-                            photoLabel.innerHTML = '📷';
-                            photoInput.value = '';
-                        } catch (err) {
-                            if (err.name !== 'AbortError') {
-                                copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
-                            }
-                        }
-                    } else {
-                        copyTextToClipboard(finalString, 'Daftar Pickup disalin! (Peramban tidak mendukung fitur Share gambar)');
+                    if (groupKeys.length > 1) {
+                        showShareActionSheet(groups, dateStr, 'Pickup');
+                        return;
                     }
+
+                    await processShare(groups, dateStr, 'Pickup');
                 });
             }
 
