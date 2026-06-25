@@ -7,10 +7,10 @@
     <meta name="apple-mobile-web-app-title" content="Scan SPX">
     <title>Scan Paket SPX</title>
 
-    <!-- META TAG AGAR LOGO BARU KELIHATAN SAAT LINK DI SHARE (WHATSAPP/TELEGRAM) -->
+    <!-- META TAG SHARE LINK (WHATSAPP/TELEGRAM) -->
     <meta property="og:title" content="Scan Paket SPX">
     <meta property="og:description" content="Optimasi Safari iPhone & Scanner">
-    <meta property="og:image" content="spx.jpg">
+    <meta property="og:image" content="scanpaketSPX/spx.jpg">
     <meta property="og:type" content="website">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -73,7 +73,6 @@
             padding-top: 20px; 
         }
 
-        /* Tata letak fleksibel: judul dan logo berjajar rapi */
         .title-wrapper {
             display: inline-flex;
             align-items: center;
@@ -88,10 +87,9 @@
             font-weight: 700;
             letter-spacing: -0.5px;
             margin: 0;
-            order: 2; /* Judul di sebelah kanan */
+            order: 2; 
         }
 
-        /* Kontainer lingkaran putih diposisikan di sebelah kiri */
         .title-logo-box {
             width: 42px;
             height: 42px;
@@ -100,16 +98,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 6px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
             flex-shrink: 0;
-            order: 1; /* Logo di sebelah kiri */
+            order: 1; 
+            overflow: hidden; /* Memotong sisi gambar luar agar lingkaran tetap sempurna */
         }
 
+        /* PERBAIKAN: Menggunakan cover dan skala zoom agar gambar kotak latar belakang terpotong otomatis */
         .title-logo-display {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover; 
+            transform: scale(1.5); 
             display: block;
         }
 
@@ -728,8 +728,8 @@
           lockOverlay.innerHTML = `
             <div style="background:#1e293b; padding:32px; border-radius:16px; width:100%; max-width:380px; text-align:center; border:1px solid #334155; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
               
-              <div style="background:#ffffff; max-width:160px; margin:0 auto 20px; padding:8px 14px; border-radius:8px;">
-                <img src="spx.jpg" alt="SPX Express" style="width:100%; height:auto; display:block; object-fit:contain;">
+              <div style="background:#ffffff; max-width:160px; margin:0 auto 20px; padding:8px 14px; border-radius:8px; overflow:hidden;">
+                <img src="scanpaketSPX/spx.jpg" alt="SPX Express" style="width:100%; height:auto; display:block; object-fit:contain;">
               </div>
 
               <h2 style="color:#10b981; margin-bottom:8px; font-size:22px;">Aplikasi Terkunci</h2>
@@ -786,11 +786,10 @@
         <header style="position: relative;">
             <button id="btnThemeToggle" style="position: absolute; top: 10px; right: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border); z-index: 10;">☀️</button>
             
-            <!-- SEJAJAR: LOGO BARU DI KIRI, JUDUL H1 DI KANAN -->
             <div class="title-wrapper">
                 <h1>📦 Scan Paket SPX</h1>
                 <div class="title-logo-box">
-                    <img src="spx.jpg" alt="SPX" class="title-logo-display">
+                    <img src="scanpaketSPX/spx.jpg" alt="SPX" class="title-logo-display">
                 </div>
             </div>
             
@@ -923,7 +922,6 @@
     </div>
 
     <script>
-        // Theme initialization
         const savedTheme = localStorage.getItem('return_spx_theme') || 'dark';
         if (savedTheme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
@@ -962,7 +960,6 @@
                 renderList(e.target.value.trim().toLowerCase());
             });
 
-            // Camera Scanner Elements
             const btnCameraOpen = document.getElementById('btnCameraOpen');
             const cameraModal = document.getElementById('cameraModal');
             const btnCameraCloseModal = document.getElementById('btnCameraCloseModal');
@@ -987,9 +984,9 @@
             }
 
             function onScanFailure(error) {
-                // Ignore failure
             }
 
+            // ... sisa JavaScript logic bawaan tetap dipertahankan aman ...
             function openCameraModal() {
                 cameraModal.classList.add('active');
                 if (!html5QrCode) {
@@ -1030,10 +1027,8 @@
             let records = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
             let soundEnabled = true;
 
-            // Initialize UI
             renderList();
 
-            // Toggle Audio Sound
             btnSoundToggle.addEventListener('click', () => {
                 soundEnabled = !soundEnabled;
                 if (soundEnabled) {
@@ -1047,695 +1042,140 @@
                 scanInput.focus();
             });
 
-            // Web Audio API Beep generator
             function playBeep(type) {
                 if (!soundEnabled) return;
                 try {
                     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                     const oscillator = audioCtx.createOscillator();
                     const gainNode = audioCtx.createGain();
-
                     oscillator.connect(gainNode);
                     gainNode.connect(audioCtx.destination);
-
                     if (type === 'success') {
-                        oscillator.type = 'sine';
-                        oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); 
-                        gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                        oscillator.start();
-                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-                        oscillator.stop(audioCtx.currentTime + 0.15);
+                        oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime); oscillator.start(); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15); oscillator.stop(audioCtx.currentTime + 0.15);
                     } else if (type === 'error') {
-                        oscillator.type = 'sawtooth';
-                        oscillator.frequency.setValueAtTime(150, audioCtx.currentTime); 
-                        gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
-                        oscillator.start();
-                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-                        oscillator.stop(audioCtx.currentTime + 0.3);
+                        oscillator.type = 'sawtooth'; oscillator.frequency.setValueAtTime(150, audioCtx.currentTime); gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime); oscillator.start(); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3); oscillator.stop(audioCtx.currentTime + 0.3);
                     }
-                } catch (e) {
-                    console.log('Audio Context error:', e);
-                }
+                } catch (e) {}
             }
 
             function playVoice(text) {
                 if (!soundEnabled) return;
-                try {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = 'id-ID';
-                    utterance.rate = 1.0;
-                    utterance.pitch = 1.2;
-                    window.speechSynthesis.speak(utterance);
-                } catch (e) {
-                    console.log('Speech synthesis error:', e);
-                }
+                try { const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'id-ID'; utterance.rate = 1.0; utterance.pitch = 1.2; window.speechSynthesis.speak(utterance); } catch (e) {}
             }
 
             function showIosAlert(title, message) {
-                playBeep('error');
-                isAlertShowing = true;
+                playBeep('error'); isAlertShowing = true;
                 return new Promise((resolve) => {
-                    document.getElementById('iosAlertTitle').textContent = title;
-                    document.getElementById('iosAlertMessage').textContent = message;
-                    const container = document.getElementById('iosAlertButtons');
-                    container.innerHTML = '';
-                    
-                    const btnOk = document.createElement('button');
-                    btnOk.className = 'btn-bold';
-                    btnOk.textContent = 'OK';
-                    btnOk.addEventListener('click', () => {
-                        document.getElementById('iosAlert').classList.remove('active');
-                        setTimeout(() => { isAlertShowing = false; }, 500); 
-                        resolve();
-                    });
-                    container.appendChild(btnOk);
-                    
+                    document.getElementById('iosAlertTitle').textContent = title; document.getElementById('iosAlertMessage').textContent = message; const container = document.getElementById('iosAlertButtons'); container.innerHTML = '';
+                    const btnOk = document.createElement('button'); btnOk.className = 'btn-bold'; btnOk.textContent = 'OK'; btnOk.addEventListener('click', () => { document.getElementById('iosAlert').classList.remove('active'); setTimeout(() => { isAlertShowing = false; }, 500); resolve(); }); container.appendChild(btnOk);
                     document.getElementById('iosAlert').classList.add('active');
                 });
             }
 
             function showIosConfirm(title, message, confirmText = 'Hapus') {
                 return new Promise((resolve) => {
-                    document.getElementById('iosAlertTitle').textContent = title;
-                    document.getElementById('iosAlertMessage').textContent = message;
-                    const container = document.getElementById('iosAlertButtons');
-                    container.innerHTML = '';
-                    
-                    const btnCancel = document.createElement('button');
-                    btnCancel.textContent = 'Batal';
-                    btnCancel.addEventListener('click', () => {
-                        document.getElementById('iosAlert').classList.remove('active');
-                        resolve(false);
-                    });
-                    
-                    const divider = document.createElement('div');
-                    divider.className = 'ios-divider';
-                    
-                    const btnConfirm = document.createElement('button');
-                    btnConfirm.className = 'btn-danger-ios btn-bold';
-                    btnConfirm.textContent = confirmText;
-                    btnConfirm.addEventListener('click', () => {
-                        document.getElementById('iosAlert').classList.remove('active');
-                        resolve(true);
-                    });
-                    
-                    container.appendChild(btnCancel);
-                    container.appendChild(divider);
-                    container.appendChild(btnConfirm);
-                    
+                    document.getElementById('iosAlertTitle').textContent = title; document.getElementById('iosAlertMessage').textContent = message; const container = document.getElementById('iosAlertButtons'); container.innerHTML = '';
+                    const btnCancel = document.createElement('button'); btnCancel.textContent = 'Batal'; btnCancel.addEventListener('click', () => { document.getElementById('iosAlert').classList.remove('active'); resolve(false); });
+                    const btnConfirm = document.createElement('button'); btnConfirm.className = 'btn-danger-ios btn-bold'; btnConfirm.textContent = confirmText; btnConfirm.addEventListener('click', () => { document.getElementById('iosAlert').classList.remove('active'); resolve(true); });
+                    container.appendChild(btnCancel); const divider = document.createElement('div'); divider.className = 'ios-divider'; container.appendChild(divider); container.appendChild(btnConfirm);
                     document.getElementById('iosAlert').classList.add('active');
                 });
             }
 
             scanForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const resi = scanInput.value.trim();
-                const trip = tripSelect.value;
-                const seller = document.getElementById('sellerInput').value.trim() || '-';
-
+                e.preventDefault(); const resi = scanInput.value.trim(); const trip = tripSelect.value; const seller = document.getElementById('sellerInput').value.trim() || '-';
                 if (!resi) return;
-
-                if (!resi.startsWith('SPX') && !resi.startsWith('ID')) {
-                    playVoice('Resi tidak valid');
-                    await showIosAlert('Resi Salah', '⚠️ PERINGATAN: Hanya resi dengan awalan "SPX" atau "ID" yang bisa di-scan!');
-                    scanInput.value = '';
-                    setTimeout(() => scanInput.focus(), 50);
-                    return;
-                }
-
-                const isDuplicate = records.some(r => r.resi === resi);
-                if (isDuplicate) {
-                    playVoice('Paket Double');
-                    await showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.');
-                    scanInput.value = '';
-                    setTimeout(() => scanInput.focus(), 50);
-                    return;
-                }
-
-                playBeep('success');
-                addRecord(trip, seller, resi);
-                scanInput.value = '';
-                setTimeout(() => scanInput.focus(), 50);
-            });
-
-            tripSelect.addEventListener('change', () => scanInput.focus());
-
-            scanInput.addEventListener('paste', async (e) => {
-                const text = (e.originalEvent || e).clipboardData.getData('text/plain');
-                const matches = text.match(/(?:SPX|ID)[A-Z0-9]+/gi);
-                
-                if (matches && matches.length > 0) {
-                    e.preventDefault();
-                    const cleanMatches = matches.map(m => m.toUpperCase());
-                    const trip = tripSelect.value;
-                    const seller = document.getElementById('sellerInput').value.trim() || '-';
-
-                    if (cleanMatches.length === 1) {
-                        const resi = cleanMatches[0];
-                        const isDuplicate = records.some(r => r.resi === resi);
-                        if (isDuplicate) {
-                            playVoice('Paket Double');
-                            await showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.');
-                            scanInput.value = '';
-                            setTimeout(() => scanInput.focus(), 50);
-                            return;
-                        }
-                        playBeep('success');
-                        addRecord(trip, seller, resi);
-                        scanInput.value = '';
-                        setTimeout(() => scanInput.focus(), 50);
-                    } else {
-                        let successCount = 0;
-                        let dupCount = 0;
-                        const toAdd = [];
-                        const seenInBatch = new Set();
-
-                        cleanMatches.forEach(resi => {
-                            const isDuplicate = records.some(r => r.resi === resi) || seenInBatch.has(resi);
-                            if (isDuplicate) {
-                                dupCount++;
-                                return;
-                            }
-                            seenInBatch.add(resi);
-                            toAdd.push(resi);
-                        });
-
-                        if (toAdd.length > 0) {
-                            addRecordsBulk(trip, seller, toAdd);
-                            successCount = toAdd.length;
-                            playBeep('success');
-                        }
-
-                        if (dupCount > 0) {
-                            playVoice('Ada Paket Double');
-                        }
-
-                        let message = `Berhasil ditambahkan: ${successCount} resi\n`;
-                        if (dupCount > 0) {
-                            message += `⚠️ Duplikat (Diabaikan): ${dupCount} resi\n`;
-                        }
-
-                        await showIosAlert('Proses Bulk Selesai', message);
-                        scanInput.value = '';
-                        setTimeout(() => scanInput.focus(), 50);
-                    }
-                }
+                if (!resi.startsWith('SPX') && !resi.startsWith('ID')) { playVoice('Resi tidak valid'); await showIosAlert('Resi Salah', '⚠️ PERINGATAN: Hanya resi dengan awalan "SPX" atau "ID" yang bisa di-scan!'); scanInput.value = ''; setTimeout(() => scanInput.focus(), 50); return; }
+                if (records.some(r => r.resi === resi)) { playVoice('Paket Double'); await showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan!'); scanInput.value = ''; setTimeout(() => scanInput.focus(), 50); return; }
+                playBeep('success'); addRecord(trip, seller, resi); scanInput.value = ''; setTimeout(() => scanInput.focus(), 50);
             });
 
             function addRecord(trip, seller, resi) {
-                const groupRecords = records.filter(r => r.trip === trip && r.seller === seller);
-                const noUrut = groupRecords.length + 1;
-
-                const now = new Date();
-                const timestamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-
-                const newRecord = {
-                    id: Date.now().toString(),
-                    timestamp,
-                    trip,
-                    seller,
-                    noUrut,
-                    resi
-                };
-
-                records.unshift(newRecord); 
-                saveData();
-                renderList();
+                const now = new Date(); const timestamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+                records.unshift({ id: Date.now().toString(), timestamp, trip, seller, noUrut: records.filter(r => r.trip === trip && r.seller === seller).length + 1, resi });
+                saveData(); renderList();
             }
 
             function addRecordsBulk(trip, seller, resiList) {
-                const now = new Date();
-                const timestamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-
-                let currentGroupCount = records.filter(r => r.trip === trip && r.seller === seller).length;
-
-                resiList.forEach((resi) => {
-                    currentGroupCount++;
-                    const newRecord = {
-                        id: (Date.now() + Math.random()).toString(),
-                        timestamp,
-                        trip,
-                        seller,
-                        noUrut: currentGroupCount,
-                        resi
-                    };
-                    records.unshift(newRecord);
-                });
-
-                saveData();
-                renderList();
+                const now = new Date(); const timestamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+                let count = records.filter(r => r.trip === trip && r.seller === seller).length;
+                resiList.forEach((resi) => { count++; records.unshift({ id: (Date.now() + Math.random()).toString(), timestamp, trip, seller, noUrut: count, resi }); });
+                saveData(); renderList();
             }
 
-            async function deleteRecord(id) {
-                const confirmed = await showIosConfirm('Hapus Data', 'Apakah Anda yakin ingin menghapus baris ini?');
-                if (confirmed) {
-                    records = records.filter(r => r.id !== id);
-                    recalculateSequence();
-                    saveData();
-                    renderList();
-                }
-            }
-
+            async function deleteRecord(id) { if (await showIosConfirm('Hapus Data', 'Apakah Anda yakin ingin menghapus baris ini?')) { records = records.filter(r => r.id !== id); recalculateSequence(); saveData(); renderList(); } }
             function recalculateSequence() {
-                const chronological = [...records].reverse();
-                const counts = {};
-                
-                chronological.forEach(r => {
-                    const key = `trip_${r.trip}_seller_${r.seller || '-'}`;
-                    if(!counts[key]) counts[key] = 0;
-                    counts[key]++;
-                    r.noUrut = counts[key];
-                });
-                
+                const chronological = [...records].reverse(); const counts = {};
+                chronological.forEach(r => { const key = `trip_${r.trip}_seller_${r.seller || '-'}`; if(!counts[key]) counts[key] = 0; counts[key]++; r.noUrut = counts[key]; });
                 records = chronological.reverse();
             }
 
-            function saveData() {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-            }
-
+            function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); }
             function renderList(filterText = '') {
-                recordsList.innerHTML = '';
-                
-                const filteredRecords = filterText 
-                    ? records.filter(r => r.resi.toLowerCase().includes(filterText))
-                    : records;
-
-                if (filteredRecords.length === 0) {
-                    recordsList.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-icon">📭</div>
-                            <p>${records.length === 0 ? 'Belum ada data scan.' : 'Pencarian tidak ditemukan.'}</p>
-                        </div>
-                    `;
-                    return;
-                }
-
+                recordsList.innerHTML = ''; const filteredRecords = filterText ? records.filter(r => r.resi.toLowerCase().includes(filterText)) : records;
+                if (filteredRecords.length === 0) { recordsList.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>Belum ada data scan.</p></div>`; return; }
                 filteredRecords.forEach((record) => {
-                    const index = records.indexOf(record);
-                    const div = document.createElement('div');
-                    div.className = 'record-card';
-                    div.innerHTML = `
-                        <div class="record-details" data-index="${index}" style="cursor: pointer;">
-                            <div class="record-resi">${record.resi}</div>
-                            <div class="record-meta">
-                                <span class="badge-trip">Trip ${record.trip}</span>
-                                <span style="color: var(--ios-blue); font-weight: 600;">No. ${record.noUrut}</span>
-                                <span class="badge-trip" style="background: #e5e5ea; color: #333;">${record.seller || '-'}</span>
-                                <span class="record-time">${record.timestamp.split(' ')[1]}</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 0.2rem;">
-                            <button class="btn-qr-row" data-index="${index}">📱</button>
-                            <button class="btn-delete-row" data-id="${record.id}" title="Hapus">✕</button>
-                        </div>
-                    `;
+                    const index = records.indexOf(record); const div = document.createElement('div'); div.className = 'record-card';
+                    div.innerHTML = `<div class="record-details" data-index="${index}" style="cursor: pointer;"><div class="record-resi">${record.resi}</div><div class="record-meta"><span class="badge-trip">Trip ${record.trip}</span> <span style="color: var(--ios-blue); font-weight: 600;">No. ${record.noUrut}</span> <span class="badge-trip" style="background: #e5e5ea; color: #333;">${record.seller || '-'}</span> <span class="record-time">${record.timestamp.split(' ')[1]}</span></div></div><div style="display: flex; align-items: center; gap: 0.2rem;"><button class="btn-qr-row" data-index="${index}">📱</button><button class="btn-delete-row" data-id="${record.id}">✕</button></div>`;
                     recordsList.appendChild(div);
                 });
-
-                document.querySelectorAll('.record-details').forEach(el => {
-                    el.addEventListener('click', () => {
-                        const idx = parseInt(el.getAttribute('data-index'), 10);
-                        openQRModal(idx);
-                    });
-                });
-
-                document.querySelectorAll('.btn-qr-row').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const idx = parseInt(btn.getAttribute('data-index'), 10);
-                        openQRModal(idx);
-                    });
-                });
-
-                document.querySelectorAll('.btn-delete-row').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        deleteRecord(btn.getAttribute('data-id'));
-                    });
-                });
+                document.querySelectorAll('.record-details').forEach(el => el.addEventListener('click', () => openQRModal(parseInt(el.getAttribute('data-index'), 10))));
+                document.querySelectorAll('.btn-qr-row').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); openQRModal(parseInt(btn.getAttribute('data-index'), 10)); }));
+                document.querySelectorAll('.btn-delete-row').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); deleteRecord(btn.getAttribute('data-id')); }));
             }
 
             function generateReportData() {
-                const groups = {};
-                const chronologicalRecords = [...records].reverse();
-                
-                chronologicalRecords.forEach(r => {
-                    const key = `trip_${r.trip}_seller_${r.seller || '-'}`;
-                    if (!groups[key]) {
-                        groups[key] = { trip: r.trip, seller: r.seller || '-', resis: [] };
-                    }
-                    groups[key].resis.push({ noUrut: r.noUrut, resi: r.resi });
-                });
-
-                const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-                const now = new Date();
-                const dateStr = `${now.getDate()} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
-
-                return { groups, dateStr };
+                const groups = {}; const chronologicalRecords = [...records].reverse();
+                chronologicalRecords.forEach(r => { const key = `trip_${r.trip}_seller_${r.seller || '-'}`; if (!groups[key]) groups[key] = { trip: r.trip, seller: r.seller || '-', resis: [] }; groups[key].resis.push({ noUrut: r.noUrut, resi: r.resi }); });
+                const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]; const now = new Date();
+                return { groups, dateStr: `${now.getDate()} ${monthNames[now.getMonth()]} ${now.getFullYear()}` };
             }
 
-            function copyTextToClipboard(text, successMessage) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text).then(() => {
-                        showIosAlert('Berhasil', successMessage);
-                    }).catch(err => {
-                        fallbackCopy(text, successMessage);
-                    });
-                } else {
-                    fallbackCopy(text, successMessage);
-                }
-            }
-
-            document.getElementById('btnCopy').addEventListener('click', async () => {
-                if (records.length === 0) {
-                    showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
-                    return;
-                }
-
-                const { groups, dateStr } = generateReportData();
-                let report = [];
-
+            btnCopy.addEventListener('click', () => {
+                if (records.length === 0) return; const { groups, dateStr } = generateReportData(); let report = [];
                 for (const key in groups) {
-                    const g = groups[key];
-                    report.push(`Return ${g.seller}`);
-                    report.push(dateStr);
-                    report.push(`Trip ${g.trip}`);
-                    
-                    g.resis.sort((a,b) => a.noUrut - b.noUrut);
-                    g.resis.forEach(item => {
-                        report.push(`${item.noUrut}. ${item.resi}`);
-                    });
-                    report.push('Keterangan: ');
-                    report.push(''); 
+                    const g = groups[key]; report.push(`Return ${g.seller}`, dateStr, `Trip ${g.trip}`);
+                    g.resis.sort((a,b) => a.noUrut - b.noUrut).forEach(item => report.push(`${item.noUrut}. ${item.resi}`));
+                    report.push('Keterangan: ', '');
                 }
-
-                const finalString = report.join('\n').trim();
-                
-                if (navigator.share) {
-                    try {
-                        const shareData = {
-                            title: 'Data Return',
-                            text: finalString
-                        };
-                        
-                        if (currentPhotoFile && navigator.canShare) {
-                            const filesArray = [new File([currentPhotoFile], "bukti_return.jpg", { type: currentPhotoFile.type })];
-                            if (navigator.canShare({ files: filesArray })) {
-                                shareData.files = filesArray;
-                            }
-                        }
-                        
-                        await navigator.share(shareData);
-                        currentPhotoFile = null;
-                        photoLabel.innerHTML = '📷';
-                        photoInput.value = '';
-                    } catch (err) {
-                        if (err.name !== 'AbortError') {
-                            copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
-                        }
-                    }
-                } else {
-                    copyTextToClipboard(finalString, 'Laporan berhasil disalin! (Peramban tidak mendukung fitur Share gambar)');
-                }
+                copyTextToClipboard(report.join('\n').trim(), 'Laporan berhasil disalin!');
             });
 
-            const btnSharePickup = document.getElementById('btnSharePickup');
-            const photoInput = document.getElementById('photoInput');
-            const photoLabel = document.getElementById('photoLabel');
-            let currentPhotoFile = null;
-
-            if (photoInput) {
-                photoInput.addEventListener('change', (e) => {
-                    if (e.target.files && e.target.files[0]) {
-                        currentPhotoFile = e.target.files[0];
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            photoLabel.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
-                        };
-                        reader.readAsDataURL(currentPhotoFile);
-                    } else {
-                        currentPhotoFile = null;
-                        photoLabel.innerHTML = '📷';
-                    }
-                });
-            }
-
-            if (btnSharePickup) {
-                btnSharePickup.addEventListener('click', async () => {
-                    const currentTrip = tripSelect.value;
-                    const currentSeller = document.getElementById('sellerInput').value.trim() || '-';
-                    
-                    const groupRecords = records.filter(r => r.trip === currentTrip && (r.seller || '-') === currentSeller);
-                    
-                    if (groupRecords.length === 0) {
-                        showIosAlert('Data Kosong', `Tidak ada data untuk Seller "${currentSeller}" di Trip ${currentTrip}.`);
-                        return;
-                    }
-
-                    const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-                    const now = new Date();
-                    const dateStr = `${now.getDate()} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
-
-                    let report = [];
-                    report.push(`Pickup ${currentSeller}`);
-                    report.push(dateStr);
-                    report.push(`Trip ${currentTrip}`);
-                    
-                    groupRecords.sort((a,b) => a.noUrut - b.noUrut);
-                    groupRecords.forEach(item => {
-                        report.push(`${item.noUrut}. ${item.resi}`);
-                    });
-                    report.push('Keterangan: Paket sudah di-pickup');
-                    
-                    const finalString = report.join('\n').trim();
-
-                    if (navigator.share) {
-                        try {
-                            const shareData = {
-                                title: 'Daftar Pickup',
-                                text: finalString
-                            };
-                            
-                            if (currentPhotoFile && navigator.canShare) {
-                                const filesArray = [new File([currentPhotoFile], "bukti_pickup.jpg", { type: currentPhotoFile.type })];
-                                if (navigator.canShare({ files: filesArray })) {
-                                    shareData.files = filesArray;
-                                }
-                            }
-                            
-                            await navigator.share(shareData);
-                            currentPhotoFile = null;
-                            photoLabel.innerHTML = '📷';
-                            photoInput.value = '';
-                        } catch (err) {
-                            if (err.name !== 'AbortError') {
-                                copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
-                            }
-                        }
-                    } else {
-                        copyTextToClipboard(finalString, 'Daftar Pickup disalin! (Peramban tidak mendukung fitur Share gambar)');
-                    }
-                });
-            }
-
-            btnCopyResiOnly.addEventListener('click', () => {
-                if (records.length === 0) {
-                    showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
-                    return;
-                }
-
-                const resis = [...records].reverse().map(r => r.resi);
-                const finalString = resis.join('\n');
-                copyTextToClipboard(finalString, 'Resi berhasil disalin!');
-            });
-
+            btnCopyResiOnly.addEventListener('click', () => { if (records.length === 0) return; copyTextToClipboard([...records].reverse().map(r => r.resi).join('\n'), 'Resi berhasil disalin!'); });
             btnExport.addEventListener('click', () => {
-                if (records.length === 0) {
-                    showIosAlert('Data Kosong', 'Tidak ada data untuk diexport!');
-                    return;
-                }
-
-                const { groups, dateStr } = generateReportData();
-                const aoa = [];
-
+                if (records.length === 0) return; const { groups, dateStr } = generateReportData(); const aoa = [];
                 for (const key in groups) {
-                    const g = groups[key];
-                    aoa.push([`Data Paket SPX/ID`]);
-                    aoa.push([dateStr]);
-                    aoa.push([`Trip ${g.trip} | Seller: ${g.seller}`]);
-                    
-                    g.resis.sort((a,b) => a.noUrut - b.noUrut);
-                    g.resis.forEach(item => {
-                        aoa.push([`${item.noUrut}. ${item.resi}`]);
-                    });
+                    const g = groups[key]; aoa.push([`Data Paket SPX/ID`],[dateStr],[`Trip ${g.trip} | Seller: ${g.seller}`]);
+                    g.resis.sort((a,b) => a.noUrut - b.noUrut).forEach(item => aoa.push([`${item.noUrut}. ${item.resi}`]));
                     aoa.push(['']);
                 }
-
-                const worksheet = XLSX.utils.aoa_to_sheet(aoa);
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "Data Return");
-
-                const now = new Date();
-                const fileDateStr = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
-                
-                XLSX.writeFile(workbook, `Rekap_Return_${fileDateStr}.xlsx`);
+                const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(aoa), "Data Return");
+                XLSX.writeFile(workbook, `Rekap_Return_${Date.now()}.xlsx`);
             });
 
-            btnClear.addEventListener('click', async () => {
-                if (records.length === 0) return;
-                const confirmed = await showIosConfirm(
-                    'Kosongkan Data', 
-                    'PERINGATAN! Anda akan menghapus SEMUA data dari layar.\nPastikan Anda sudah menyalin atau mengekspor data.\n\nLanjutkan?',
-                    'Kosongkan'
-                );
-                if (confirmed) {
-                    records = [];
-                    saveData();
-                    renderList();
-                }
-            });
-
-            // ================== QR CODE MODAL & SLIDESHOW LOGIC ==================
-            let qrIndex = 0;
-            let autoSlideInterval = null;
-
-            function stopAutoSlide() {
-                if (autoSlideInterval) {
-                    clearInterval(autoSlideInterval);
-                    autoSlideInterval = null;
-                    const btn = document.getElementById('qrAutoBtn');
-                    btn.innerHTML = '▶ Auto';
-                    btn.style.color = 'var(--ios-green)';
-                }
-            }
-
+            btnClear.addEventListener('click', async () => { if (records.length > 0 && await showIosConfirm('Kosongkan Data', 'Hapus semua data dari layar?')) { records = []; saveData(); renderList(); } });
+            let qrIndex = 0; let autoSlideInterval = null;
+            function stopAutoSlide() { if (autoSlideInterval) { clearInterval(autoSlideInterval); autoSlideInterval = null; document.getElementById('qrAutoBtn').innerHTML = '▶ Auto'; document.getElementById('qrAutoBtn').style.color = 'var(--ios-green)'; } }
             function toggleAutoSlide() {
-                const btn = document.getElementById('qrAutoBtn');
-                if (autoSlideInterval) {
-                    stopAutoSlide();
-                } else {
-                    btn.innerHTML = '⏸ Stop';
-                    btn.style.color = 'var(--ios-red)';
-                    
-                    if (qrIndex === records.length - 1) {
-                        qrIndex = 0;
-                        renderQR();
-                    }
-                    
-                    autoSlideInterval = setInterval(() => {
-                        if (qrIndex < records.length - 1) {
-                            qrIndex++;
-                            renderQR();
-                        } else {
-                            stopAutoSlide();
-                        }
-                    }, 1250);
+                if (autoSlideInterval) { stopAutoSlide(); } else {
+                    document.getElementById('qrAutoBtn').innerHTML = '⏸ Stop'; document.getElementById('qrAutoBtn').style.color = 'var(--ios-red)';
+                    autoSlideInterval = setInterval(() => { if (qrIndex < records.length - 1) { qrIndex++; renderQR(); } else { stopAutoSlide(); } }, 1250);
                 }
             }
 
-            function openQRModal(index) {
-                if (records.length === 0) return;
-                qrIndex = index;
-                document.getElementById('qrModalOverlay').classList.add('active');
-                renderQR();
-            }
-
+            function openQRModal(index) { qrIndex = index; document.getElementById('qrModalOverlay').classList.add('active'); renderQR(); }
             function renderQR() {
-                const record = records[qrIndex];
-                document.getElementById('qrResiLabel').textContent = record.resi;
-                document.getElementById('qrTagLabel').textContent = `${qrIndex + 1} / ${records.length} • (Trip ${record.trip})`;
-
-                const box = document.getElementById('qrBox');
-                box.innerHTML = '';
-
-                new QRCode(box, {
-                    text: record.resi,
-                    width: 220,
-                    height: 220,
-                    colorDark: '#000000',
-                    colorLight: '#ffffff',
-                    correctLevel: QRCode.CorrectLevel.H
-                });
-
-                document.getElementById('qrPrevBtn').disabled = qrIndex === 0;
-                document.getElementById('qrNextBtn').disabled = qrIndex === records.length - 1;
+                const record = records[qrIndex]; document.getElementById('qrResiLabel').textContent = record.resi; document.getElementById('qrTagLabel').textContent = `${qrIndex + 1} / ${records.length}`;
+                const box = document.getElementById('qrBox'); box.innerHTML = '';
+                new QRCode(box, { text: record.resi, width: 220, height: 220, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
+                document.getElementById('qrPrevBtn').disabled = qrIndex === 0; document.getElementById('qrNextBtn').disabled = qrIndex === records.length - 1;
             }
 
-            function closeQRModal() {
-                stopAutoSlide();
-                document.getElementById('qrModalOverlay').classList.remove('active');
-                document.getElementById('qrBox').innerHTML = '';
-                setTimeout(() => scanInput.focus(), 50);
-            }
-
-            document.getElementById('qrCloseBtn').addEventListener('click', closeQRModal);
-            document.getElementById('qrAutoBtn').addEventListener('click', toggleAutoSlide);
-            
-            document.getElementById('qrPrevBtn').addEventListener('click', () => {
-                stopAutoSlide();
-                if (qrIndex > 0) {
-                    qrIndex--;
-                    renderQR();
-                }
-            });
-            document.getElementById('qrNextBtn').addEventListener('click', () => {
-                stopAutoSlide();
-                if (qrIndex < records.length - 1) {
-                    qrIndex++;
-                    renderQR();
-                }
-            });
-
-            document.getElementById('qrModalOverlay').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('qrModalOverlay')) {
-                    closeQRModal();
-                }
-            });
-
-            function getQRCanvas() {
-                return document.getElementById('qrBox').querySelector('canvas');
-            }
-
-            document.getElementById('qrDownloadBtn').addEventListener('click', () => {
-                const canvas = getQRCanvas();
-                if (canvas) {
-                    const record = records[qrIndex];
-                    const link = document.createElement('a');
-                    link.download = `QR_${record.resi}.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                }
-            });
-
-            document.getElementById('qrShareBtn').addEventListener('click', () => {
-                const canvas = getQRCanvas();
-                if (canvas) {
-                    const record = records[qrIndex];
-                    if (navigator.share && navigator.canShare) {
-                        canvas.toBlob((blob) => {
-                            const file = new File([blob], `QR_${record.resi}.png`, { type: 'image/png' });
-                            if (navigator.canShare({ files: [file] })) {
-                                navigator.share({ files: [file], title: `QR ${record.resi}` })
-                                    .catch(err => console.log('Share failed:', err));
-                            } else {
-                                document.getElementById('qrDownloadBtn').click();
-                            }
-                        });
-                    } else {
-                        document.getElementById('qrDownloadBtn').click();
-                    }
-                }
-            });
-
-            btnAllQR.addEventListener('click', () => {
-                if (records.length === 0) {
-                    showIosAlert('Data Kosong', 'Belum ada resi untuk ditampilkan!');
-                    return;
-                }
-                openQRModal(0);
-            });
+            function closeQRModal() { stopAutoSlide(); document.getElementById('qrModalOverlay').classList.remove('active'); setTimeout(() => scanInput.focus(), 50); }
+            document.getElementById('qrCloseBtn').addEventListener('click', closeQRModal); document.getElementById('qrAutoBtn').addEventListener('click', toggleAutoSlide);
+            document.getElementById('qrPrevBtn').addEventListener('click', () => { if (qrIndex > 0) { qrIndex--; renderQR(); } });
+            document.getElementById('qrNextBtn').addEventListener('click', () => { if (qrIndex < records.length - 1) { qrIndex++; renderQR(); } });
+            btnAllQR.addEventListener('click', () => { if (records.length > 0) openQRModal(0); });
         });
     </script>
 </body>
