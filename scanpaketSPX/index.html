@@ -703,7 +703,7 @@
                     <label for="photoInput" id="photoLabel" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 42px; border-radius: 10px; border: 1px solid var(--ios-border); background: var(--ios-input-bg); cursor: pointer; font-size: 1.2rem; overflow: hidden; position: relative;">
                         📷
                     </label>
-                    <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;">
+                    <input type="file" id="photoInput" accept="image/*" style="display: none;">
                 </div>
                 <div class="form-group" style="width: 80px;">
                     <label for="tripSelect">Trip</label>
@@ -1475,7 +1475,7 @@
             }
 
             // SHARE HELPER
-            async function processShare(groupsToShare, dateStr, shareType = 'Return') {
+            async function processShare(groupsToShare, dateStr, shareType = 'Return', customPhotoFile = null) {
                 let report = [];
                 for (const key in groupsToShare) {
                     const g = groupsToShare[key];
@@ -1507,8 +1507,10 @@
                             text: finalString
                         };
                         
-                        if (typeof currentPhotoFile !== 'undefined' && currentPhotoFile && navigator.canShare) {
-                            const filesArray = [new File([currentPhotoFile], `bukti_${shareType.toLowerCase()}.jpg`, { type: currentPhotoFile.type })];
+                        const fileToShare = customPhotoFile || (typeof currentPhotoFile !== 'undefined' ? currentPhotoFile : null);
+                        
+                        if (fileToShare && navigator.canShare) {
+                            const filesArray = [new File([fileToShare], `bukti_${shareType.toLowerCase()}.jpg`, { type: fileToShare.type })];
                             if (navigator.canShare({ files: filesArray })) {
                                 shareData.files = filesArray;
                             }
@@ -1516,12 +1518,14 @@
                         
                         await navigator.share(shareData);
                         
-                        // Reset photo after share
-                        if (typeof currentPhotoFile !== 'undefined') currentPhotoFile = null;
-                        const photoLabel = document.getElementById('photoLabel');
-                        const photoInput = document.getElementById('photoInput');
-                        if (photoLabel) photoLabel.innerHTML = '📷';
-                        if (photoInput) photoInput.value = '';
+                        // Reset photo after share (only if we used the global one)
+                        if (!customPhotoFile && typeof currentPhotoFile !== 'undefined') {
+                            currentPhotoFile = null;
+                            const photoLabel = document.getElementById('photoLabel');
+                            const photoInput = document.getElementById('photoInput');
+                            if (photoLabel) photoLabel.innerHTML = '📷';
+                            if (photoInput) photoInput.value = '';
+                        }
                     } catch (err) {
                         if (err.name !== 'AbortError') {
                             copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
@@ -1552,17 +1556,54 @@
                 // Option: Individual Sellers
                 groupKeys.forEach(key => {
                     const g = groups[key];
-                    const btn = document.createElement('button');
-                    btn.className = 'ios-btn-ok';
-                    btn.style.cssText = 'padding:14px; width:100%; font-size:15px; border:none; border-bottom:0.5px solid rgba(255,255,255,0.15); background:none; color:var(--ios-text); cursor:pointer; text-align:center; display:flex; justify-content:center; align-items:center; gap:8px; flex-direction:column;';
-                    btn.innerHTML = `<span>${g.seller} (Trip ${g.trip})</span> <span style="font-size:12px; color:var(--ios-text-muted); background:var(--ios-card-bg-active); padding:2px 6px; border-radius:10px;">${g.resis.length} resi</span>`;
-                    btn.onclick = async () => {
+                    
+                    const rowDiv = document.createElement('div');
+                    rowDiv.style.cssText = 'display:flex; width:100%; border-bottom:0.5px solid rgba(255,255,255,0.15); align-items: stretch;';
+                    
+                    // Photo Input container
+                    const photoContainer = document.createElement('div');
+                    photoContainer.style.cssText = 'padding:10px; display:flex; align-items:center; justify-content:center; border-right:0.5px solid rgba(255,255,255,0.15); width: 60px;';
+                    
+                    const fileInput = document.createElement('input');
+                    fileInput.type = 'file';
+                    fileInput.accept = 'image/*';
+                    fileInput.style.display = 'none';
+                    
+                    const photoLabel = document.createElement('label');
+                    photoLabel.style.cssText = 'width:40px; height:40px; border-radius:8px; background:var(--ios-input-bg); display:flex; justify-content:center; align-items:center; font-size:1.2rem; cursor:pointer; overflow:hidden; border:1px solid rgba(142,142,147,0.3);';
+                    photoLabel.innerHTML = '📷';
+                    
+                    let localPhotoFile = null;
+                    
+                    fileInput.addEventListener('change', (e) => {
+                        if (e.target.files && e.target.files[0]) {
+                            localPhotoFile = e.target.files[0];
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                photoLabel.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+                            };
+                            reader.readAsDataURL(localPhotoFile);
+                        }
+                    });
+                    
+                    photoLabel.appendChild(fileInput);
+                    photoContainer.appendChild(photoLabel);
+                    
+                    // Share Button
+                    const shareBtn = document.createElement('button');
+                    shareBtn.className = 'ios-btn-ok';
+                    shareBtn.style.cssText = 'flex:1; padding:14px; font-size:15px; border:none; background:none; color:var(--ios-text); cursor:pointer; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding-left:15px;';
+                    shareBtn.innerHTML = `<span style="font-weight:600; margin-bottom:4px;">${g.seller} <span style="font-weight:normal; font-size:13px; color:var(--ios-text-muted);">(Trip ${g.trip})</span></span> <span style="font-size:12px; color:var(--ios-text-muted); background:var(--ios-card-bg-active); padding:2px 6px; border-radius:10px;">${g.resis.length} resi</span>`;
+                    shareBtn.onclick = async () => {
                         actionSheet.classList.remove('active');
                         const singleGroup = {};
                         singleGroup[key] = g;
-                        await processShare(singleGroup, dateStr, shareType);
+                        await processShare(singleGroup, dateStr, shareType, localPhotoFile);
                     };
-                    btnContainer.appendChild(btn);
+                    
+                    rowDiv.appendChild(photoContainer);
+                    rowDiv.appendChild(shareBtn);
+                    btnContainer.appendChild(rowDiv);
                 });
 
                 actionSheet.classList.add('active');
