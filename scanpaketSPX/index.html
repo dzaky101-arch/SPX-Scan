@@ -1161,7 +1161,7 @@
             }
 
             // Form Submit Scanner
-            scanForm.addEventListener('submit', async (e) => {
+            scanForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 
                 const resi = scanInput.value.trim();
@@ -1173,9 +1173,10 @@
                 // Validasi awalan SPX atau ID
                 if (!resi.startsWith('SPX') && !resi.startsWith('ID')) {
                     playVoice('Resi tidak valid');
-                    await showIosAlert('Resi Salah', '⚠️ PERINGATAN: Hanya resi dengan awalan "SPX" atau "ID" yang bisa di-scan!');
-                    scanInput.value = '';
-                    setTimeout(() => scanInput.focus(), 50);
+                    showIosAlert('Resi Salah', '⚠️ PERINGATAN: Hanya resi dengan awalan "SPX" atau "ID" yang bisa di-scan!').then(() => {
+                        scanInput.value = '';
+                        setTimeout(() => scanInput.focus(), 50);
+                    });
                     return;
                 }
 
@@ -1183,9 +1184,10 @@
                 const isDuplicate = records.some(r => r.resi === resi);
                 if (isDuplicate) {
                     playVoice('Paket Double');
-                    await showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.');
-                    scanInput.value = '';
-                    setTimeout(() => scanInput.focus(), 50);
+                    showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(() => {
+                        scanInput.value = '';
+                        setTimeout(() => scanInput.focus(), 50);
+                    });
                     return;
                 }
 
@@ -1198,7 +1200,7 @@
             tripSelect.addEventListener('change', () => scanInput.focus());
 
             // Auto-process pasted text in Scan Input
-            scanInput.addEventListener('paste', async (e) => {
+            scanInput.addEventListener('paste', (e) => {
                 const text = (e.originalEvent || e).clipboardData.getData('text/plain');
                 const matches = text.match(/(?:SPX|ID)[A-Z0-9]+/gi);
                 
@@ -1214,9 +1216,10 @@
                         const isDuplicate = records.some(r => r.resi === resi);
                         if (isDuplicate) {
                             playVoice('Paket Double');
-                            await showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.');
-                            scanInput.value = '';
-                            setTimeout(() => scanInput.focus(), 50);
+                            showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(() => {
+                                scanInput.value = '';
+                                setTimeout(() => scanInput.focus(), 50);
+                            });
                             return;
                         }
                         playBeep('success');
@@ -1307,14 +1310,15 @@
                 renderList();
             }
 
-            async function deleteRecord(id) {
-                const confirmed = await showIosConfirm('Hapus Data', 'Apakah Anda yakin ingin menghapus baris ini?');
-                if (confirmed) {
-                    records = records.filter(r => r.id !== id);
-                    recalculateSequence();
-                    saveData();
-                    renderList();
-                }
+            function deleteRecord(id) {
+                showIosConfirm('Hapus Data', 'Apakah Anda yakin ingin menghapus baris ini?').then((confirmed) => {
+                    if (confirmed) {
+                        records = records.filter(r => r.id !== id);
+                        recalculateSequence();
+                        saveData();
+                        renderList();
+                    }
+                });
             }
 
             function recalculateSequence() {
@@ -1475,7 +1479,7 @@
             }
 
             // SHARE HELPER
-            async function processShare(groupsToShare, dateStr, shareType = 'Return', customPhotoFile = null) {
+            function processShare(groupsToShare, dateStr, shareType = 'Return', customPhotoFile = null) {
                 let report = [];
                 for (const key in groupsToShare) {
                     const g = groupsToShare[key];
@@ -1501,23 +1505,21 @@
                 const finalString = report.join('\n').trim();
                 
                 if (navigator.share) {
-                    try {
-                        const shareData = {
-                            title: `Data ${shareType}`,
-                            text: finalString
-                        };
-                        
-                        const fileToShare = customPhotoFile || (typeof currentPhotoFile !== 'undefined' ? currentPhotoFile : null);
-                        
-                        if (fileToShare && navigator.canShare) {
-                            const filesArray = [new File([fileToShare], `bukti_${shareType.toLowerCase()}.jpg`, { type: fileToShare.type })];
-                            if (navigator.canShare({ files: filesArray })) {
-                                shareData.files = filesArray;
-                            }
+                    const shareData = {
+                        title: `Data ${shareType}`,
+                        text: finalString
+                    };
+                    
+                    const fileToShare = customPhotoFile || (typeof currentPhotoFile !== 'undefined' ? currentPhotoFile : null);
+                    
+                    if (fileToShare && navigator.canShare) {
+                        const filesArray = [new File([fileToShare], `bukti_${shareType.toLowerCase()}.jpg`, { type: fileToShare.type })];
+                        if (navigator.canShare({ files: filesArray })) {
+                            shareData.files = filesArray;
                         }
-                        
-                        await navigator.share(shareData);
-                        
+                    }
+                    
+                    navigator.share(shareData).then(() => {
                         // Reset photo after share (only if we used the global one)
                         if (!customPhotoFile && typeof currentPhotoFile !== 'undefined') {
                             currentPhotoFile = null;
@@ -1526,11 +1528,11 @@
                             if (photoLabel) photoLabel.innerHTML = '📷';
                             if (photoInput) photoInput.value = '';
                         }
-                    } catch (err) {
+                    }).catch((err) => {
                         if (err.name !== 'AbortError') {
                             copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
                         }
-                    }
+                    });
                 } else {
                     copyTextToClipboard(finalString, 'Laporan berhasil disalin! (Peramban tidak mendukung fitur Share gambar)');
                 }
@@ -1547,9 +1549,9 @@
                 btnAll.className = 'ios-btn-ok';
                 btnAll.style.cssText = 'padding:14px; width:100%; font-size:16px; font-weight:600; border:none; border-bottom:0.5px solid rgba(255,255,255,0.15); background:none; color:#0a84ff; cursor:pointer; text-align:center;';
                 btnAll.textContent = 'Share Semua Seller';
-                btnAll.onclick = async () => {
+                btnAll.onclick = () => {
                     actionSheet.classList.remove('active');
-                    await processShare(groups, dateStr, shareType);
+                    processShare(groups, dateStr, shareType);
                 };
                 btnContainer.appendChild(btnAll);
 
@@ -1594,11 +1596,11 @@
                     shareBtn.className = 'ios-btn-ok';
                     shareBtn.style.cssText = 'flex:1; padding:14px; font-size:15px; border:none; background:none; color:var(--ios-text); cursor:pointer; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding-left:15px;';
                     shareBtn.innerHTML = `<span style="font-weight:600; margin-bottom:4px;">${g.seller} <span style="font-weight:normal; font-size:13px; color:var(--ios-text-muted);">(Trip ${g.trip})</span></span> <span style="font-size:12px; color:var(--ios-text-muted); background:var(--ios-card-bg-active); padding:2px 6px; border-radius:10px;">${g.resis.length} resi</span>`;
-                    shareBtn.onclick = async () => {
+                    shareBtn.onclick = () => {
                         actionSheet.classList.remove('active');
                         const singleGroup = {};
                         singleGroup[key] = g;
-                        await processShare(singleGroup, dateStr, shareType, localPhotoFile);
+                        processShare(singleGroup, dateStr, shareType, localPhotoFile);
                     };
                     
                     rowDiv.appendChild(photoContainer);
@@ -1609,12 +1611,15 @@
                 actionSheet.classList.add('active');
             }
 
-            document.getElementById('btnCancelActionSheet')?.addEventListener('click', () => {
-                document.getElementById('iosActionSheet').classList.remove('active');
-            });
+            const btnCancelActionSheet = document.getElementById('btnCancelActionSheet');
+            if (btnCancelActionSheet) {
+                btnCancelActionSheet.addEventListener('click', () => {
+                    document.getElementById('iosActionSheet').classList.remove('active');
+                });
+            }
 
             // SHARE RETURN TO WHATSAPP
-            btnCopy.addEventListener('click', async () => {
+            btnCopy.addEventListener('click', () => {
                 if (records.length === 0) {
                     showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
                     return;
@@ -1628,7 +1633,7 @@
                     return;
                 }
 
-                await processShare(groups, dateStr, 'Return');
+                processShare(groups, dateStr, 'Return');
             });
 
             // SHARE PICKUP TO WHATSAPP
@@ -1654,7 +1659,7 @@
             }
 
             if (btnSharePickup) {
-                btnSharePickup.addEventListener('click', async () => {
+                btnSharePickup.addEventListener('click', () => {
                     if (records.length === 0) {
                         showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
                         return;
@@ -1668,7 +1673,7 @@
                         return;
                     }
 
-                    await processShare(groups, dateStr, 'Pickup');
+                    processShare(groups, dateStr, 'Pickup');
                 });
             }
 
@@ -1810,18 +1815,19 @@
             });
 
             // CLEAR ALL DATA
-            btnClear.addEventListener('click', async () => {
+            btnClear.addEventListener('click', () => {
                 if (records.length === 0) return;
-                const confirmed = await showIosConfirm(
+                showIosConfirm(
                     'Kosongkan Data', 
                     'PERINGATAN! Anda akan menghapus SEMUA data dari layar.\nPastikan Anda sudah menyalin atau mengekspor data.\n\nLanjutkan?',
                     'Kosongkan'
-                );
-                if (confirmed) {
-                    records = [];
-                    saveData();
-                    renderList();
-                }
+                ).then((confirmed) => {
+                    if (confirmed) {
+                        records = [];
+                        saveData();
+                        renderList();
+                    }
+                });
             });
 
             // ================== QR CODE MODAL & SLIDESHOW LOGIC ==================
@@ -1969,12 +1975,4 @@
             btnAllQR.addEventListener('click', () => {
                 if (records.length === 0) {
                     showIosAlert('Data Kosong', 'Belum ada resi untuk ditampilkan!');
-                    return;
-                }
-                openQRModal(0); // Start from first record (newest)
-            });
-        });
-    </script>
-</body>
-</html>
-
+                    ret
