@@ -1029,44 +1029,48 @@
             }
 
             // Form Submit Scanner
-            scanForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
+            scanForm.onsubmit = function(e) {
+                if (e && e.preventDefault) e.preventDefault();
                 
                 const resi = scanInput.value.trim();
                 const trip = tripSelect.value;
                 const seller = document.getElementById('sellerInput').value.trim() || '-';
 
-                if (!resi) return;
+                if (!resi) return false;
 
                 // Validasi awalan SPX atau ID
                 if (!resi.startsWith('SPX') && !resi.startsWith('ID')) {
                     playVoice('Resi tidak valid');
-                    await showIosAlert('Resi Salah', '⚠️ PERINGATAN: Hanya resi dengan awalan "SPX" atau "ID" yang bisa di-scan!');
-                    scanInput.value = '';
-                    setTimeout(() => scanInput.focus(), 50);
-                    return;
+                    showIosAlert('Resi Salah', '⚠️ PERINGATAN: Hanya resi dengan awalan "SPX" atau "ID" yang bisa di-scan!').then(() => {
+                        scanInput.value = '';
+                        setTimeout(() => scanInput.focus(), 50);
+                    });
+                    return false;
                 }
 
                 // Anti Double Resi
                 const isDuplicate = records.some(r => r.resi === resi);
                 if (isDuplicate) {
                     playVoice('Paket Double');
-                    await showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.');
-                    scanInput.value = '';
-                    setTimeout(() => scanInput.focus(), 50);
-                    return;
+                    showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(() => {
+                        scanInput.value = '';
+                        setTimeout(() => scanInput.focus(), 50);
+                    });
+                    return false;
                 }
 
                 playBeep('success');
                 addRecord(trip, seller, resi);
                 scanInput.value = '';
                 setTimeout(() => scanInput.focus(), 50);
-            });
+                
+                return false;
+            };
 
             tripSelect.addEventListener('change', () => scanInput.focus());
 
             // Auto-process pasted text in Scan Input
-            scanInput.addEventListener('paste', async (e) => {
+            scanInput.addEventListener('paste', function(e) {
                 const text = (e.originalEvent || e).clipboardData.getData('text/plain');
                 const matches = text.match(/(?:SPX|ID)[A-Z0-9]+/gi);
                 
@@ -1082,9 +1086,10 @@
                         const isDuplicate = records.some(r => r.resi === resi);
                         if (isDuplicate) {
                             playVoice('Paket Double');
-                            await showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.');
-                            scanInput.value = '';
-                            setTimeout(() => scanInput.focus(), 50);
+                            showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(() => {
+                                scanInput.value = '';
+                                setTimeout(() => scanInput.focus(), 50);
+                            });
                             return;
                         }
                         playBeep('success');
@@ -1124,9 +1129,10 @@
                             message += `⚠️ Duplikat (Diabaikan): ${dupCount} resi\n`;
                         }
 
-                        await showIosAlert('Proses Bulk Selesai', message);
-                        scanInput.value = '';
-                        setTimeout(() => scanInput.focus(), 50);
+                        showIosAlert('Proses Bulk Selesai', message).then(() => {
+                            scanInput.value = '';
+                            setTimeout(() => scanInput.focus(), 50);
+                        });
                     }
                 }
             });
@@ -1175,14 +1181,15 @@
                 renderList();
             }
 
-            async function deleteRecord(id) {
-                const confirmed = await showIosConfirm('Hapus Data', 'Apakah Anda yakin ingin menghapus baris ini?');
-                if (confirmed) {
-                    records = records.filter(r => r.id !== id);
-                    recalculateSequence();
-                    saveData();
-                    renderList();
-                }
+            function deleteRecord(id) {
+                showIosConfirm('Hapus Data', 'Apakah Anda yakin ingin menghapus baris ini?').then((confirmed) => {
+                    if (confirmed) {
+                        records = records.filter(r => r.id !== id);
+                        recalculateSequence();
+                        saveData();
+                        renderList();
+                    }
+                });
             }
 
             function recalculateSequence() {
@@ -1343,13 +1350,15 @@
             }
 
             // SHARE RETURN TO WHATSAPP
-            btnCopy.addEventListener('click', async () => {
+            btnCopy.addEventListener('click', function() {
                 if (records.length === 0) {
                     showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
                     return;
                 }
 
-                const { groups, dateStr } = generateReportData();
+                const data = generateReportData();
+                const groups = data.groups;
+                const dateStr = data.dateStr;
                 let report = [];
 
                 for (const key in groups) {
@@ -1358,8 +1367,8 @@
                     report.push(dateStr);
                     report.push(`Trip ${g.trip}`);
                     
-                    g.resis.sort((a,b) => a.noUrut - b.noUrut);
-                    g.resis.forEach(item => {
+                    g.resis.sort(function(a,b) { return a.noUrut - b.noUrut; });
+                    g.resis.forEach(function(item) {
                         report.push(`${item.noUrut}. ${item.resi}`);
                     });
                     report.push('Keterangan: ');
@@ -1369,28 +1378,27 @@
                 const finalString = report.join('\n').trim();
                 
                 if (navigator.share) {
-                    try {
-                        const shareData = {
-                            title: 'Data Return',
-                            text: finalString
-                        };
-                        
-                        if (currentPhotoFile && navigator.canShare) {
-                            const filesArray = [new File([currentPhotoFile], "bukti_return.jpg", { type: currentPhotoFile.type })];
-                            if (navigator.canShare({ files: filesArray })) {
-                                shareData.files = filesArray;
-                            }
+                    const shareData = {
+                        title: 'Data Return',
+                        text: finalString
+                    };
+                    
+                    if (currentPhotoFile && navigator.canShare) {
+                        const filesArray = [new File([currentPhotoFile], "bukti_return.jpg", { type: currentPhotoFile.type })];
+                        if (navigator.canShare({ files: filesArray })) {
+                            shareData.files = filesArray;
                         }
-                        
-                        await navigator.share(shareData);
+                    }
+                    
+                    navigator.share(shareData).then(function() {
                         currentPhotoFile = null;
                         photoLabel.innerHTML = '📷';
                         photoInput.value = '';
-                    } catch (err) {
+                    }).catch(function(err) {
                         if (err.name !== 'AbortError') {
                             copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
                         }
-                    }
+                    });
                 } else {
                     copyTextToClipboard(finalString, 'Laporan berhasil disalin! (Peramban tidak mendukung fitur Share gambar)');
                 }
@@ -1419,11 +1427,11 @@
             }
 
             if (btnSharePickup) {
-                btnSharePickup.addEventListener('click', async () => {
+                btnSharePickup.addEventListener('click', function() {
                     const currentTrip = tripSelect.value;
                     const currentSeller = document.getElementById('sellerInput').value.trim() || '-';
                     
-                    const groupRecords = records.filter(r => r.trip === currentTrip && (r.seller || '-') === currentSeller);
+                    const groupRecords = records.filter(function(r) { return r.trip === currentTrip && (r.seller || '-') === currentSeller; });
                     
                     if (groupRecords.length === 0) {
                         showIosAlert('Data Kosong', `Tidak ada data untuk Seller "${currentSeller}" di Trip ${currentTrip}.`);
@@ -1439,8 +1447,8 @@
                     report.push(dateStr);
                     report.push(`Trip ${currentTrip}`);
                     
-                    groupRecords.sort((a,b) => a.noUrut - b.noUrut);
-                    groupRecords.forEach(item => {
+                    groupRecords.sort(function(a,b) { return a.noUrut - b.noUrut; });
+                    groupRecords.forEach(function(item) {
                         report.push(`${item.noUrut}. ${item.resi}`);
                     });
                     report.push('Keterangan: Paket sudah di-pickup');
@@ -1449,29 +1457,28 @@
 
                     // Web Share API
                     if (navigator.share) {
-                        try {
-                            const shareData = {
-                                title: 'Daftar Pickup',
-                                text: finalString
-                            };
-                            
-                            if (currentPhotoFile && navigator.canShare) {
-                                const filesArray = [new File([currentPhotoFile], "bukti_pickup.jpg", { type: currentPhotoFile.type })];
-                                if (navigator.canShare({ files: filesArray })) {
-                                    shareData.files = filesArray;
-                                }
+                        const shareData = {
+                            title: 'Daftar Pickup',
+                            text: finalString
+                        };
+                        
+                        if (currentPhotoFile && navigator.canShare) {
+                            const filesArray = [new File([currentPhotoFile], "bukti_pickup.jpg", { type: currentPhotoFile.type })];
+                            if (navigator.canShare({ files: filesArray })) {
+                                shareData.files = filesArray;
                             }
-                            
-                            await navigator.share(shareData);
+                        }
+                        
+                        navigator.share(shareData).then(function() {
                             // Clear photo after successful share
                             currentPhotoFile = null;
                             photoLabel.innerHTML = '📷';
                             photoInput.value = '';
-                        } catch (err) {
+                        }).catch(function(err) {
                             if (err.name !== 'AbortError') {
                                 copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
                             }
-                        }
+                        });
                     } else {
                         copyTextToClipboard(finalString, 'Daftar Pickup disalin! (Peramban tidak mendukung fitur Share gambar)');
                     }
@@ -1524,18 +1531,19 @@
             });
 
             // CLEAR ALL DATA
-            btnClear.addEventListener('click', async () => {
+            btnClear.addEventListener('click', function() {
                 if (records.length === 0) return;
-                const confirmed = await showIosConfirm(
+                showIosConfirm(
                     'Kosongkan Data', 
                     'PERINGATAN! Anda akan menghapus SEMUA data dari layar.\nPastikan Anda sudah menyalin atau mengekspor data.\n\nLanjutkan?',
                     'Kosongkan'
-                );
-                if (confirmed) {
-                    records = [];
-                    saveData();
-                    renderList();
-                }
+                ).then(function(confirmed) {
+                    if (confirmed) {
+                        records = [];
+                        saveData();
+                        renderList();
+                    }
+                });
             });
 
             // ================== QR CODE MODAL & SLIDESHOW LOGIC ==================
