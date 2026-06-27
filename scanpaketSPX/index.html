@@ -1007,12 +1007,12 @@ document.addEventListener('DOMContentLoaded', function () {
       html5QrCode.stop().then(function () {
         html5QrCode.clear();
         html5QrCode = null;
-      }).catch(error => {
+      }).catch(function(error) {
         html5QrCode.clear();
         html5QrCode = null;
       });
     }
-    setTimeout(() => scanInput.focus(), 50);
+    /* autofocus disabled */
   }
   btnCameraOpen.addEventListener('click', openCameraModal);
   btnCameraCloseModal.addEventListener('click', closeCameraModal);
@@ -1040,7 +1040,7 @@ document.addEventListener('DOMContentLoaded', function () {
       btnSoundToggle.classList.remove('active');
       btnSoundToggle.textContent = '🔊';
     }
-    scanInput.focus();
+    /* autofocus disabled */
   });
 
   // Web Audio API Beep generator
@@ -1167,7 +1167,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function showIosAlert(title, message) {
     playBeep('error');
     isAlertShowing = true;
-    return new Promise(resolve => {
+    return new Promise(function(resolve) {
       document.getElementById('iosAlertTitle').textContent = title;
       document.getElementById('iosAlertMessage').textContent = message;
       var container = document.getElementById('iosAlertButtons');
@@ -1189,7 +1189,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Custom iOS Confirm Promise helper
   function showIosConfirm(title, message, confirmText = 'Hapus') {
-    return new Promise(resolve => {
+    return new Promise(function(resolve) {
       document.getElementById('iosAlertTitle').textContent = title;
       document.getElementById('iosAlertMessage').textContent = message;
       var container = document.getElementById('iosAlertButtons');
@@ -1225,11 +1225,11 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!resi) return false;
 
     // Validasi awalan SPX atau ID
-    if (!resi.startsWith('SPX') && !resi.startsWith('ID')) {
+    if ((resi.indexOf('SPX') !== 0 && resi.indexOf('ID') !== 0)) {
       playVoice('Resi tidak valid');
       showIosAlert('Resi Salah', '⚠️ PERINGATAN: Hanya resi dengan awalan "SPX" atau "ID" yang bisa di-scan!').then(function () {
         scanInput.value = '';
-        setTimeout(() => scanInput.focus(), 50);
+        /* autofocus disabled */
       });
       return false;
     }
@@ -1242,17 +1242,17 @@ document.addEventListener('DOMContentLoaded', function () {
       playVoice('Paket Double');
       showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(function () {
         scanInput.value = '';
-        setTimeout(() => scanInput.focus(), 50);
+        /* autofocus disabled */
       });
       return false;
     }
     playBeep('success');
     addRecord(trip, seller, resi);
     scanInput.value = '';
-    setTimeout(() => scanInput.focus(), 50);
+    /* autofocus disabled */
     return false;
   };
-  tripSelect.addEventListener('change', () => scanInput.focus());
+  /* tripSelect changed */
 
   // Auto-process pasted text in Scan Input
   scanInput.addEventListener('paste', function (e) {
@@ -1260,7 +1260,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var matches = text.match(/(?:SPX|ID)[A-Z0-9]+/gi);
     if (matches && matches.length > 0) {
       e.preventDefault();
-      var cleanMatches = matches.map(m => m.toUpperCase());
+      var cleanMatches = matches.map(function(m) { return m.toUpperCase(); });
       var trip = tripSelect.value;
       var seller = document.getElementById('sellerInput').value.trim() || '-';
       if (cleanMatches.length === 1) {
@@ -1273,21 +1273,21 @@ document.addEventListener('DOMContentLoaded', function () {
           playVoice('Paket Double');
           showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(function () {
             scanInput.value = '';
-            setTimeout(() => scanInput.focus(), 50);
+            /* autofocus disabled */
           });
           return;
         }
         playBeep('success');
         addRecord(trip, seller, resi);
         scanInput.value = '';
-        setTimeout(() => scanInput.focus(), 50);
+        /* autofocus disabled */
       } else {
         // Proses bulk dari paste
         var successCount = 0;
         var dupCount = 0;
         var toAdd = [];
         var seenInBatch = new Set();
-        cleanMatches.forEach(resi => {
+        cleanMatches.forEach(function(resi) {
           var isDuplicate = records.some(function (r) {
             return r.resi;
           } === resi) || seenInBatch.has(resi);
@@ -1314,13 +1314,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         showIosAlert('Proses Bulk Selesai', message).then(function () {
           scanInput.value = '';
-          setTimeout(() => scanInput.focus(), 50);
+          /* autofocus disabled */
         });
       }
     }
   });
   function addRecord(trip, seller, resi) {
-    var groupRecords = records.filter(r => r.trip === trip && r.seller === seller);
+    var groupRecords = records.filter(function(r) { return r.trip === trip && r.seller === seller; });
     var noUrut = groupRecords.length + 1;
     var now = new Date();
     var timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
@@ -1339,8 +1339,8 @@ document.addEventListener('DOMContentLoaded', function () {
   function addRecordsBulk(trip, seller, resiList) {
     var now = new Date();
     var timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-    var currentGroupCount = records.filter(r => r.trip === trip && r.seller === seller).length;
-    resiList.forEach(resi => {
+    var currentGroupCount = records.filter(function(r) { return r.trip === trip && r.seller === seller; }).length;
+    resiList.forEach(function(resi) {
       currentGroupCount++;
       var newRecord = {
         id: (Date.now() + Math.random()).toString(),
@@ -1356,9 +1356,9 @@ document.addEventListener('DOMContentLoaded', function () {
     renderList();
   }
   function deleteRecord(id) {
-    showIosConfirm('Hapus Data', 'Apakah Anda yakin ingin menghapus baris ini?').then(confirmed => {
+    showIosConfirm('Hapus Data', 'Apakah Anda yakin ingin menghapus baris ini?').then(function(confirmed) {
       if (confirmed) {
-        records = records.filter(r => r.id !== id);
+        records = records.filter(function(r) { return r.id !== id; });
         recalculateSequence();
         saveData();
         renderList();
@@ -1368,7 +1368,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function recalculateSequence() {
     var chronological = [...records].reverse();
     var counts = {};
-    chronological.forEach(r => {
+    chronological.forEach(function(r) {
       var key = `trip_${r.trip}_seller_${r.seller || '-'}`;
       if (!counts[key]) counts[key] = 0;
       counts[key]++;
@@ -1393,7 +1393,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     `;
       return;
     }
-    filteredRecords.forEach(record => {
+    filteredRecords.forEach(function(record) {
       var index = records.indexOf(record);
       var div = document.createElement('div');
       div.className = 'record-card';
@@ -1416,7 +1416,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Attach click to open QR from row details
-    document.querySelectorAll('.record-details').forEach(el => {
+    document.querySelectorAll('.record-details').forEach(function(el) {
       el.addEventListener('click', function () {
         var idx = parseInt(el.getAttribute('data-index'), 10);
         openQRModal(idx);
@@ -1424,7 +1424,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Attach click to open QR from row QR button
-    document.querySelectorAll('.btn-qr-row').forEach(btn => {
+    document.querySelectorAll('.btn-qr-row').forEach(function(btn) {
       btn.addEventListener('click', function (e) {
         e.stopPropagation();
         var idx = parseInt(btn.getAttribute('data-index'), 10);
@@ -1433,7 +1433,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Attach individual deletes
-    document.querySelectorAll('.btn-delete-row').forEach(btn => {
+    document.querySelectorAll('.btn-delete-row').forEach(function(btn) {
       btn.addEventListener('click', function (e) {
         e.stopPropagation();
         deleteRecord(btn.getAttribute('data-id'));
@@ -1443,7 +1443,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function generateReportData() {
     var groups = {};
     var chronologicalRecords = [...records].reverse();
-    chronologicalRecords.forEach(r => {
+    chronologicalRecords.forEach(function(r) {
       var key = `trip_${r.trip}_seller_${r.seller || '-'}`;
       if (!groups[key]) {
         groups[key] = {
@@ -1704,8 +1704,8 @@ document.addEventListener('DOMContentLoaded', function () {
       aoa.push([`Data Paket SPX/ID`]);
       aoa.push([dateStr]);
       aoa.push([`Trip ${g.trip} | Seller: ${g.seller}`]);
-      g.resis.sort((a, b) => a.noUrut - b.noUrut);
-      g.resis.forEach(item => {
+      g.resis.sort(function(a, b) { return a.noUrut - b.noUrut; });
+      g.resis.forEach(function(item) {
         aoa.push([item.noUrut + '. ' + item.resi]);
       });
       aoa.push(['']);
@@ -1796,7 +1796,7 @@ document.addEventListener('DOMContentLoaded', function () {
     stopAutoSlide();
     document.getElementById('qrModalOverlay').classList.remove('active');
     document.getElementById('qrBox').innerHTML = '';
-    setTimeout(() => scanInput.focus(), 50);
+    /* autofocus disabled */
   }
   document.getElementById('qrCloseBtn').addEventListener('click', closeQRModal);
   document.getElementById('qrAutoBtn').addEventListener('click', toggleAutoSlide);
@@ -1843,7 +1843,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (canvas) {
       var record = records[qrIndex];
       if (navigator.share && navigator.canShare) {
-        canvas.toBlob(blob => {
+        canvas.toBlob(function(blob) {
           var file = new File([blob], `QR_${record.resi}.png`, {
             type: 'image/png'
           });
@@ -1853,7 +1853,7 @@ document.addEventListener('DOMContentLoaded', function () {
             navigator.share({
               files: [file],
               title: `QR ${record.resi}`
-            }).catch(err => console.log('Share canceled or failed:', err));
+            }).catch(function(err) { console.log('Share canceled or failed:', err); });
           } else {
             // fallback download
             document.getElementById('qrDownloadBtn').click();
