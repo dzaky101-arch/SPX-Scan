@@ -1099,8 +1099,11 @@
             }
 
             // Custom iOS Alert Promise helper
-            function closeActionSheet() {
+            window.closeActionSheet = function() {
                 document.getElementById('actionSheetOverlay').classList.remove('active');
+            };
+            function closeActionSheet() {
+                window.closeActionSheet();
             }
 
             function openActionSheet(title, buttons) {
@@ -2028,48 +2031,6 @@
                 alert("PIN SALAH!");
                 pinInput.value = "";
             }
-        }
-
-        // ================== ACTION SHEET LOGIC ==================
-        function showActionSheet(title, options) {
-            const overlay = document.createElement('div');
-            overlay.className = 'modal-overlay active';
-            const sheet = document.createElement('div');
-            sheet.className = 'action-sheet';
-            sheet.innerHTML = `<div class="sheet-title">${title}</div>`;
-            options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.textContent = opt.text;
-                btn.className = opt.type || '';
-                btn.onclick = () => { opt.action(); document.body.removeChild(overlay); };
-                sheet.appendChild(btn);
-            });
-            const cancel = document.createElement('button');
-            cancel.textContent = 'Batal';
-            cancel.className = 'cancel';
-            cancel.onclick = () => document.body.removeChild(overlay);
-            sheet.appendChild(cancel);
-            overlay.appendChild(sheet);
-            document.body.appendChild(overlay);
-        }
-
-        // Updated global events for buttons
-        document.getElementById('btnCopy').addEventListener('click', () => {
-            showActionSheet('Salin Data', [
-                { text: 'Salin Semua', action: () => copyAll() },
-                { text: 'Salin Trip Ini', action: () => copyTrip() }
-            ]);
-        });
-
-        document.getElementById('btnSharePickup').addEventListener('click', () => {
-            showActionSheet('Bagikan Pickup', [
-                { text: 'Bagikan Semua', action: () => shareAll() },
-                { text: 'Bagikan Trip Ini', action: () => shareTrip() }
-            ]);
-        });
-
-        function showIosAlert(title, message) {
-            // Implementation...
         }
 
         // ================== IMPORT DATA LOGIC ==================
