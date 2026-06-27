@@ -1012,7 +1012,7 @@ document.addEventListener('DOMContentLoaded', function () {
         html5QrCode = null;
       });
     }
-    /* autofocus disabled */
+    setTimeout(function() { scanInput.focus(); }, 50);
   }
   btnCameraOpen.addEventListener('click', openCameraModal);
   btnCameraCloseModal.addEventListener('click', closeCameraModal);
@@ -1040,7 +1040,7 @@ document.addEventListener('DOMContentLoaded', function () {
       btnSoundToggle.classList.remove('active');
       btnSoundToggle.textContent = '🔊';
     }
-    /* autofocus disabled */
+    setTimeout(function() { scanInput.focus(); }, 50);
   });
 
   // Web Audio API Beep generator
@@ -1229,7 +1229,7 @@ document.addEventListener('DOMContentLoaded', function () {
       playVoice('Resi tidak valid');
       showIosAlert('Resi Salah', '⚠️ PERINGATAN: Hanya resi dengan awalan "SPX" atau "ID" yang bisa di-scan!').then(function () {
         scanInput.value = '';
-        /* autofocus disabled */
+        setTimeout(function() { scanInput.focus(); }, 50);
       });
       return false;
     }
@@ -1242,17 +1242,17 @@ document.addEventListener('DOMContentLoaded', function () {
       playVoice('Paket Double');
       showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(function () {
         scanInput.value = '';
-        /* autofocus disabled */
+        setTimeout(function() { scanInput.focus(); }, 50);
       });
       return false;
     }
     playBeep('success');
     addRecord(trip, seller, resi);
     scanInput.value = '';
-    /* autofocus disabled */
+    setTimeout(function() { scanInput.focus(); }, 50);
     return false;
   };
-  /* tripSelect changed */
+  tripSelect.addEventListener('change', function() { scanInput.focus(); });
 
   // Auto-process pasted text in Scan Input
   scanInput.addEventListener('paste', function (e) {
@@ -1273,14 +1273,14 @@ document.addEventListener('DOMContentLoaded', function () {
           playVoice('Paket Double');
           showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(function () {
             scanInput.value = '';
-            /* autofocus disabled */
+            setTimeout(function() { scanInput.focus(); }, 50);
           });
           return;
         }
         playBeep('success');
         addRecord(trip, seller, resi);
         scanInput.value = '';
-        /* autofocus disabled */
+        setTimeout(function() { scanInput.focus(); }, 50);
       } else {
         // Proses bulk dari paste
         var successCount = 0;
@@ -1314,7 +1314,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         showIosAlert('Proses Bulk Selesai', message).then(function () {
           scanInput.value = '';
-          /* autofocus disabled */
+          setTimeout(function() { scanInput.focus(); }, 50);
         });
       }
     }
@@ -1796,7 +1796,7 @@ document.addEventListener('DOMContentLoaded', function () {
     stopAutoSlide();
     document.getElementById('qrModalOverlay').classList.remove('active');
     document.getElementById('qrBox').innerHTML = '';
-    /* autofocus disabled */
+    setTimeout(function() { scanInput.focus(); }, 50);
   }
   document.getElementById('qrCloseBtn').addEventListener('click', closeQRModal);
   document.getElementById('qrAutoBtn').addEventListener('click', toggleAutoSlide);
