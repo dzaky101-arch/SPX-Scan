@@ -2093,7 +2093,8 @@
                         var noUrut = groupRecords.length + 1;
                         
                         var now = new Date();
-                        var timestamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+                        function pad2(n) { return (n < 10 ? '0' : '') + n; }
+                        var timestamp = now.getFullYear() + '-' + pad2(now.getMonth()+1) + '-' + pad2(now.getDate()) + ' ' + pad2(now.getHours()) + ':' + pad2(now.getMinutes()) + ':' + pad2(now.getSeconds());
                         
                         records.unshift({
                             id: Date.now().toString() + Math.random().toString().substring(2, 6),
