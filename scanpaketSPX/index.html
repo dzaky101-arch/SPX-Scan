@@ -720,7 +720,7 @@
             </div>
 
             <!-- Input Scan Form -->
-            <form id="scanForm" class="form-group" style="margin-bottom: 0;">
+            <form id="scanForm" action="javascript:void(0);" class="form-group" style="margin-bottom: 0;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
                     <label for="scanInput" style="margin: 0;">Scan Resi / Barcode</label>
                     <div style="display: flex; gap: 15px;">
@@ -1161,14 +1161,16 @@
             }
 
             // Form Submit Scanner
-            scanForm.addEventListener('submit', (e) => {
-                e.preventDefault();
+            scanForm.onsubmit = function(e) {
+                if (e && e.preventDefault) {
+                    e.preventDefault();
+                }
                 
                 const resi = scanInput.value.trim();
                 const trip = tripSelect.value;
                 const seller = document.getElementById('sellerInput').value.trim() || '-';
 
-                if (!resi) return;
+                if (!resi) return false;
 
                 // Validasi awalan SPX atau ID
                 if (!resi.startsWith('SPX') && !resi.startsWith('ID')) {
@@ -1177,7 +1179,7 @@
                         scanInput.value = '';
                         setTimeout(() => scanInput.focus(), 50);
                     });
-                    return;
+                    return false;
                 }
 
                 // Anti Double Resi
@@ -1188,14 +1190,16 @@
                         scanInput.value = '';
                         setTimeout(() => scanInput.focus(), 50);
                     });
-                    return;
+                    return false;
                 }
 
                 playBeep('success');
                 addRecord(trip, seller, resi);
                 scanInput.value = '';
                 setTimeout(() => scanInput.focus(), 50);
-            });
+                
+                return false;
+            };
 
             tripSelect.addEventListener('change', () => scanInput.focus());
 
