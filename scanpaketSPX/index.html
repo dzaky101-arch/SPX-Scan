@@ -1977,9 +1977,6 @@
     <!-- LOCK SCREEN OVERLAY -->
     <div id="lockScreen">
         <h2>Masukkan PIN</h2>
-        <div id="deviceIdDisplay" style="margin-bottom: 20px; color: var(--ios-blue); font-size: 14px; font-weight: 600; text-align: center;">
-            Memuat Device ID...
-        </div>
         <div class="pin-display" id="pinDisplay">
             <div class="pin-dot"></div>
             <div class="pin-dot"></div>
@@ -2002,6 +1999,9 @@
             <button onclick="pressPin(0)">0</button>
             <button onclick="clearPin()">⌫</button>
         </div>
+        <div id="deviceIdDisplay" style="margin-top: 30px; color: var(--ios-text-muted); font-size: 13px; text-align: center; padding: 0 20px;">
+            Memuat Device ID...
+        </div>
     </div>
 
     <script>
@@ -2020,7 +2020,7 @@
         
         var deviceIdDisplay = document.getElementById('deviceIdDisplay');
         if (deviceIdDisplay) {
-            deviceIdDisplay.innerHTML = 'Device ID Anda: <span style="font-size:18px; letter-spacing:2px; color:var(--ios-text);">' + myDeviceId + '</span><br><span style="font-size:11px; color:var(--ios-text-muted); font-weight:normal;">Berikan ID ini ke Admin untuk minta PIN Aktivasi</span>';
+            deviceIdDisplay.innerHTML = 'Device ID Anda: <span style="font-size:16px; letter-spacing:2px; font-weight:bold; color:var(--ios-blue);">' + myDeviceId + '</span><br>Berikan ID ini ke Admin untuk minta PIN Aktivasi.';
         }
 
         // Periksa status lock dari localStorage
