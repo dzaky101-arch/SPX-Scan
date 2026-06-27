@@ -5,21 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Scan SPX">
+    <meta name="description" content="Copyright @ Mbah Sugeng">
     <title>Scan Paket SPX</title>
-    <!-- Favicon / Ikon Tab Browser -->
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/dzaky101-arch/SPX-Scan/main/scanpaketSPX/logo_spx.png">
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/dzaky101-arch/SPX-Scan/main/scanpaketSPX/logo_spx.png">
-    
-    <!-- Meta Tags for Social Sharing -->
-    <meta property="og:title" content="Scan Paket SPX">
-    <meta property="og:description" content="Copyright @ Mbah Sugeng">
-    <meta property="og:image" content="https://raw.githubusercontent.com/dzaky101-arch/SPX-Scan/main/scanpaketSPX/logo_spx.png"> <!-- SPX Logo/Image -->
-    <meta property="og:type" content="website">
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Scan Paket SPX">
-    <meta name="twitter:description" content="Copyright @ Mbah Sugeng">
-    <meta name="twitter:image" content="https://raw.githubusercontent.com/dzaky101-arch/SPX-Scan/main/scanpaketSPX/logo_spx.png">
+    <link rel="icon" href="https://raw.githubusercontent.com/dzaky101-arch/SPX-Scan/main/scanpaketSPX/logo_spx.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -679,14 +667,13 @@
     <div class="container">
         <header style="position: relative;">
             <button id="btnThemeToggle" style="position: absolute; top: 0; right: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border);">☀️</button>
-            <h1>📦 Scan Paket SPX</h1>
+            <h1><img src="https://raw.githubusercontent.com/dzaky101-arch/SPX-Scan/main/scanpaketSPX/logo_spx.png" alt="Logo SPX" style="height: 32px; vertical-align: middle; margin-right: 10px;">📦 Scan Paket SPX</h1>
             <div class="subtitle">Optimasi Safari iPhone & Scanner</div>
             
             <div class="action-grid">
                 <button id="btnCopy" class="btn-success">📲 Share (Return)</button>
                 <button id="btnSharePickup" class="btn-warning" style="background-color: #ff9500; color: #fff;">📲 Share (Pickup)</button>
                 <button id="btnCopyResiOnly" class="btn-info">📋 Copy Hanya Resi</button>
-                <button id="btnImportText" class="btn-success" style="background-color: #5856d6; color: #fff;">📥 Import Data</button>
                 <button id="btnExport" class="btn-primary">⬇️ Export Excel</button>
             </div>
         </header>
@@ -703,7 +690,7 @@
                     <label for="photoInput" id="photoLabel" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 42px; border-radius: 10px; border: 1px solid var(--ios-border); background: var(--ios-input-bg); cursor: pointer; font-size: 1.2rem; overflow: hidden; position: relative;">
                         📷
                     </label>
-                    <input type="file" id="photoInput" accept="image/*" style="display: none;">
+                    <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;">
                 </div>
                 <div class="form-group" style="width: 80px;">
                     <label for="tripSelect">Trip</label>
@@ -720,7 +707,7 @@
             </div>
 
             <!-- Input Scan Form -->
-            <form id="scanForm" action="javascript:void(0);" class="form-group" style="margin-bottom: 0;">
+            <form id="scanForm" action="javascript:void(0);" onsubmit="return false;" class="form-group" style="margin-bottom: 0;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
                     <label for="scanInput" style="margin: 0;">Scan Resi / Barcode</label>
                     <div style="display: flex; gap: 15px;">
@@ -800,31 +787,6 @@
         </div>
     </div>
 
-    <!-- iOS Import Modal -->
-    <div class="ios-alert-overlay" id="iosImportModal">
-        <div class="ios-alert-card" style="width: 90%; max-width: 400px; padding: 20px;">
-            <h3 class="ios-alert-title" style="padding-top:0;">Import Data</h3>
-            <p class="ios-alert-message" style="border-bottom:none; margin-bottom: 10px;">Paste teks laporan (dari WhatsApp) ke bawah ini:</p>
-            <textarea id="importTextArea" rows="8" style="width: 100%; border-radius: 10px; border: 1px solid rgba(142, 142, 147, 0.3); padding: 10px; font-size: 14px; background: var(--ios-input-bg, rgba(142, 142, 147, 0.1)); color: var(--ios-text); resize: none; margin-bottom: 15px;" placeholder="Return Msotomotif..."></textarea>
-            <div style="display: flex; gap: 10px;">
-                <button class="ios-btn-ok" id="btnCancelImport" style="flex:1; border:none; background: var(--ios-card-bg-active, #e5e5ea); border-radius:10px; color: var(--ios-red); padding: 12px; font-weight:600;">Batal</button>
-                <button class="ios-btn-ok" id="btnProcessImport" style="flex:1; border:none; background: #007aff; border-radius:10px; color: #fff; padding: 12px; font-weight:600;">Proses Import</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- iOS Action Sheet Modal -->
-    <div class="ios-alert-overlay" id="iosActionSheet">
-        <div class="ios-alert-card" style="width: 320px; padding-bottom: 0;">
-            <h3 class="ios-alert-title">Pilih Data Untuk Share</h3>
-            <p class="ios-alert-message" style="border-bottom:none; padding-bottom: 10px;">Ada beberapa seller dalam riwayat scan.</p>
-            <div id="iosActionSheetButtons" style="display:flex; flex-direction:column; max-height: 40vh; overflow-y: auto; border-top: 0.5px solid rgba(255, 255, 255, 0.15);">
-                <!-- Buttons injected here -->
-            </div>
-            <button class="ios-btn-ok" id="btnCancelActionSheet" style="width: 100%; border-top: 5px solid rgba(0,0,0,0.2); color: var(--ios-red); padding: 14px; font-weight:600; background:none; border-left:none; border-right:none; border-bottom:none; border-radius:0;">Batal</button>
-        </div>
-    </div>
-
     <!-- iOS Custom Alert Dialog -->
     <div class="ios-alert-overlay" id="iosAlert">
         <div class="ios-alert-card">
@@ -836,101 +798,7 @@
         </div>
     </div>
 
-    <!-- Device Lock Overlay -->
-    <div id="deviceLockOverlay" style="display: none; position: fixed; inset: 0; background: var(--ios-bg); z-index: 9999; justify-content: center; align-items: center; padding: 1.5rem; flex-direction: column;">
-        <div class="card" style="width: 100%; max-width: 400px; text-align: center; border: 1px solid var(--ios-border); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-            <h2 style="margin-bottom: 1rem; color: var(--ios-blue);">🔒 Aktivasi Perangkat</h2>
-            <p style="font-size: 0.9rem; color: var(--ios-text-muted); margin-bottom: 1.5rem;">Aplikasi terkunci. Silakan hubungi admin dan berikan Device ID berikut untuk mendapatkan PIN Aktivasi.</p>
-            
-            <div style="font-size: 0.8rem; font-weight: bold; color: var(--ios-text-muted); text-transform: uppercase; margin-bottom: 0.3rem;">Device ID Anda:</div>
-            <div id="lockDeviceId" style="font-size: 2.5rem; font-weight: bold; letter-spacing: 4px; color: var(--ios-text); margin-bottom: 1.5rem; user-select: all;">------</div>
-            
-            <input type="text" id="lockPinInput" placeholder="Masukkan 6 Digit PIN" maxlength="6" style="text-align: center; font-size: 1.2rem; letter-spacing: 2px; margin-bottom: 1rem; font-weight: bold; width: 100%; background: var(--ios-input-bg); color: var(--ios-text); border: 1px solid var(--ios-border); border-radius: 10px; padding: 0.75rem;" autocomplete="off">
-            
-            <button id="btnActivate" style="background-color: var(--ios-blue); color: #fff; width: 100%; border-radius: 10px; padding: 0.85rem; font-size: 16px; font-weight: 600; border: none; cursor: pointer;">Aktifkan</button>
-            
-            <p id="lockError" style="color: var(--ios-red); font-size: 0.85rem; margin-top: 1rem; display: none;">PIN tidak valid atau sudah kadaluarsa.</p>
-        </div>
-    </div>
-
     <script>
-        // Device Lock Logic
-        (function() {
-            const LOCK_STORAGE_KEY = 'spx_activation_data';
-            const DEVICE_ID_KEY = 'spx_device_id';
-            
-            let deviceId = localStorage.getItem(DEVICE_ID_KEY);
-            if (!deviceId) {
-                deviceId = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digit
-                localStorage.setItem(DEVICE_ID_KEY, deviceId);
-            }
-
-            function checkActivation() {
-                const activationStr = localStorage.getItem(LOCK_STORAGE_KEY);
-                if (activationStr) {
-                    try {
-                        const act = JSON.parse(activationStr);
-                        if (act.isPermanent) return true;
-                        if (act.expiry && act.expiry > Date.now()) return true;
-                    } catch (e) {}
-                }
-                return false;
-            }
-
-            function validatePin(enteredPin, deviceIdStr) {
-                if (enteredPin === "888888") {
-                    return { valid: true, permanent: true };
-                }
-                const durations = [1, 3, 7, 14, 30, 90, 180, 365];
-                for (let dur of durations) {
-                    let calc = parseInt(deviceIdStr) * 3 + 777 + (dur * 123);
-                    let expected = calc.toString().slice(-6);
-                    if (enteredPin === expected) {
-                        return { valid: true, durationDays: dur };
-                    }
-                }
-                return { valid: false };
-            }
-
-            const lockOverlay = document.getElementById('deviceLockOverlay');
-            const lockDeviceIdEl = document.getElementById('lockDeviceId');
-            const lockPinInput = document.getElementById('lockPinInput');
-            const btnActivate = document.getElementById('btnActivate');
-            const lockError = document.getElementById('lockError');
-
-            lockDeviceIdEl.textContent = deviceId;
-
-            if (!checkActivation()) {
-                lockOverlay.style.display = 'flex';
-            }
-
-            btnActivate.addEventListener('click', () => {
-                const pin = lockPinInput.value.trim();
-                if (pin.length !== 6) {
-                    lockError.textContent = "PIN harus 6 digit angka.";
-                    lockError.style.display = 'block';
-                    return;
-                }
-                
-                const res = validatePin(pin, deviceId);
-                if (res.valid) {
-                    let actData = {};
-                    if (res.permanent) {
-                        actData.isPermanent = true;
-                    } else {
-                        actData.expiry = Date.now() + (res.durationDays * 24 * 60 * 60 * 1000);
-                    }
-                    localStorage.setItem(LOCK_STORAGE_KEY, JSON.stringify(actData));
-                    lockOverlay.style.display = 'none';
-                    lockPinInput.value = '';
-                    lockError.style.display = 'none';
-                } else {
-                    lockError.textContent = "PIN tidak valid.";
-                    lockError.style.display = 'block';
-                }
-            });
-        })();
-
         // Theme initialization
         const savedTheme = localStorage.getItem('return_spx_theme') || 'dark';
         if (savedTheme === 'light') {
@@ -1161,50 +1029,44 @@
             }
 
             // Form Submit Scanner
-            scanForm.onsubmit = function(e) {
-                if (e && e.preventDefault) {
-                    e.preventDefault();
-                }
+            scanForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
                 
                 const resi = scanInput.value.trim();
                 const trip = tripSelect.value;
                 const seller = document.getElementById('sellerInput').value.trim() || '-';
 
-                if (!resi) return false;
+                if (!resi) return;
 
                 // Validasi awalan SPX atau ID
                 if (!resi.startsWith('SPX') && !resi.startsWith('ID')) {
                     playVoice('Resi tidak valid');
-                    showIosAlert('Resi Salah', '⚠️ PERINGATAN: Hanya resi dengan awalan "SPX" atau "ID" yang bisa di-scan!').then(() => {
-                        scanInput.value = '';
-                        setTimeout(() => scanInput.focus(), 50);
-                    });
-                    return false;
+                    await showIosAlert('Resi Salah', '⚠️ PERINGATAN: Hanya resi dengan awalan "SPX" atau "ID" yang bisa di-scan!');
+                    scanInput.value = '';
+                    setTimeout(() => scanInput.focus(), 50);
+                    return;
                 }
 
                 // Anti Double Resi
                 const isDuplicate = records.some(r => r.resi === resi);
                 if (isDuplicate) {
                     playVoice('Paket Double');
-                    showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(() => {
-                        scanInput.value = '';
-                        setTimeout(() => scanInput.focus(), 50);
-                    });
-                    return false;
+                    await showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.');
+                    scanInput.value = '';
+                    setTimeout(() => scanInput.focus(), 50);
+                    return;
                 }
 
                 playBeep('success');
                 addRecord(trip, seller, resi);
                 scanInput.value = '';
                 setTimeout(() => scanInput.focus(), 50);
-                
-                return false;
-            };
+            });
 
             tripSelect.addEventListener('change', () => scanInput.focus());
 
             // Auto-process pasted text in Scan Input
-            scanInput.addEventListener('paste', (e) => {
+            scanInput.addEventListener('paste', async (e) => {
                 const text = (e.originalEvent || e).clipboardData.getData('text/plain');
                 const matches = text.match(/(?:SPX|ID)[A-Z0-9]+/gi);
                 
@@ -1220,10 +1082,9 @@
                         const isDuplicate = records.some(r => r.resi === resi);
                         if (isDuplicate) {
                             playVoice('Paket Double');
-                            showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(() => {
-                                scanInput.value = '';
-                                setTimeout(() => scanInput.focus(), 50);
-                            });
+                            await showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.');
+                            scanInput.value = '';
+                            setTimeout(() => scanInput.focus(), 50);
                             return;
                         }
                         playBeep('success');
@@ -1263,10 +1124,9 @@
                             message += `⚠️ Duplikat (Diabaikan): ${dupCount} resi\n`;
                         }
 
-                        showIosAlert('Proses Bulk Selesai', message).then(() => {
-                            scanInput.value = '';
-                            setTimeout(() => scanInput.focus(), 50);
-                        });
+                        await showIosAlert('Proses Bulk Selesai', message);
+                        scanInput.value = '';
+                        setTimeout(() => scanInput.focus(), 50);
                     }
                 }
             });
@@ -1315,15 +1175,14 @@
                 renderList();
             }
 
-            function deleteRecord(id) {
-                showIosConfirm('Hapus Data', 'Apakah Anda yakin ingin menghapus baris ini?').then((confirmed) => {
-                    if (confirmed) {
-                        records = records.filter(r => r.id !== id);
-                        recalculateSequence();
-                        saveData();
-                        renderList();
-                    }
-                });
+            async function deleteRecord(id) {
+                const confirmed = await showIosConfirm('Hapus Data', 'Apakah Anda yakin ingin menghapus baris ini?');
+                if (confirmed) {
+                    records = records.filter(r => r.id !== id);
+                    recalculateSequence();
+                    saveData();
+                    renderList();
+                }
             }
 
             function recalculateSequence() {
@@ -1483,162 +1342,58 @@
                 document.body.removeChild(textArea);
             }
 
-            // SHARE HELPER
-            function processShare(groupsToShare, dateStr, shareType = 'Return', customPhotoFile = null) {
-                let report = [];
-                for (const key in groupsToShare) {
-                    const g = groupsToShare[key];
-                    report.push(`${shareType} ${g.seller}`);
-                    report.push(dateStr);
-                    report.push(`Trip ${g.trip}`);
-                    
-                    g.resis.sort((a,b) => a.noUrut - b.noUrut);
-                    let localCounter = 1;
-                    g.resis.forEach(item => {
-                        report.push(`${localCounter}. ${item.resi}`);
-                        localCounter++;
-                    });
-                    
-                    if (shareType === 'Pickup') {
-                        report.push('Keterangan: Paket sudah di-pickup');
-                    } else {
-                        report.push('Keterangan: ');
-                    }
-                    report.push(''); // blank line
-                }
-
-                const finalString = report.join('\n').trim();
-                
-                if (navigator.share) {
-                    const shareData = {
-                        title: `Data ${shareType}`,
-                        text: finalString
-                    };
-                    
-                    const fileToShare = customPhotoFile || (typeof currentPhotoFile !== 'undefined' ? currentPhotoFile : null);
-                    
-                    if (fileToShare && navigator.canShare) {
-                        const filesArray = [new File([fileToShare], `bukti_${shareType.toLowerCase()}.jpg`, { type: fileToShare.type })];
-                        if (navigator.canShare({ files: filesArray })) {
-                            shareData.files = filesArray;
-                        }
-                    }
-                    
-                    navigator.share(shareData).then(() => {
-                        // Reset photo after share (only if we used the global one)
-                        if (!customPhotoFile && typeof currentPhotoFile !== 'undefined') {
-                            currentPhotoFile = null;
-                            const photoLabel = document.getElementById('photoLabel');
-                            const photoInput = document.getElementById('photoInput');
-                            if (photoLabel) photoLabel.innerHTML = '📷';
-                            if (photoInput) photoInput.value = '';
-                        }
-                    }).catch((err) => {
-                        if (err.name !== 'AbortError') {
-                            copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
-                        }
-                    });
-                } else {
-                    copyTextToClipboard(finalString, 'Laporan berhasil disalin! (Peramban tidak mendukung fitur Share gambar)');
-                }
-            }
-
-            function showShareActionSheet(groups, dateStr, shareType) {
-                const actionSheet = document.getElementById('iosActionSheet');
-                const btnContainer = document.getElementById('iosActionSheetButtons');
-                btnContainer.innerHTML = '';
-                const groupKeys = Object.keys(groups);
-
-                // Option: Share Semua
-                const btnAll = document.createElement('button');
-                btnAll.className = 'ios-btn-ok';
-                btnAll.style.cssText = 'padding:14px; width:100%; font-size:16px; font-weight:600; border:none; border-bottom:0.5px solid rgba(255,255,255,0.15); background:none; color:#0a84ff; cursor:pointer; text-align:center;';
-                btnAll.textContent = 'Share Semua Seller';
-                btnAll.onclick = () => {
-                    actionSheet.classList.remove('active');
-                    processShare(groups, dateStr, shareType);
-                };
-                btnContainer.appendChild(btnAll);
-
-                // Option: Individual Sellers
-                groupKeys.forEach(key => {
-                    const g = groups[key];
-                    
-                    const rowDiv = document.createElement('div');
-                    rowDiv.style.cssText = 'display:flex; width:100%; border-bottom:0.5px solid rgba(255,255,255,0.15); align-items: stretch;';
-                    
-                    // Photo Input container
-                    const photoContainer = document.createElement('div');
-                    photoContainer.style.cssText = 'padding:10px; display:flex; align-items:center; justify-content:center; border-right:0.5px solid rgba(255,255,255,0.15); width: 60px;';
-                    
-                    const fileInput = document.createElement('input');
-                    fileInput.type = 'file';
-                    fileInput.accept = 'image/*';
-                    fileInput.style.display = 'none';
-                    
-                    const photoLabel = document.createElement('label');
-                    photoLabel.style.cssText = 'width:40px; height:40px; border-radius:8px; background:var(--ios-input-bg); display:flex; justify-content:center; align-items:center; font-size:1.2rem; cursor:pointer; overflow:hidden; border:1px solid rgba(142,142,147,0.3);';
-                    photoLabel.innerHTML = '📷';
-                    
-                    let localPhotoFile = null;
-                    
-                    fileInput.addEventListener('change', (e) => {
-                        if (e.target.files && e.target.files[0]) {
-                            localPhotoFile = e.target.files[0];
-                            const reader = new FileReader();
-                            reader.onload = function(e) {
-                                photoLabel.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
-                            };
-                            reader.readAsDataURL(localPhotoFile);
-                        }
-                    });
-                    
-                    photoLabel.appendChild(fileInput);
-                    photoContainer.appendChild(photoLabel);
-                    
-                    // Share Button
-                    const shareBtn = document.createElement('button');
-                    shareBtn.className = 'ios-btn-ok';
-                    shareBtn.style.cssText = 'flex:1; padding:14px; font-size:15px; border:none; background:none; color:var(--ios-text); cursor:pointer; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding-left:15px;';
-                    shareBtn.innerHTML = `<span style="font-weight:600; margin-bottom:4px;">${g.seller} <span style="font-weight:normal; font-size:13px; color:var(--ios-text-muted);">(Trip ${g.trip})</span></span> <span style="font-size:12px; color:var(--ios-text-muted); background:var(--ios-card-bg-active); padding:2px 6px; border-radius:10px;">${g.resis.length} resi</span>`;
-                    shareBtn.onclick = () => {
-                        actionSheet.classList.remove('active');
-                        const singleGroup = {};
-                        singleGroup[key] = g;
-                        processShare(singleGroup, dateStr, shareType, localPhotoFile);
-                    };
-                    
-                    rowDiv.appendChild(photoContainer);
-                    rowDiv.appendChild(shareBtn);
-                    btnContainer.appendChild(rowDiv);
-                });
-
-                actionSheet.classList.add('active');
-            }
-
-            const btnCancelActionSheet = document.getElementById('btnCancelActionSheet');
-            if (btnCancelActionSheet) {
-                btnCancelActionSheet.addEventListener('click', () => {
-                    document.getElementById('iosActionSheet').classList.remove('active');
-                });
-            }
-
             // SHARE RETURN TO WHATSAPP
-            btnCopy.addEventListener('click', () => {
+            btnCopy.addEventListener('click', async () => {
                 if (records.length === 0) {
                     showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
                     return;
                 }
 
                 const { groups, dateStr } = generateReportData();
-                const groupKeys = Object.keys(groups);
+                let report = [];
 
-                if (groupKeys.length > 1) {
-                    showShareActionSheet(groups, dateStr, 'Return');
-                    return;
+                for (const key in groups) {
+                    const g = groups[key];
+                    report.push(`Return ${g.seller}`);
+                    report.push(dateStr);
+                    report.push(`Trip ${g.trip}`);
+                    
+                    g.resis.sort((a,b) => a.noUrut - b.noUrut);
+                    g.resis.forEach(item => {
+                        report.push(`${item.noUrut}. ${item.resi}`);
+                    });
+                    report.push('Keterangan: ');
+                    report.push(''); // blank line
                 }
 
-                processShare(groups, dateStr, 'Return');
+                const finalString = report.join('\n').trim();
+                
+                if (navigator.share) {
+                    try {
+                        const shareData = {
+                            title: 'Data Return',
+                            text: finalString
+                        };
+                        
+                        if (currentPhotoFile && navigator.canShare) {
+                            const filesArray = [new File([currentPhotoFile], "bukti_return.jpg", { type: currentPhotoFile.type })];
+                            if (navigator.canShare({ files: filesArray })) {
+                                shareData.files = filesArray;
+                            }
+                        }
+                        
+                        await navigator.share(shareData);
+                        currentPhotoFile = null;
+                        photoLabel.innerHTML = '📷';
+                        photoInput.value = '';
+                    } catch (err) {
+                        if (err.name !== 'AbortError') {
+                            copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
+                        }
+                    }
+                } else {
+                    copyTextToClipboard(finalString, 'Laporan berhasil disalin! (Peramban tidak mendukung fitur Share gambar)');
+                }
             });
 
             // SHARE PICKUP TO WHATSAPP
@@ -1664,21 +1419,62 @@
             }
 
             if (btnSharePickup) {
-                btnSharePickup.addEventListener('click', () => {
-                    if (records.length === 0) {
-                        showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
+                btnSharePickup.addEventListener('click', async () => {
+                    const currentTrip = tripSelect.value;
+                    const currentSeller = document.getElementById('sellerInput').value.trim() || '-';
+                    
+                    const groupRecords = records.filter(r => r.trip === currentTrip && (r.seller || '-') === currentSeller);
+                    
+                    if (groupRecords.length === 0) {
+                        showIosAlert('Data Kosong', `Tidak ada data untuk Seller "${currentSeller}" di Trip ${currentTrip}.`);
                         return;
                     }
 
-                    const { groups, dateStr } = generateReportData();
-                    const groupKeys = Object.keys(groups);
+                    const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                    const now = new Date();
+                    const dateStr = `${now.getDate()} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
 
-                    if (groupKeys.length > 1) {
-                        showShareActionSheet(groups, dateStr, 'Pickup');
-                        return;
+                    let report = [];
+                    report.push(`Pickup ${currentSeller}`);
+                    report.push(dateStr);
+                    report.push(`Trip ${currentTrip}`);
+                    
+                    groupRecords.sort((a,b) => a.noUrut - b.noUrut);
+                    groupRecords.forEach(item => {
+                        report.push(`${item.noUrut}. ${item.resi}`);
+                    });
+                    report.push('Keterangan: Paket sudah di-pickup');
+                    
+                    const finalString = report.join('\n').trim();
+
+                    // Web Share API
+                    if (navigator.share) {
+                        try {
+                            const shareData = {
+                                title: 'Daftar Pickup',
+                                text: finalString
+                            };
+                            
+                            if (currentPhotoFile && navigator.canShare) {
+                                const filesArray = [new File([currentPhotoFile], "bukti_pickup.jpg", { type: currentPhotoFile.type })];
+                                if (navigator.canShare({ files: filesArray })) {
+                                    shareData.files = filesArray;
+                                }
+                            }
+                            
+                            await navigator.share(shareData);
+                            // Clear photo after successful share
+                            currentPhotoFile = null;
+                            photoLabel.innerHTML = '📷';
+                            photoInput.value = '';
+                        } catch (err) {
+                            if (err.name !== 'AbortError') {
+                                copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
+                            }
+                        }
+                    } else {
+                        copyTextToClipboard(finalString, 'Daftar Pickup disalin! (Peramban tidak mendukung fitur Share gambar)');
                     }
-
-                    processShare(groups, dateStr, 'Pickup');
                 });
             }
 
@@ -1693,98 +1489,6 @@
                 const finalString = resis.join('\n');
                 copyTextToClipboard(finalString, 'Resi berhasil disalin!');
             });
-
-            // IMPORT FROM TEXT
-            const btnImportText = document.getElementById('btnImportText');
-            const iosImportModal = document.getElementById('iosImportModal');
-            const importTextArea = document.getElementById('importTextArea');
-            const btnCancelImport = document.getElementById('btnCancelImport');
-            const btnProcessImport = document.getElementById('btnProcessImport');
-
-            if (btnImportText) {
-                btnImportText.addEventListener('click', () => {
-                    importTextArea.value = '';
-                    iosImportModal.classList.add('active');
-                });
-            }
-
-            if (btnCancelImport) {
-                btnCancelImport.addEventListener('click', () => {
-                    iosImportModal.classList.remove('active');
-                });
-            }
-
-            if (btnProcessImport) {
-                btnProcessImport.addEventListener('click', () => {
-                    const text = importTextArea.value.trim();
-                    if (!text) {
-                        showIosAlert('Gagal', 'Teks tidak boleh kosong.');
-                        return;
-                    }
-
-                    const lines = text.split('\n').map(l => l.trim());
-                    let currentSeller = '-';
-                    let currentTrip = '1';
-                    let importedCount = 0;
-                    
-                    let currentNoUrut = records.length > 0 ? Math.max(...records.map(r => r.noUrut)) : 0;
-                    
-                    for (let line of lines) {
-                        if (!line) continue;
-                        
-                        // Parse Seller
-                        const sellerMatch = line.match(/^(?:Return|Pickup)\s+(.+)$/i);
-                        if (sellerMatch) {
-                            currentSeller = sellerMatch[1].trim();
-                            continue;
-                        }
-                        
-                        // Parse Trip
-                        const tripMatch = line.match(/^Trip\s+(\d+)$/i);
-                        if (tripMatch) {
-                            currentTrip = tripMatch[1].trim();
-                            continue;
-                        }
-                        
-                        // Ignore date / Keterangan
-                        if (line.toLowerCase().startsWith('keterangan:')) continue;
-                        if (line.match(/^\d{1,2}\s+[A-Za-z]+\s+\d{4}$/)) continue;
-                        
-                        // Parse Resi
-                        const resiMatch = line.match(/^(?:\d+\.\s*)?([a-zA-Z0-9]+)$/);
-                        if (resiMatch) {
-                            const resi = resiMatch[1].trim();
-                            if (resi.length < 8) continue; // Minimum length for a valid resi
-                            
-                            const exists = records.find(r => r.resi === resi);
-                            if (!exists) {
-                                currentNoUrut++;
-                                const newRecord = {
-                                    id: Date.now() + Math.random().toString(),
-                                    resi: resi,
-                                    timestamp: new Date().toLocaleString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-                                    noUrut: currentNoUrut,
-                                    trip: currentTrip,
-                                    seller: currentSeller
-                                };
-                                records.unshift(newRecord);
-                                importedCount++;
-                            }
-                        }
-                    }
-                    
-                    iosImportModal.classList.remove('active');
-
-                    if (importedCount > 0) {
-                        saveData();
-                        renderRecords();
-                        updateCounter();
-                        showIosAlert('Berhasil', `${importedCount} Resi berhasil di-import!`);
-                    } else {
-                        showIosAlert('Info', 'Tidak ada data resi baru/valid yang ditemukan pada teks.');
-                    }
-                });
-            }
 
             // EXPORT TO EXCEL
             btnExport.addEventListener('click', () => {
@@ -1820,19 +1524,18 @@
             });
 
             // CLEAR ALL DATA
-            btnClear.addEventListener('click', () => {
+            btnClear.addEventListener('click', async () => {
                 if (records.length === 0) return;
-                showIosConfirm(
+                const confirmed = await showIosConfirm(
                     'Kosongkan Data', 
                     'PERINGATAN! Anda akan menghapus SEMUA data dari layar.\nPastikan Anda sudah menyalin atau mengekspor data.\n\nLanjutkan?',
                     'Kosongkan'
-                ).then((confirmed) => {
-                    if (confirmed) {
-                        records = [];
-                        saveData();
-                        renderList();
-                    }
-                });
+                );
+                if (confirmed) {
+                    records = [];
+                    saveData();
+                    renderList();
+                }
             });
 
             // ================== QR CODE MODAL & SLIDESHOW LOGIC ==================
@@ -1984,6 +1687,23 @@
                 }
                 openQRModal(0); // Start from first record (newest)
             });
+
+            // DEVICE LOCK LOGIC
+            const validateDevice = () => {
+                const isVerified = localStorage.getItem('device_verified');
+                if (isVerified === 'true') return;
+                
+                const pin = prompt('Aplikasi Terkunci!\nMasukkan PIN aktivasi perangkat untuk melanjutkan:');
+                if (pin === '888888') {
+                    localStorage.setItem('device_verified', 'true');
+                    alert('Perangkat berhasil diaktivasi!');
+                } else {
+                    alert('PIN Salah! Akses ditolak.');
+                    document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#000;color:#fff;font-family:sans-serif;text-align:center;padding:20px;"><div><h1>Akses Ditolak</h1><p>Silakan hubungi administrator (Mbah Sugeng) untuk mendapatkan PIN aktivasi perangkat Anda.</p></div></div>';
+                    throw new Error('Device not verified');
+                }
+            };
+            validateDevice();
         });
     </script>
 </body>
