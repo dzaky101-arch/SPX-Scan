@@ -763,20 +763,20 @@
 <body>
     <div class="container">
         <header style="position: relative;">
-            <button onclick="window.location.reload()" style="position: absolute; top: 0; left: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border);">🔄</button>
-            <button id="btnThemeToggle" style="position: absolute; top: 0; right: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border);">🌓</button>
+            <button onclick="window.location.reload()" style="position: absolute; top: 0; left: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border);">��</button>
+            <button id="btnThemeToggle" style="position: absolute; top: 0; right: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border);">��</button>
             <div style="text-align: center; margin-bottom: 15px;">
                 <img src="https://raw.githubusercontent.com/dzaky101-arch/SPX-Scan/main/scanpaketSPX/logo_spx.png" alt="Logo SPX" style="height: 50px;">
             </div>
-            <h1>📦 Scan Paket SPX</h1>
+            <h1>�� Scan Paket SPX</h1>
             <div class="subtitle">Optimasi Safari iPhone & Scanner</div>
             
             <div class="action-grid">
-                <button id="btnCopy" class="btn-success">📲 Share (Return)</button>
-                <button id="btnSharePickup" class="btn-warning" style="background-color: #ff9500; color: #fff;">📤 Share (Pickup)</button>
-                <button id="btnCopyResiOnly" class="btn-info">📋 Copy Hanya Resi</button>
-                <button id="btnOpenImport" class="btn-primary" style="background-color: #8e44ad;">📥 Import Data</button>
-                <button id="btnExport" class="btn-primary">📊 Export Excel</button>
+                <button id="btnCopy" class="btn-success">�� Share (Return)</button>
+                <button id="btnSharePickup" class="btn-warning" style="background-color: #ff9500; color: #fff;">�� Share (Pickup)</button>
+                <button id="btnCopyResiOnly" class="btn-info">�� Copy Hanya Resi</button>
+                <button id="btnOpenImport" class="btn-primary" style="background-color: #8e44ad;">�� Import Data</button>
+                <button id="btnExport" class="btn-primary">�� Export Excel</button>
             </div>
         </header>
 
@@ -790,7 +790,7 @@
                 <div class="form-group" style="width: 60px;">
                     <label>Foto</label>
                     <label for="photoInput" id="photoLabel" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 42px; border-radius: 10px; border: 1px solid var(--ios-border); background: var(--ios-input-bg); cursor: pointer; font-size: 1.2rem; overflow: hidden; position: relative;">
-                        📷
+                        ��
                     </label>
                     <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;">
                 </div>
@@ -813,7 +813,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
                     <label for="scanInput" style="margin: 0;">Scan Resi / Barcode</label>
                     <div style="display: flex; gap: 15px;">
-                        <span id="btnCameraOpen" style="color: var(--ios-blue); font-weight: 600; font-size: 0.9rem; cursor: pointer;">📷 Kamera</span>
+                        <span id="btnCameraOpen" style="color: var(--ios-blue); font-weight: 600; font-size: 0.9rem; cursor: pointer;">�� Kamera</span>
                     </div>
                 </div>
                 <div class="scan-wrapper">
@@ -829,18 +829,18 @@
             <div class="list-header">
                 <h2>Riwayat Scan</h2>
                 <div class="list-header-actions">
-                    <span id="btnAllQR" style="color: var(--ios-blue); font-weight: 600; font-size: 0.9rem; cursor: pointer;">📲 Slide QR</span>
-                    <span class="reset-link" id="btnClear">🗑️ Kosongkan Data</span>
+                    <span id="btnAllQR" style="color: var(--ios-blue); font-weight: 600; font-size: 0.9rem; cursor: pointer;">�� Slide QR</span>
+                    <span class="reset-link" id="btnClear">��️ Kosongkan Data</span>
                 </div>
             </div>
             
             <div style="margin-bottom: 1rem;">
-                <input type="text" id="searchInput" placeholder="🔍 Cari nomor resi atau seller..." autocomplete="off">
+                <input type="text" id="searchInput" placeholder="�� Cari nomor resi atau seller..." autocomplete="off">
             </div>
 
             <div class="records-list" id="recordsList">
                 <div class="empty-state">
-                    <div class="empty-icon">📭</div>
+                    <div class="empty-icon">��</div>
                     <p>Belum ada data scan.</p>
                 </div>
             </div>
@@ -856,7 +856,7 @@
     <div class="modal-overlay" id="cameraModal">
         <div class="modal-card">
             <div class="modal-header">
-                <h3>📷 Scan Barcode Kamera</h3>
+                <h3>�� Scan Barcode Kamera</h3>
                 <button type="button" class="modal-close" id="btnCameraCloseModal">&times;</button>
             </div>
             <div class="modal-body">
@@ -881,7 +881,7 @@
             </div>
 
             <div class="qr-action-buttons">
-                <button type="button" id="qrDownloadBtn" class="qr-btn-download">💾 Simpan</button>
+                <button type="button" id="qrDownloadBtn" class="qr-btn-download">�� Simpan</button>
                 <button type="button" id="qrShareBtn" class="qr-btn-share">↗ Bagikan</button>
             </div>
             
@@ -916,7 +916,7 @@
     <!-- IMPORT MODAL -->
     <div id="importModal" class="ios-alert-overlay">
         <div class="ios-alert-card" style="width: 320px; text-align: left; padding: 20px;">
-            <h3 style="margin-top: 0; color: var(--ios-text); font-size: 18px; text-align: center;">📥 Import Data</h3>
+            <h3 style="margin-top: 0; color: var(--ios-text); font-size: 18px; text-align: center;">�� Import Data</h3>
             <p style="font-size: 13px; color: var(--ios-text-muted); margin-bottom: 15px; text-align: center;">Paste teks laporan yang diterima dari WhatsApp ke kolom di bawah ini.</p>
             <textarea id="importTextarea" style="width: 100%; height: 150px; padding: 10px; border-radius: 8px; border: 1px solid var(--ios-border); background: var(--ios-bg); color: var(--ios-text); font-family: monospace; font-size: 12px; margin-bottom: 15px; resize: none;" placeholder="Contoh:\nReturn JONIDI\n26 Juni 2026\nTrip 1\n1. SPX123\n2. SPX456"></textarea>
             <div style="display: flex; gap: 10px;">
@@ -927,532 +927,477 @@
     </div>
 
     <script>
-        // Theme initialization
-        const savedTheme = localStorage.getItem('return_spx_theme') || 'dark';
-        if (savedTheme === 'light') {
-            document.documentElement.setAttribute('data-theme', 'light');
+// Theme initialization
+var savedTheme = localStorage.getItem('return_spx_theme') || 'dark';
+if (savedTheme === 'light') {
+  document.documentElement.setAttribute('data-theme', 'light');
+}
+document.addEventListener('DOMContentLoaded', function () {
+  var btnThemeToggle = document.getElementById('btnThemeToggle');
+  btnThemeToggle.textContent = savedTheme === 'light' ? '��' : '☀️';
+  btnThemeToggle.addEventListener('click', function () {
+    var currentTheme = document.documentElement.getAttribute('data-theme');
+    if (currentTheme === 'light') {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('return_spx_theme', 'dark');
+      btnThemeToggle.textContent = '☀️';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('return_spx_theme', 'light');
+      btnThemeToggle.textContent = '��';
+    }
+  });
+  var tripSelect = document.getElementById('tripSelect');
+  var scanForm = document.getElementById('scanForm');
+  var scanInput = document.getElementById('scanInput');
+  var recordsList = document.getElementById('recordsList');
+  var btnExport = document.getElementById('btnExport');
+  var btnCopy = document.getElementById('btnCopy');
+  var btnCopyResiOnly = document.getElementById('btnCopyResiOnly');
+  var btnClear = document.getElementById('btnClear');
+  var btnSoundToggle = document.getElementById('btnSoundToggle');
+  var btnAllQR = document.getElementById('btnAllQR');
+  var searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', function (e) {
+    renderList(e.target.value.trim().toLowerCase());
+  });
+
+  // Camera Scanner Elements
+  var btnCameraOpen = document.getElementById('btnCameraOpen');
+  var cameraModal = document.getElementById('cameraModal');
+  var btnCameraCloseModal = document.getElementById('btnCameraCloseModal');
+  var html5QrCode = null;
+  var isAlertShowing = false;
+  var lastScannedResi = "";
+  var scanTimeout = null;
+  function onScanSuccess(decodedText, decodedResult) {
+    if (isAlertShowing) return;
+    if (decodedText === lastScannedResi) return;
+    lastScannedResi = decodedText;
+    if (scanTimeout) clearTimeout(scanTimeout);
+    scanTimeout = setTimeout(function () {
+      lastScannedResi = "";
+    }, 2000);
+    scanInput.value = decodedText;
+    scanForm.dispatchEvent(new Event('submit', {
+      cancelable: true,
+      bubbles: true
+    }));
+  }
+  function onScanFailure(error) {
+    // Ignore failure
+  }
+  function openCameraModal() {
+    cameraModal.classList.add('active');
+    if (!html5QrCode) {
+      html5QrCode = new Html5Qrcode("qr-reader");
+      html5QrCode.start({
+        facingMode: "environment"
+      }, {
+        fps: 15
+      }, onScanSuccess, onScanFailure).catch(function (err) {
+        closeCameraModal();
+        showIosAlert('Kamera Gagal', 'Kamera belakang tidak dapat diakses. Pastikan Anda memberi izin kamera dan menggunakan koneksi HTTPS.');
+      });
+    }
+  }
+  function closeCameraModal() {
+    cameraModal.classList.remove('active');
+    if (html5QrCode) {
+      html5QrCode.stop().then(function () {
+        html5QrCode.clear();
+        html5QrCode = null;
+      }).catch(error => {
+        html5QrCode.clear();
+        html5QrCode = null;
+      });
+    }
+    setTimeout(() => scanInput.focus(), 50);
+  }
+  btnCameraOpen.addEventListener('click', openCameraModal);
+  btnCameraCloseModal.addEventListener('click', closeCameraModal);
+  cameraModal.addEventListener('click', function (e) {
+    if (e.target === cameraModal) closeCameraModal();
+  });
+
+  // Bulk elements removed
+
+  var STORAGE_KEY = 'scan_paket_spx_data';
+  var records = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  var soundEnabled = true;
+
+  // Initialize UI
+  renderList();
+
+  // Toggle Audio Sound
+  btnSoundToggle.addEventListener('click', function () {
+    soundEnabled = !soundEnabled;
+    if (soundEnabled) {
+      btnSoundToggle.classList.add('active');
+      btnSoundToggle.textContent = '��';
+      playBeep('success');
+    } else {
+      btnSoundToggle.classList.remove('active');
+      btnSoundToggle.textContent = '��';
+    }
+    scanInput.focus();
+  });
+
+  // Web Audio API Beep generator
+  function playBeep(type) {
+    if (!soundEnabled) return;
+    try {
+      var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      var oscillator = audioCtx.createOscillator();
+      var gainNode = audioCtx.createGain();
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      if (type === 'success') {
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); // High pitch beep
+        gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        oscillator.start();
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+        oscillator.stop(audioCtx.currentTime + 0.15);
+      } else if (type === 'error') {
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.setValueAtTime(150, audioCtx.currentTime); // Low buzz
+        gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        oscillator.start();
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+        oscillator.stop(audioCtx.currentTime + 0.3);
+      }
+    } catch (e) {
+      console.log('Audio Context error:', e);
+    }
+  }
+
+  // Voice generator (Female Indonesian)
+  function playVoice(text) {
+    if (!soundEnabled) return;
+    try {
+      var utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'id-ID';
+      utterance.rate = 1.0;
+      utterance.pitch = 1.2;
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      console.log('Speech synthesis error:', e);
+    }
+  }
+
+  // Custom iOS Alert Promise helper
+  window.closeActionSheet = function () {
+    document.getElementById('actionSheetOverlay').classList.remove('active');
+  };
+  function closeActionSheet() {
+    window.closeActionSheet();
+  }
+  function openActionSheet(title, buttons) {
+    document.getElementById('actionSheetOverlay').classList.add('active');
+    var container = document.getElementById('actionSheetButtons');
+    var oldButtons = container.querySelectorAll('.ios-action-btn:not(.ios-action-cancel)');
+    for (var i = 0; i < oldButtons.length; i++) {
+      oldButtons[i].remove();
+    }
+    container.querySelector('.ios-action-title').innerText = title;
+    buttons.forEach(function (btnData) {
+      var btn = document.createElement('button');
+      btn.className = 'ios-action-btn';
+      if (btnData.isCameraRow) {
+        btn.style.display = 'flex';
+        btn.style.alignItems = 'center';
+        btn.style.padding = '10px 15px';
+        var cameraWrapper = document.createElement('div');
+        cameraWrapper.style.marginRight = '15px';
+        cameraWrapper.style.width = '40px';
+        cameraWrapper.style.height = '40px';
+        cameraWrapper.style.borderRadius = '8px';
+        cameraWrapper.style.background = 'var(--ios-border)';
+        cameraWrapper.style.display = 'flex';
+        cameraWrapper.style.alignItems = 'center';
+        cameraWrapper.style.justifyContent = 'center';
+        cameraWrapper.style.overflow = 'hidden';
+        cameraWrapper.style.fontSize = '24px';
+        cameraWrapper.innerHTML = '��';
+        var fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.style.display = 'none';
+        cameraWrapper.appendChild(fileInput);
+        cameraWrapper.onclick = function (e) {
+          e.stopPropagation();
+          fileInput.click();
+        };
+        var attachedFile = null;
+        fileInput.onchange = function (e) {
+          if (e.target.files && e.target.files[0]) {
+            attachedFile = e.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function (evt) {
+              cameraWrapper.innerHTML = '<img src="' + evt.target.result + '" style="width: 100%; height: 100%; object-fit: cover;">';
+              cameraWrapper.appendChild(fileInput);
+            };
+            reader.readAsDataURL(attachedFile);
+          }
+        };
+        var textSpan = document.createElement('span');
+        textSpan.style.flex = '1';
+        textSpan.style.textAlign = 'left';
+        textSpan.innerText = btnData.text;
+        btn.appendChild(cameraWrapper);
+        btn.appendChild(textSpan);
+        btn.onclick = function () {
+          closeActionSheet();
+          btnData.onClick(attachedFile);
+        };
+      } else {
+        btn.innerText = btnData.text;
+        if (btnData.bold) {
+          btn.style.fontWeight = '600';
+        }
+        btn.onclick = function () {
+          closeActionSheet();
+          btnData.onClick(null);
+        };
+      }
+      container.insertBefore(btn, container.lastElementChild);
+    });
+  }
+  function showIosAlert(title, message) {
+    playBeep('error');
+    isAlertShowing = true;
+    return new Promise(resolve => {
+      document.getElementById('iosAlertTitle').textContent = title;
+      document.getElementById('iosAlertMessage').textContent = message;
+      var container = document.getElementById('iosAlertButtons');
+      container.innerHTML = '';
+      var btnOk = document.createElement('button');
+      btnOk.className = 'btn-bold';
+      btnOk.textContent = 'OK';
+      btnOk.addEventListener('click', function () {
+        document.getElementById('iosAlert').classList.remove('active');
+        setTimeout(function () {
+          isAlertShowing = false;
+        }, 500); // delay reset so camera doesn't instantly scan on click
+        resolve();
+      });
+      container.appendChild(btnOk);
+      document.getElementById('iosAlert').classList.add('active');
+    });
+  }
+
+  // Custom iOS Confirm Promise helper
+  function showIosConfirm(title, message, confirmText = 'Hapus') {
+    return new Promise(resolve => {
+      document.getElementById('iosAlertTitle').textContent = title;
+      document.getElementById('iosAlertMessage').textContent = message;
+      var container = document.getElementById('iosAlertButtons');
+      container.innerHTML = '';
+      var btnCancel = document.createElement('button');
+      btnCancel.textContent = 'Batal';
+      btnCancel.addEventListener('click', function () {
+        document.getElementById('iosAlert').classList.remove('active');
+        resolve(false);
+      });
+      var divider = document.createElement('div');
+      divider.className = 'ios-divider';
+      var btnConfirm = document.createElement('button');
+      btnConfirm.className = 'btn-danger-ios btn-bold';
+      btnConfirm.textContent = confirmText;
+      btnConfirm.addEventListener('click', function () {
+        document.getElementById('iosAlert').classList.remove('active');
+        resolve(true);
+      });
+      container.appendChild(btnCancel);
+      container.appendChild(divider);
+      container.appendChild(btnConfirm);
+      document.getElementById('iosAlert').classList.add('active');
+    });
+  }
+
+  // Form Submit Scanner
+  scanForm.onsubmit = function (e) {
+    if (e && e.preventDefault) e.preventDefault();
+    var resi = scanInput.value.trim();
+    var trip = tripSelect.value;
+    var seller = document.getElementById('sellerInput').value.trim() || '-';
+    if (!resi) return false;
+
+    // Validasi awalan SPX atau ID
+    if (!resi.startsWith('SPX') && !resi.startsWith('ID')) {
+      playVoice('Resi tidak valid');
+      showIosAlert('Resi Salah', '⚠️ PERINGATAN: Hanya resi dengan awalan "SPX" atau "ID" yang bisa di-scan!').then(function () {
+        scanInput.value = '';
+        setTimeout(() => scanInput.focus(), 50);
+      });
+      return false;
+    }
+
+    // Anti Double Resi
+    var isDuplicate = records.some(function (r) {
+      return r.resi;
+    } === resi);
+    if (isDuplicate) {
+      playVoice('Paket Double');
+      showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(function () {
+        scanInput.value = '';
+        setTimeout(() => scanInput.focus(), 50);
+      });
+      return false;
+    }
+    playBeep('success');
+    addRecord(trip, seller, resi);
+    scanInput.value = '';
+    setTimeout(() => scanInput.focus(), 50);
+    return false;
+  };
+  tripSelect.addEventListener('change', () => scanInput.focus());
+
+  // Auto-process pasted text in Scan Input
+  scanInput.addEventListener('paste', function (e) {
+    var text = (e.originalEvent || e).clipboardData.getData('text/plain');
+    var matches = text.match(/(?:SPX|ID)[A-Z0-9]+/gi);
+    if (matches && matches.length > 0) {
+      e.preventDefault();
+      var cleanMatches = matches.map(m => m.toUpperCase());
+      var trip = tripSelect.value;
+      var seller = document.getElementById('sellerInput').value.trim() || '-';
+      if (cleanMatches.length === 1) {
+        var resi = cleanMatches[0];
+        // Anti Double Resi
+        var isDuplicate = records.some(function (r) {
+          return r.resi;
+        } === resi);
+        if (isDuplicate) {
+          playVoice('Paket Double');
+          showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(function () {
+            scanInput.value = '';
+            setTimeout(() => scanInput.focus(), 50);
+          });
+          return;
+        }
+        playBeep('success');
+        addRecord(trip, seller, resi);
+        scanInput.value = '';
+        setTimeout(() => scanInput.focus(), 50);
+      } else {
+        // Proses bulk dari paste
+        var successCount = 0;
+        var dupCount = 0;
+        var toAdd = [];
+        var seenInBatch = new Set();
+        cleanMatches.forEach(resi => {
+          var isDuplicate = records.some(function (r) {
+            return r.resi;
+          } === resi) || seenInBatch.has(resi);
+          if (isDuplicate) {
+            dupCount++;
+            return;
+          }
+          seenInBatch.add(resi);
+          toAdd.push(resi);
+        });
+        if (toAdd.length > 0) {
+          addRecordsBulk(trip, seller, toAdd);
+          successCount = toAdd.length;
+          playBeep('success');
+        }
+        if (dupCount > 0) {
+          playVoice('Ada Paket Double');
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const btnThemeToggle = document.getElementById('btnThemeToggle');
-            btnThemeToggle.textContent = savedTheme === 'light' ? '🌙' : '☀️';
-
-            btnThemeToggle.addEventListener('click', () => {
-                const currentTheme = document.documentElement.getAttribute('data-theme');
-                if (currentTheme === 'light') {
-                    document.documentElement.removeAttribute('data-theme');
-                    localStorage.setItem('return_spx_theme', 'dark');
-                    btnThemeToggle.textContent = '☀️';
-                } else {
-                    document.documentElement.setAttribute('data-theme', 'light');
-                    localStorage.setItem('return_spx_theme', 'light');
-                    btnThemeToggle.textContent = '🌙';
-                }
-            });
-
-            const tripSelect = document.getElementById('tripSelect');
-            const scanForm = document.getElementById('scanForm');
-            const scanInput = document.getElementById('scanInput');
-            const recordsList = document.getElementById('recordsList');
-            const btnExport = document.getElementById('btnExport');
-            const btnCopy = document.getElementById('btnCopy');
-            const btnCopyResiOnly = document.getElementById('btnCopyResiOnly');
-            const btnClear = document.getElementById('btnClear');
-            const btnSoundToggle = document.getElementById('btnSoundToggle');
-            const btnAllQR = document.getElementById('btnAllQR');
-            const searchInput = document.getElementById('searchInput');
-
-            searchInput.addEventListener('input', (e) => {
-                renderList(e.target.value.trim().toLowerCase());
-            });
-
-            // Camera Scanner Elements
-            const btnCameraOpen = document.getElementById('btnCameraOpen');
-            const cameraModal = document.getElementById('cameraModal');
-            const btnCameraCloseModal = document.getElementById('btnCameraCloseModal');
-            let html5QrCode = null;
-            let isAlertShowing = false;
-            let lastScannedResi = "";
-            let scanTimeout = null;
-
-            function onScanSuccess(decodedText, decodedResult) {
-                if (isAlertShowing) return;
-                
-                if (decodedText === lastScannedResi) return;
-                
-                lastScannedResi = decodedText;
-                if (scanTimeout) clearTimeout(scanTimeout);
-                scanTimeout = setTimeout(() => {
-                    lastScannedResi = "";
-                }, 2000);
-
-                scanInput.value = decodedText;
-                scanForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-            }
-
-            function onScanFailure(error) {
-                // Ignore failure
-            }
-
-            function openCameraModal() {
-                cameraModal.classList.add('active');
-                if (!html5QrCode) {
-                    html5QrCode = new Html5Qrcode("qr-reader");
-                    html5QrCode.start(
-                        { facingMode: "environment" }, 
-                        { fps: 15 },
-                        onScanSuccess,
-                        onScanFailure
-                    ).catch(err => {
-                        closeCameraModal();
-                        showIosAlert('Kamera Gagal', 'Kamera belakang tidak dapat diakses. Pastikan Anda memberi izin kamera dan menggunakan koneksi HTTPS.');
-                    });
-                }
-            }
-
-            function closeCameraModal() {
-                cameraModal.classList.remove('active');
-                if (html5QrCode) {
-                    html5QrCode.stop().then(() => {
-                        html5QrCode.clear();
-                        html5QrCode = null;
-                    }).catch(error => {
-                        html5QrCode.clear();
-                        html5QrCode = null;
-                    });
-                }
-                setTimeout(() => scanInput.focus(), 50);
-            }
-
-            btnCameraOpen.addEventListener('click', openCameraModal);
-            btnCameraCloseModal.addEventListener('click', closeCameraModal);
-            cameraModal.addEventListener('click', (e) => {
-                if (e.target === cameraModal) closeCameraModal();
-            });
-
-            // Bulk elements removed
-
-            const STORAGE_KEY = 'scan_paket_spx_data';
-            let records = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-            let soundEnabled = true;
-
-            // Initialize UI
-            renderList();
-
-            // Toggle Audio Sound
-            btnSoundToggle.addEventListener('click', () => {
-                soundEnabled = !soundEnabled;
-                if (soundEnabled) {
-                    btnSoundToggle.classList.add('active');
-                    btnSoundToggle.textContent = '🔊';
-                    playBeep('success');
-                } else {
-                    btnSoundToggle.classList.remove('active');
-                    btnSoundToggle.textContent = '🔇';
-                }
-                scanInput.focus();
-            });
-
-            // Web Audio API Beep generator
-            function playBeep(type) {
-                if (!soundEnabled) return;
-                try {
-                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    const oscillator = audioCtx.createOscillator();
-                    const gainNode = audioCtx.createGain();
-
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioCtx.destination);
-
-                    if (type === 'success') {
-                        oscillator.type = 'sine';
-                        oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); // High pitch beep
-                        gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                        oscillator.start();
-                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-                        oscillator.stop(audioCtx.currentTime + 0.15);
-                    } else if (type === 'error') {
-                        oscillator.type = 'sawtooth';
-                        oscillator.frequency.setValueAtTime(150, audioCtx.currentTime); // Low buzz
-                        gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
-                        oscillator.start();
-                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-                        oscillator.stop(audioCtx.currentTime + 0.3);
-                    }
-                } catch (e) {
-                    console.log('Audio Context error:', e);
-                }
-            }
-
-            // Voice generator (Female Indonesian)
-            function playVoice(text) {
-                if (!soundEnabled) return;
-                try {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = 'id-ID';
-                    utterance.rate = 1.0;
-                    utterance.pitch = 1.2;
-                    window.speechSynthesis.speak(utterance);
-                } catch (e) {
-                    console.log('Speech synthesis error:', e);
-                }
-            }
-
-            // Custom iOS Alert Promise helper
-            window.closeActionSheet = function() {
-                document.getElementById('actionSheetOverlay').classList.remove('active');
-            };
-            function closeActionSheet() {
-                window.closeActionSheet();
-            }
-
-            function openActionSheet(title, buttons) {
-                document.getElementById('actionSheetOverlay').classList.add('active');
-                var container = document.getElementById('actionSheetButtons');
-                
-                var oldButtons = container.querySelectorAll('.ios-action-btn:not(.ios-action-cancel)');
-                for(var i=0; i<oldButtons.length; i++) {
-                    oldButtons[i].remove();
-                }
-                
-                container.querySelector('.ios-action-title').innerText = title;
-                
-                buttons.forEach(function(btnData) {
-                    var btn = document.createElement('button');
-                    btn.className = 'ios-action-btn';
-                    
-                    if (btnData.isCameraRow) {
-                        btn.style.display = 'flex';
-                        btn.style.alignItems = 'center';
-                        btn.style.padding = '10px 15px';
-                        
-                        var cameraWrapper = document.createElement('div');
-                        cameraWrapper.style.marginRight = '15px';
-                        cameraWrapper.style.width = '40px';
-                        cameraWrapper.style.height = '40px';
-                        cameraWrapper.style.borderRadius = '8px';
-                        cameraWrapper.style.background = 'var(--ios-border)';
-                        cameraWrapper.style.display = 'flex';
-                        cameraWrapper.style.alignItems = 'center';
-                        cameraWrapper.style.justifyContent = 'center';
-                        cameraWrapper.style.overflow = 'hidden';
-                        cameraWrapper.style.fontSize = '24px';
-                        cameraWrapper.innerHTML = '📷';
-                        
-                        var fileInput = document.createElement('input');
-                        fileInput.type = 'file';
-                        fileInput.accept = 'image/*';
-                        fileInput.style.display = 'none';
-                        
-                        cameraWrapper.appendChild(fileInput);
-                        
-                        cameraWrapper.onclick = function(e) {
-                            e.stopPropagation();
-                            fileInput.click();
-                        };
-                        
-                        var attachedFile = null;
-                        
-                        fileInput.onchange = function(e) {
-                            if (e.target.files && e.target.files[0]) {
-                                attachedFile = e.target.files[0];
-                                var reader = new FileReader();
-                                reader.onload = function(evt) {
-                                    cameraWrapper.innerHTML = '<img src="' + evt.target.result + '" style="width: 100%; height: 100%; object-fit: cover;">';
-                                    cameraWrapper.appendChild(fileInput);
-                                };
-                                reader.readAsDataURL(attachedFile);
-                            }
-                        };
-                        
-                        var textSpan = document.createElement('span');
-                        textSpan.style.flex = '1';
-                        textSpan.style.textAlign = 'left';
-                        textSpan.innerText = btnData.text;
-                        
-                        btn.appendChild(cameraWrapper);
-                        btn.appendChild(textSpan);
-                        
-                        btn.onclick = function() {
-                            closeActionSheet();
-                            btnData.onClick(attachedFile);
-                        };
-                    } else {
-                        btn.innerText = btnData.text;
-                        if (btnData.bold) {
-                            btn.style.fontWeight = '600';
-                        }
-                        btn.onclick = function() {
-                            closeActionSheet();
-                            btnData.onClick(null);
-                        };
-                    }
-                    
-                    container.insertBefore(btn, container.lastElementChild);
-                });
-            }
-
-            function showIosAlert(title, message) {
-                playBeep('error');
-                isAlertShowing = true;
-                return new Promise((resolve) => {
-                    document.getElementById('iosAlertTitle').textContent = title;
-                    document.getElementById('iosAlertMessage').textContent = message;
-                    const container = document.getElementById('iosAlertButtons');
-                    container.innerHTML = '';
-                    
-                    const btnOk = document.createElement('button');
-                    btnOk.className = 'btn-bold';
-                    btnOk.textContent = 'OK';
-                    btnOk.addEventListener('click', () => {
-                        document.getElementById('iosAlert').classList.remove('active');
-                        setTimeout(() => { isAlertShowing = false; }, 500); // delay reset so camera doesn't instantly scan on click
-                        resolve();
-                    });
-                    container.appendChild(btnOk);
-                    
-                    document.getElementById('iosAlert').classList.add('active');
-                });
-            }
-
-            // Custom iOS Confirm Promise helper
-            function showIosConfirm(title, message, confirmText = 'Hapus') {
-                return new Promise((resolve) => {
-                    document.getElementById('iosAlertTitle').textContent = title;
-                    document.getElementById('iosAlertMessage').textContent = message;
-                    const container = document.getElementById('iosAlertButtons');
-                    container.innerHTML = '';
-                    
-                    const btnCancel = document.createElement('button');
-                    btnCancel.textContent = 'Batal';
-                    btnCancel.addEventListener('click', () => {
-                        document.getElementById('iosAlert').classList.remove('active');
-                        resolve(false);
-                    });
-                    
-                    const divider = document.createElement('div');
-                    divider.className = 'ios-divider';
-                    
-                    const btnConfirm = document.createElement('button');
-                    btnConfirm.className = 'btn-danger-ios btn-bold';
-                    btnConfirm.textContent = confirmText;
-                    btnConfirm.addEventListener('click', () => {
-                        document.getElementById('iosAlert').classList.remove('active');
-                        resolve(true);
-                    });
-                    
-                    container.appendChild(btnCancel);
-                    container.appendChild(divider);
-                    container.appendChild(btnConfirm);
-                    
-                    document.getElementById('iosAlert').classList.add('active');
-                });
-            }
-
-            // Form Submit Scanner
-            scanForm.onsubmit = function(e) {
-                if (e && e.preventDefault) e.preventDefault();
-                
-                const resi = scanInput.value.trim();
-                const trip = tripSelect.value;
-                const seller = document.getElementById('sellerInput').value.trim() || '-';
-
-                if (!resi) return false;
-
-                // Validasi awalan SPX atau ID
-                if (!resi.startsWith('SPX') && !resi.startsWith('ID')) {
-                    playVoice('Resi tidak valid');
-                    showIosAlert('Resi Salah', '⚠️ PERINGATAN: Hanya resi dengan awalan "SPX" atau "ID" yang bisa di-scan!').then(() => {
-                        scanInput.value = '';
-                        setTimeout(() => scanInput.focus(), 50);
-                    });
-                    return false;
-                }
-
-                // Anti Double Resi
-                const isDuplicate = records.some(r => r.resi === resi);
-                if (isDuplicate) {
-                    playVoice('Paket Double');
-                    showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(() => {
-                        scanInput.value = '';
-                        setTimeout(() => scanInput.focus(), 50);
-                    });
-                    return false;
-                }
-
-                playBeep('success');
-                addRecord(trip, seller, resi);
-                scanInput.value = '';
-                setTimeout(() => scanInput.focus(), 50);
-                
-                return false;
-            };
-
-            tripSelect.addEventListener('change', () => scanInput.focus());
-
-            // Auto-process pasted text in Scan Input
-            scanInput.addEventListener('paste', function(e) {
-                const text = (e.originalEvent || e).clipboardData.getData('text/plain');
-                const matches = text.match(/(?:SPX|ID)[A-Z0-9]+/gi);
-                
-                if (matches && matches.length > 0) {
-                    e.preventDefault();
-                    const cleanMatches = matches.map(m => m.toUpperCase());
-                    const trip = tripSelect.value;
-                    const seller = document.getElementById('sellerInput').value.trim() || '-';
-
-                    if (cleanMatches.length === 1) {
-                        const resi = cleanMatches[0];
-                        // Anti Double Resi
-                        const isDuplicate = records.some(r => r.resi === resi);
-                        if (isDuplicate) {
-                            playVoice('Paket Double');
-                            showIosAlert('Resi Duplikat', '⚠️ PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(() => {
-                                scanInput.value = '';
-                                setTimeout(() => scanInput.focus(), 50);
-                            });
-                            return;
-                        }
-                        playBeep('success');
-                        addRecord(trip, seller, resi);
-                        scanInput.value = '';
-                        setTimeout(() => scanInput.focus(), 50);
-                    } else {
-                        // Proses bulk dari paste
-                        let successCount = 0;
-                        let dupCount = 0;
-                        const toAdd = [];
-                        const seenInBatch = new Set();
-
-                        cleanMatches.forEach(resi => {
-                            const isDuplicate = records.some(r => r.resi === resi) || seenInBatch.has(resi);
-                            if (isDuplicate) {
-                                dupCount++;
-                                return;
-                            }
-                            seenInBatch.add(resi);
-                            toAdd.push(resi);
-                        });
-
-                        if (toAdd.length > 0) {
-                            addRecordsBulk(trip, seller, toAdd);
-                            successCount = toAdd.length;
-                            playBeep('success');
-                        }
-
-                        if (dupCount > 0) {
-                            playVoice('Ada Paket Double');
-                        }
-
-                        // Show custom iOS alert summary
-                        let message = `Berhasil ditambahkan: ${successCount} resi\n`;
-                        if (dupCount > 0) {
-                            message += `⚠️ Duplikat (Diabaikan): ${dupCount} resi\n`;
-                        }
-
-                        showIosAlert('Proses Bulk Selesai', message).then(() => {
-                            scanInput.value = '';
-                            setTimeout(() => scanInput.focus(), 50);
-                        });
-                    }
-                }
-            });
-
-            function addRecord(trip, seller, resi) {
-                const groupRecords = records.filter(r => r.trip === trip && r.seller === seller);
-                const noUrut = groupRecords.length + 1;
-
-                const now = new Date();
-                const timestamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-
-                const newRecord = {
-                    id: Date.now().toString(),
-                    timestamp,
-                    trip,
-                    seller,
-                    noUrut,
-                    resi
-                };
-
-                records.unshift(newRecord); 
-                saveData();
-                renderList();
-            }
-
-            function addRecordsBulk(trip, seller, resiList) {
-                const now = new Date();
-                const timestamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-
-                let currentGroupCount = records.filter(r => r.trip === trip && r.seller === seller).length;
-
-                resiList.forEach((resi) => {
-                    currentGroupCount++;
-                    const newRecord = {
-                        id: (Date.now() + Math.random()).toString(),
-                        timestamp,
-                        trip,
-                        seller,
-                        noUrut: currentGroupCount,
-                        resi
-                    };
-                    records.unshift(newRecord);
-                });
-
-                saveData();
-                renderList();
-            }
-
-            function deleteRecord(id) {
-                showIosConfirm('Hapus Data', 'Apakah Anda yakin ingin menghapus baris ini?').then((confirmed) => {
-                    if (confirmed) {
-                        records = records.filter(r => r.id !== id);
-                        recalculateSequence();
-                        saveData();
-                        renderList();
-                    }
-                });
-            }
-
-            function recalculateSequence() {
-                const chronological = [...records].reverse();
-                const counts = {};
-                
-                chronological.forEach(r => {
-                    const key = `trip_${r.trip}_seller_${r.seller || '-'}`;
-                    if(!counts[key]) counts[key] = 0;
-                    counts[key]++;
-                    r.noUrut = counts[key];
-                });
-                
-                records = chronological.reverse();
-            }
-
-            function saveData() {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-            }
-
-            function renderList(filterText = '') {
-                recordsList.innerHTML = '';
-                
-                const filteredRecords = filterText 
-                    ? records.filter(r => r.resi.toLowerCase().includes(filterText))
-                    : records;
-
-                if (filteredRecords.length === 0) {
-                    recordsList.innerHTML = `
+        // Show custom iOS alert summary
+        var message = `Berhasil ditambahkan: ${successCount} resi\n`;
+        if (dupCount > 0) {
+          message += `⚠️ Duplikat (Diabaikan): ${dupCount} resi\n`;
+        }
+        showIosAlert('Proses Bulk Selesai', message).then(function () {
+          scanInput.value = '';
+          setTimeout(() => scanInput.focus(), 50);
+        });
+      }
+    }
+  });
+  function addRecord(trip, seller, resi) {
+    var groupRecords = records.filter(r => r.trip === trip && r.seller === seller);
+    var noUrut = groupRecords.length + 1;
+    var now = new Date();
+    var timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+    var newRecord = {
+      id: Date.now().toString(),
+      timestamp,
+      trip,
+      seller,
+      noUrut,
+      resi
+    };
+    records.unshift(newRecord);
+    saveData();
+    renderList();
+  }
+  function addRecordsBulk(trip, seller, resiList) {
+    var now = new Date();
+    var timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+    var currentGroupCount = records.filter(r => r.trip === trip && r.seller === seller).length;
+    resiList.forEach(resi => {
+      currentGroupCount++;
+      var newRecord = {
+        id: (Date.now() + Math.random()).toString(),
+        timestamp,
+        trip,
+        seller,
+        noUrut: currentGroupCount,
+        resi
+      };
+      records.unshift(newRecord);
+    });
+    saveData();
+    renderList();
+  }
+  function deleteRecord(id) {
+    showIosConfirm('Hapus Data', 'Apakah Anda yakin ingin menghapus baris ini?').then(confirmed => {
+      if (confirmed) {
+        records = records.filter(r => r.id !== id);
+        recalculateSequence();
+        saveData();
+        renderList();
+      }
+    });
+  }
+  function recalculateSequence() {
+    var chronological = [...records].reverse();
+    var counts = {};
+    chronological.forEach(r => {
+      var key = `trip_${r.trip}_seller_${r.seller || '-'}`;
+      if (!counts[key]) counts[key] = 0;
+      counts[key]++;
+      r.noUrut = counts[key];
+    });
+    records = chronological.reverse();
+  }
+  function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  }
+  function renderList(filterText = '') {
+    recordsList.innerHTML = '';
+    var filteredRecords = filterText ? records.filter(function (r) {
+      return r.resi;
+    }.toLowerCase().includes(filterText)) : records;
+    if (filteredRecords.length === 0) {
+      recordsList.innerHTML = `
                         <div class="empty-state">
-                            <div class="empty-icon">📭</div>
+                            <div class="empty-icon">��</div>
                             <p>${records.length === 0 ? 'Belum ada data scan.' : 'Pencarian tidak ditemukan.'}</p>
                         </div>
                     `;
-                    return;
-                }
-
-                filteredRecords.forEach((record) => {
-                    const index = records.indexOf(record);
-                    const div = document.createElement('div');
-                    div.className = 'record-card';
-                    div.innerHTML = `
+      return;
+    }
+    filteredRecords.forEach(record => {
+      var index = records.indexOf(record);
+      var div = document.createElement('div');
+      div.className = 'record-card';
+      div.innerHTML = `
                         <div class="record-details" data-index="${index}" style="cursor: pointer;">
                             <div class="record-resi">${record.resi}</div>
                             <div class="record-meta">
@@ -1463,496 +1408,474 @@
                             </div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 0.2rem;">
-                            <button class="btn-qr-row" data-index="${index}">📱</button>
-                            <button class="btn-delete-row" data-id="${record.id}" title="Hapus">✕</button>
+                            <button class="btn-qr-row" data-index="${index}">📸</button>
+                            <button class="btn-delete-row" data-id="${record.id}" title="Hapus">❌</button>
                         </div>
                     `;
-                    recordsList.appendChild(div);
-                });
+      recordsList.appendChild(div);
+    });
 
-                // Attach click to open QR from row details
-                document.querySelectorAll('.record-details').forEach(el => {
-                    el.addEventListener('click', () => {
-                        const idx = parseInt(el.getAttribute('data-index'), 10);
-                        openQRModal(idx);
-                    });
-                });
+    // Attach click to open QR from row details
+    document.querySelectorAll('.record-details').forEach(el => {
+      el.addEventListener('click', function () {
+        var idx = parseInt(el.getAttribute('data-index'), 10);
+        openQRModal(idx);
+      });
+    });
 
-                // Attach click to open QR from row QR button
-                document.querySelectorAll('.btn-qr-row').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const idx = parseInt(btn.getAttribute('data-index'), 10);
-                        openQRModal(idx);
-                    });
-                });
+    // Attach click to open QR from row QR button
+    document.querySelectorAll('.btn-qr-row').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var idx = parseInt(btn.getAttribute('data-index'), 10);
+        openQRModal(idx);
+      });
+    });
 
-                // Attach individual deletes
-                document.querySelectorAll('.btn-delete-row').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        deleteRecord(btn.getAttribute('data-id'));
-                    });
-                });
-            }
+    // Attach individual deletes
+    document.querySelectorAll('.btn-delete-row').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        deleteRecord(btn.getAttribute('data-id'));
+      });
+    });
+  }
+  function generateReportData() {
+    var groups = {};
+    var chronologicalRecords = [...records].reverse();
+    chronologicalRecords.forEach(r => {
+      var key = `trip_${r.trip}_seller_${r.seller || '-'}`;
+      if (!groups[key]) {
+        groups[key] = {
+          trip: r.trip,
+          seller: r.seller || '-',
+          resis: []
+        };
+      }
+      groups[key].resis.push({
+        noUrut: r.noUrut,
+        resi: r.resi
+      });
+    });
+    var monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    var now = new Date();
+    var dateStr = `${now.getDate()} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+    return {
+      groups,
+      dateStr
+    };
+  }
 
-            function generateReportData() {
-                const groups = {};
-                const chronologicalRecords = [...records].reverse();
-                
-                chronologicalRecords.forEach(r => {
-                    const key = `trip_${r.trip}_seller_${r.seller || '-'}`;
-                    if (!groups[key]) {
-                        groups[key] = { trip: r.trip, seller: r.seller || '-', resis: [] };
-                    }
-                    groups[key].resis.push({ noUrut: r.noUrut, resi: r.resi });
-                });
+  // Universal Safe Clipboard Copy function for iOS Safari
+  function copyTextToClipboard(text, successMessage) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        showIosAlert('Berhasil', successMessage);
+      }).catch(function (err) {
+        fallbackCopy(text, successMessage);
+      });
+    } else {
+      fallbackCopy(text, successMessage);
+    }
+  }
+  function fallbackCopy(text, successMessage) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
 
-                const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-                const now = new Date();
-                const dateStr = `${now.getDate()} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+    // iOS safe selection style
+    textArea.style.position = 'fixed';
+    textArea.style.top = '0';
+    textArea.style.left = '0';
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+    textArea.style.padding = '0';
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+    textArea.style.background = 'transparent';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
 
-                return { groups, dateStr };
-            }
+    // iOS range selection
+    var range = document.createRange();
+    range.selectNodeContents(textArea);
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    textArea.setSelectionRange(0, 999999);
+    try {
+      var successful = document.execCommand('copy');
+      if (successful) {
+        showIosAlert('Berhasil', successMessage);
+      } else {
+        showIosAlert('Gagal', 'Gagal menyalin teks. Silakan ekspor ke Excel.');
+      }
+    } catch (err) {
+      showIosAlert('Gagal', 'Peramban tidak mendukung penyalinan otomatis.');
+    }
+    document.body.removeChild(textArea);
+  }
 
-            // Universal Safe Clipboard Copy function for iOS Safari
-            function copyTextToClipboard(text, successMessage) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text).then(() => {
-                        showIosAlert('Berhasil', successMessage);
-                    }).catch(err => {
-                        fallbackCopy(text, successMessage);
-                    });
-                } else {
-                    fallbackCopy(text, successMessage);
-                }
-            }
-
-            function fallbackCopy(text, successMessage) {
-                const textArea = document.createElement("textarea");
-                textArea.value = text;
-                
-                // iOS safe selection style
-                textArea.style.position = 'fixed';
-                textArea.style.top = '0';
-                textArea.style.left = '0';
-                textArea.style.width = '2em';
-                textArea.style.height = '2em';
-                textArea.style.padding = '0';
-                textArea.style.border = 'none';
-                textArea.style.outline = 'none';
-                textArea.style.boxShadow = 'none';
-                textArea.style.background = 'transparent';
-                
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                
-                // iOS range selection
-                const range = document.createRange();
-                range.selectNodeContents(textArea);
-                const selection = window.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(range);
-                textArea.setSelectionRange(0, 999999);
-
-                try {
-                    const successful = document.execCommand('copy');
-                    if (successful) {
-                        showIosAlert('Berhasil', successMessage);
-                    } else {
-                        showIosAlert('Gagal', 'Gagal menyalin teks. Silakan ekspor ke Excel.');
-                    }
-                } catch (err) {
-                    showIosAlert('Gagal', 'Peramban tidak mendukung penyalinan otomatis.');
-                }
-                
-                document.body.removeChild(textArea);
-            }
-
-            // SHARE RETURN TO WHATSAPP
-            btnCopy.addEventListener('click', function() {
-                if (records.length === 0) {
-                    showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
-                    return;
-                }
-
-                const data = generateReportData();
-                const groups = data.groups;
-                const dateStr = data.dateStr;
-                
-                const groupKeys = Object.keys(groups);
-                
-                if (groupKeys.length > 1) {
-                    var sheetButtons = [];
-                    sheetButtons.push({
-                        text: 'Share Semua Seller',
-                        bold: true,
-                        onClick: function() {
-                            shareReturnData(groupKeys, groups, dateStr, null);
-                        }
-                    });
-                    
-                    groupKeys.forEach(function(key) {
-                        var g = groups[key];
-                        sheetButtons.push({
-                            text: g.seller + ' (Trip ' + g.trip + ') - ' + g.resis.length + ' resi',
-                            isCameraRow: true,
-                            onClick: function(photo) {
-                                shareReturnData([key], groups, dateStr, photo);
-                            }
-                        });
-                    });
-                    
-                    openActionSheet('Pilih Data Untuk Share', sheetButtons);
-                } else {
-                    shareReturnData(groupKeys, groups, dateStr, null);
-                }
-            });
-
-            function shareReturnData(selectedKeys, groups, dateStr, photoFile) {
-                let report = [];
-
-                selectedKeys.forEach(function(key) {
-                    const g = groups[key];
-                    report.push(`Return ${g.seller}`);
-                    report.push(dateStr);
-                    report.push(`Trip ${g.trip}`);
-                    
-                    g.resis.sort(function(a,b) { return a.noUrut - b.noUrut; });
-                    g.resis.forEach(function(item) {
-                        report.push(`${item.noUrut}. ${item.resi}`);
-                    });
-                    report.push('Keterangan: ');
-                    report.push('');
-                });
-
-                const finalString = report.join('\n').trim();
-                
-                if (navigator.share) {
-                    const shareData = {
-                        title: 'Data Return',
-                        text: finalString
-                    };
-                    
-                    if (photoFile && navigator.canShare) {
-                        const filesArray = [new File([photoFile], "bukti_return.jpg", { type: photoFile.type })];
-                        if (navigator.canShare({ files: filesArray })) {
-                            shareData.files = filesArray;
-                        }
-                    }
-                    
-                    navigator.share(shareData).then(function() {
-                        // success
-                    }).catch(function(err) {
-                        if (err.name !== 'AbortError') {
-                            copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
-                        }
-                    });
-                } else {
-                    copyTextToClipboard(finalString, 'Laporan berhasil disalin! (Peramban tidak mendukung fitur Share gambar)');
-                }
-            }
-
-            // SHARE PICKUP TO WHATSAPP
-            const btnSharePickup = document.getElementById('btnSharePickup');
-            if (btnSharePickup) {
-                btnSharePickup.addEventListener('click', function() {
-                    if (records.length === 0) {
-                        showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
-                        return;
-                    }
-
-                    const data = generateReportData();
-                    const groups = data.groups;
-                    const dateStr = data.dateStr;
-                    
-                    const groupKeys = Object.keys(groups);
-                    
-                    if (groupKeys.length > 1) {
-                        var sheetButtons = [];
-                        sheetButtons.push({
-                            text: 'Share Semua Seller',
-                            bold: true,
-                            onClick: function() {
-                                sharePickupData(groupKeys, groups, dateStr, null);
-                            }
-                        });
-                        
-                        groupKeys.forEach(function(key) {
-                            var g = groups[key];
-                            sheetButtons.push({
-                                text: g.seller + ' (Trip ' + g.trip + ') - ' + g.resis.length + ' resi',
-                                isCameraRow: true,
-                                onClick: function(photo) {
-                                    sharePickupData([key], groups, dateStr, photo);
-                                }
-                            });
-                        });
-                        
-                        openActionSheet('Pilih Data Untuk Share Pickup', sheetButtons);
-                    } else {
-                        sharePickupData(groupKeys, groups, dateStr, null);
-                    }
-                });
-            }
-
-            function sharePickupData(selectedKeys, groups, dateStr, photoFile) {
-                let report = [];
-
-                selectedKeys.forEach(function(key) {
-                    const g = groups[key];
-                    report.push(`Pickup ${g.seller}`);
-                    report.push(dateStr);
-                    report.push(`Trip ${g.trip}`);
-                    
-                    g.resis.sort(function(a,b) { return a.noUrut - b.noUrut; });
-                    g.resis.forEach(function(item) {
-                        report.push(`${item.noUrut}. ${item.resi}`);
-                    });
-                    report.push('Keterangan: Paket sudah di-pickup');
-                    report.push('');
-                });
-
-                const finalString = report.join('\n').trim();
-
-                if (navigator.share) {
-                    const shareData = {
-                        title: 'Daftar Pickup',
-                        text: finalString
-                    };
-                    
-                    if (photoFile && navigator.canShare) {
-                        const filesArray = [new File([photoFile], "bukti_pickup.jpg", { type: photoFile.type })];
-                        if (navigator.canShare({ files: filesArray })) {
-                            shareData.files = filesArray;
-                        }
-                    }
-                    
-                    navigator.share(shareData).then(function() {
-                        // success
-                    }).catch(function(err) {
-                        if (err.name !== 'AbortError') {
-                            copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
-                        }
-                    });
-                } else {
-                    copyTextToClipboard(finalString, 'Daftar Pickup disalin! (Peramban tidak mendukung fitur Share gambar)');
-                }
-            }
-
-            // COPY ONLY RESIS
-            btnCopyResiOnly.addEventListener('click', () => {
-                if (records.length === 0) {
-                    showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
-                    return;
-                }
-
-                const resis = [...records].reverse().map(r => r.resi);
-                const finalString = resis.join('\n');
-                copyTextToClipboard(finalString, 'Resi berhasil disalin!');
-            });
-
-            // EXPORT TO EXCEL
-            btnExport.addEventListener('click', () => {
-                if (records.length === 0) {
-                    showIosAlert('Data Kosong', 'Tidak ada data untuk diexport!');
-                    return;
-                }
-
-                const { groups, dateStr } = generateReportData();
-                const aoa = [];
-
-                for (const key in groups) {
-                    const g = groups[key];
-                    aoa.push([`Data Paket SPX/ID`]);
-                    aoa.push([dateStr]);
-                    aoa.push([`Trip ${g.trip} | Seller: ${g.seller}`]);
-                    
-                    g.resis.sort((a,b) => a.noUrut - b.noUrut);
-                    g.resis.forEach(item => {
-                        aoa.push([`${item.noUrut}. ${item.resi}`]);
-                    });
-                    aoa.push(['']);
-                }
-
-                const worksheet = XLSX.utils.aoa_to_sheet(aoa);
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "Data Return");
-
-                const now = new Date();
-                const fileDateStr = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
-                
-                XLSX.writeFile(workbook, `Rekap_Return_${fileDateStr}.xlsx`);
-            });
-
-            // CLEAR ALL DATA
-            btnClear.addEventListener('click', function() {
-                if (records.length === 0) return;
-                showIosConfirm(
-                    'Kosongkan Data', 
-                    'PERINGATAN! Anda akan menghapus SEMUA data dari layar.\nPastikan Anda sudah menyalin atau mengekspor data.\n\nLanjutkan?',
-                    'Kosongkan'
-                ).then(function(confirmed) {
-                    if (confirmed) {
-                        records = [];
-                        saveData();
-                        renderList();
-                    }
-                });
-            });
-
-            // ================== QR CODE MODAL & SLIDESHOW LOGIC ==================
-            let qrIndex = 0;
-            let autoSlideInterval = null;
-
-            function stopAutoSlide() {
-                if (autoSlideInterval) {
-                    clearInterval(autoSlideInterval);
-                    autoSlideInterval = null;
-                    const btn = document.getElementById('qrAutoBtn');
-                    btn.innerHTML = '▶ Auto';
-                    btn.style.color = 'var(--ios-green)';
-                }
-            }
-
-            function toggleAutoSlide() {
-                const btn = document.getElementById('qrAutoBtn');
-                if (autoSlideInterval) {
-                    stopAutoSlide();
-                } else {
-                    btn.innerHTML = '⏸ Stop';
-                    btn.style.color = 'var(--ios-red)';
-                    
-                    // If already at the end, restart from beginning
-                    if (qrIndex === records.length - 1) {
-                        qrIndex = 0;
-                        renderQR();
-                    }
-                    
-                    autoSlideInterval = setInterval(() => {
-                        if (qrIndex < records.length - 1) {
-                            qrIndex++;
-                            renderQR();
-                        } else {
-                            stopAutoSlide();
-                        }
-                    }, 1250); // 1.25 seconds per slide (2x lebih cepat)
-                }
-            }
-
-            function openQRModal(index) {
-                if (records.length === 0) return;
-                qrIndex = index;
-                document.getElementById('qrModalOverlay').classList.add('active');
-                renderQR();
-            }
-
-            function renderQR() {
-                const record = records[qrIndex];
-                document.getElementById('qrResiLabel').textContent = record.resi;
-                document.getElementById('qrTagLabel').textContent = `${qrIndex + 1} / ${records.length} • (Trip ${record.trip})`;
-
-                const box = document.getElementById('qrBox');
-                box.innerHTML = '';
-
-                // Draw QR Code
-                new QRCode(box, {
-                    text: record.resi,
-                    width: 220,
-                    height: 220,
-                    colorDark: '#000000',
-                    colorLight: '#ffffff',
-                    correctLevel: QRCode.CorrectLevel.H
-                });
-
-                // Update nav buttons state
-                document.getElementById('qrPrevBtn').disabled = qrIndex === 0;
-                document.getElementById('qrNextBtn').disabled = qrIndex === records.length - 1;
-            }
-
-            function closeQRModal() {
-                stopAutoSlide();
-                document.getElementById('qrModalOverlay').classList.remove('active');
-                document.getElementById('qrBox').innerHTML = '';
-                setTimeout(() => scanInput.focus(), 50);
-            }
-
-            document.getElementById('qrCloseBtn').addEventListener('click', closeQRModal);
-            
-            document.getElementById('qrAutoBtn').addEventListener('click', toggleAutoSlide);
-            
-            document.getElementById('qrPrevBtn').addEventListener('click', () => {
-                stopAutoSlide();
-                if (qrIndex > 0) {
-                    qrIndex--;
-                    renderQR();
-                }
-            });
-            document.getElementById('qrNextBtn').addEventListener('click', () => {
-                stopAutoSlide();
-                if (qrIndex < records.length - 1) {
-                    qrIndex++;
-                    renderQR();
-                }
-            });
-
-            document.getElementById('qrModalOverlay').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('qrModalOverlay')) {
-                    closeQRModal();
-                }
-            });
-
-            // Get canvas inside QR box
-            function getQRCanvas() {
-                return document.getElementById('qrBox').querySelector('canvas');
-            }
-
-            // Download QR
-            document.getElementById('qrDownloadBtn').addEventListener('click', () => {
-                const canvas = getQRCanvas();
-                if (canvas) {
-                    const record = records[qrIndex];
-                    const link = document.createElement('a');
-                    link.download = `QR_${record.resi}.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                }
-            });
-
-            // Share QR (Safe for iOS Safari Web Share)
-            document.getElementById('qrShareBtn').addEventListener('click', () => {
-                const canvas = getQRCanvas();
-                if (canvas) {
-                    const record = records[qrIndex];
-                    if (navigator.share && navigator.canShare) {
-                        canvas.toBlob((blob) => {
-                            const file = new File([blob], `QR_${record.resi}.png`, { type: 'image/png' });
-                            if (navigator.canShare({ files: [file] })) {
-                                navigator.share({ files: [file], title: `QR ${record.resi}` })
-                                    .catch(err => console.log('Share canceled or failed:', err));
-                            } else {
-                                // fallback download
-                                document.getElementById('qrDownloadBtn').click();
-                            }
-                        });
-                    } else {
-                        // fallback download
-                        document.getElementById('qrDownloadBtn').click();
-                    }
-                }
-            });
-
-            // Slide QR button next to header
-            btnAllQR.addEventListener('click', () => {
-                if (records.length === 0) {
-                    showIosAlert('Data Kosong', 'Belum ada resi untuk ditampilkan!');
-                    return;
-                }
-                openQRModal(0); // Start from first record (newest)
-            });
+  // SHARE RETURN TO WHATSAPP
+  btnCopy.addEventListener('click', function () {
+    if (records.length === 0) {
+      showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
+      return;
+    }
+    var data = generateReportData();
+    var groups = data.groups;
+    var dateStr = data.dateStr;
+    var groupKeys = Object.keys(groups);
+    if (groupKeys.length > 1) {
+      var sheetButtons = [];
+      sheetButtons.push({
+        text: 'Share Semua Seller',
+        bold: true,
+        onClick: function () {
+          shareReturnData(groupKeys, groups, dateStr, null);
+        }
+      });
+      groupKeys.forEach(function (key) {
+        var g = groups[key];
+        sheetButtons.push({
+          text: g.seller + ' (Trip ' + g.trip + ') - ' + g.resis.length + ' resi',
+          isCameraRow: true,
+          onClick: function (photo) {
+            shareReturnData([key], groups, dateStr, photo);
+          }
         });
-    </script>
+      });
+      openActionSheet('Pilih Data Untuk Share', sheetButtons);
+    } else {
+      shareReturnData(groupKeys, groups, dateStr, null);
+    }
+  });
+  function shareReturnData(selectedKeys, groups, dateStr, photoFile) {
+    var report = [];
+    selectedKeys.forEach(function (key) {
+      var g = groups[key];
+      report.push('Return ' + g.seller);
+      report.push(dateStr);
+      report.push('Trip ' + g.trip);
+      g.resis.sort(function (a, b) {
+        return a.noUrut - b.noUrut;
+      });
+      g.resis.forEach(function (item) {
+        report.push(item.noUrut + '. ' + item.resi);
+      });
+      report.push('Keterangan: ');
+      report.push('');
+    });
+    var finalString = report.join('\n').trim();
+    if (navigator.share) {
+      var shareData = {
+        title: 'Data Return',
+        text: finalString
+      };
+      if (photoFile && navigator.canShare) {
+        var filesArray = [new File([photoFile], "bukti_return.jpg", {
+          type: photoFile.type
+        })];
+        if (navigator.canShare({
+          files: filesArray
+        })) {
+          shareData.files = filesArray;
+        }
+      }
+      navigator.share(shareData).then(function () {
+        // success
+      }).catch(function (err) {
+        if (err.name !== 'AbortError') {
+          copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
+        }
+      });
+    } else {
+      copyTextToClipboard(finalString, 'Laporan berhasil disalin! (Peramban tidak mendukung fitur Share gambar)');
+    }
+  }
+
+  // SHARE PICKUP TO WHATSAPP
+  var btnSharePickup = document.getElementById('btnSharePickup');
+  if (btnSharePickup) {
+    btnSharePickup.addEventListener('click', function () {
+      if (records.length === 0) {
+        showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
+        return;
+      }
+      var data = generateReportData();
+      var groups = data.groups;
+      var dateStr = data.dateStr;
+      var groupKeys = Object.keys(groups);
+      if (groupKeys.length > 1) {
+        var sheetButtons = [];
+        sheetButtons.push({
+          text: 'Share Semua Seller',
+          bold: true,
+          onClick: function () {
+            sharePickupData(groupKeys, groups, dateStr, null);
+          }
+        });
+        groupKeys.forEach(function (key) {
+          var g = groups[key];
+          sheetButtons.push({
+            text: g.seller + ' (Trip ' + g.trip + ') - ' + g.resis.length + ' resi',
+            isCameraRow: true,
+            onClick: function (photo) {
+              sharePickupData([key], groups, dateStr, photo);
+            }
+          });
+        });
+        openActionSheet('Pilih Data Untuk Share Pickup', sheetButtons);
+      } else {
+        sharePickupData(groupKeys, groups, dateStr, null);
+      }
+    });
+  }
+  function sharePickupData(selectedKeys, groups, dateStr, photoFile) {
+    var report = [];
+    selectedKeys.forEach(function (key) {
+      var g = groups[key];
+      report.push('Pickup ' + g.seller);
+      report.push(dateStr);
+      report.push('Trip ' + g.trip);
+      g.resis.sort(function (a, b) {
+        return a.noUrut - b.noUrut;
+      });
+      g.resis.forEach(function (item) {
+        report.push(item.noUrut + '. ' + item.resi);
+      });
+      report.push('Keterangan: Paket sudah di-pickup');
+      report.push('');
+    });
+    var finalString = report.join('\n').trim();
+    if (navigator.share) {
+      var shareData = {
+        title: 'Daftar Pickup',
+        text: finalString
+      };
+      if (photoFile && navigator.canShare) {
+        var filesArray = [new File([photoFile], "bukti_pickup.jpg", {
+          type: photoFile.type
+        })];
+        if (navigator.canShare({
+          files: filesArray
+        })) {
+          shareData.files = filesArray;
+        }
+      }
+      navigator.share(shareData).then(function () {
+        // success
+      }).catch(function (err) {
+        if (err.name !== 'AbortError') {
+          copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
+        }
+      });
+    } else {
+      copyTextToClipboard(finalString, 'Daftar Pickup disalin! (Peramban tidak mendukung fitur Share gambar)');
+    }
+  }
+
+  // COPY ONLY RESIS
+  btnCopyResiOnly.addEventListener('click', function () {
+    if (records.length === 0) {
+      showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
+      return;
+    }
+    var resis = [...records].reverse().map(function (r) {
+      return r.resi;
+    });
+    var finalString = resis.join('\n');
+    copyTextToClipboard(finalString, 'Resi berhasil disalin!');
+  });
+
+  // EXPORT TO EXCEL
+  btnExport.addEventListener('click', function () {
+    if (records.length === 0) {
+      showIosAlert('Data Kosong', 'Tidak ada data untuk diexport!');
+      return;
+    }
+    var reportData = generateReportData();
+    var groups = reportData.groups;
+    var dateStr = reportData.dateStr;
+    var aoa = [];
+    for (var key in groups) {
+      var g = groups[key];
+      aoa.push([`Data Paket SPX/ID`]);
+      aoa.push([dateStr]);
+      aoa.push([`Trip ${g.trip} | Seller: ${g.seller}`]);
+      g.resis.sort((a, b) => a.noUrut - b.noUrut);
+      g.resis.forEach(item => {
+        aoa.push([item.noUrut + '. ' + item.resi]);
+      });
+      aoa.push(['']);
+    }
+    var worksheet = XLSX.utils.aoa_to_sheet(aoa);
+    var workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data Return");
+    var now = new Date();
+    var fileDateStr = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+    XLSX.writeFile(workbook, `Rekap_Return_${fileDateStr}.xlsx`);
+  });
+
+  // CLEAR ALL DATA
+  btnClear.addEventListener('click', function () {
+    if (records.length === 0) return;
+    showIosConfirm('Kosongkan Data', 'PERINGATAN! Anda akan menghapus SEMUA data dari layar.\nPastikan Anda sudah menyalin atau mengekspor data.\n\nLanjutkan?', 'Kosongkan').then(function (confirmed) {
+      if (confirmed) {
+        records = [];
+        saveData();
+        renderList();
+      }
+    });
+  });
+
+  // ================== QR CODE MODAL & SLIDESHOW LOGIC ==================
+  var qrIndex = 0;
+  var autoSlideInterval = null;
+  function stopAutoSlide() {
+    if (autoSlideInterval) {
+      clearInterval(autoSlideInterval);
+      autoSlideInterval = null;
+      var btn = document.getElementById('qrAutoBtn');
+      btn.innerHTML = '▶ Auto';
+      btn.style.color = 'var(--ios-green)';
+    }
+  }
+  function toggleAutoSlide() {
+    var btn = document.getElementById('qrAutoBtn');
+    if (autoSlideInterval) {
+      stopAutoSlide();
+    } else {
+      btn.innerHTML = '⏸ Stop';
+      btn.style.color = 'var(--ios-red)';
+
+      // If already at the end, restart from beginning
+      if (qrIndex === records.length - 1) {
+        qrIndex = 0;
+        renderQR();
+      }
+      autoSlideInterval = setInterval(function () {
+        if (qrIndex < records.length - 1) {
+          qrIndex++;
+          renderQR();
+        } else {
+          stopAutoSlide();
+        }
+      }, 1250); // 1.25 seconds per slide (2x lebih cepat)
+    }
+  }
+  function openQRModal(index) {
+    if (records.length === 0) return;
+    qrIndex = index;
+    document.getElementById('qrModalOverlay').classList.add('active');
+    renderQR();
+  }
+  function renderQR() {
+    var record = records[qrIndex];
+    document.getElementById('qrResiLabel').textContent = record.resi;
+    document.getElementById('qrTagLabel').textContent = `${qrIndex + 1} / ${records.length} • (Trip ${record.trip})`;
+    var box = document.getElementById('qrBox');
+    box.innerHTML = '';
+
+    // Draw QR Code
+    new QRCode(box, {
+      text: record.resi,
+      width: 220,
+      height: 220,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+
+    // Update nav buttons state
+    document.getElementById('qrPrevBtn').disabled = qrIndex === 0;
+    document.getElementById('qrNextBtn').disabled = qrIndex === records.length - 1;
+  }
+  function closeQRModal() {
+    stopAutoSlide();
+    document.getElementById('qrModalOverlay').classList.remove('active');
+    document.getElementById('qrBox').innerHTML = '';
+    setTimeout(() => scanInput.focus(), 50);
+  }
+  document.getElementById('qrCloseBtn').addEventListener('click', closeQRModal);
+  document.getElementById('qrAutoBtn').addEventListener('click', toggleAutoSlide);
+  document.getElementById('qrPrevBtn').addEventListener('click', function () {
+    stopAutoSlide();
+    if (qrIndex > 0) {
+      qrIndex--;
+      renderQR();
+    }
+  });
+  document.getElementById('qrNextBtn').addEventListener('click', function () {
+    stopAutoSlide();
+    if (qrIndex < records.length - 1) {
+      qrIndex++;
+      renderQR();
+    }
+  });
+  document.getElementById('qrModalOverlay').addEventListener('click', function (e) {
+    if (e.target === document.getElementById('qrModalOverlay')) {
+      closeQRModal();
+    }
+  });
+
+  // Get canvas inside QR box
+  function getQRCanvas() {
+    return document.getElementById('qrBox').querySelector('canvas');
+  }
+
+  // Download QR
+  document.getElementById('qrDownloadBtn').addEventListener('click', function () {
+    var canvas = getQRCanvas();
+    if (canvas) {
+      var record = records[qrIndex];
+      var link = document.createElement('a');
+      link.download = `QR_${record.resi}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  });
+
+  // Share QR (Safe for iOS Safari Web Share)
+  document.getElementById('qrShareBtn').addEventListener('click', function () {
+    var canvas = getQRCanvas();
+    if (canvas) {
+      var record = records[qrIndex];
+      if (navigator.share && navigator.canShare) {
+        canvas.toBlob(blob => {
+          var file = new File([blob], `QR_${record.resi}.png`, {
+            type: 'image/png'
+          });
+          if (navigator.canShare({
+            files: [file]
+          })) {
+            navigator.share({
+              files: [file],
+              title: `QR ${record.resi}`
+            }).catch(err => console.log('Share canceled or failed:', err));
+          } else {
+            // fallback download
+            document.getElementById('qrDownloadBtn').click();
+          }
+        });
+      } else {
+        // fallback download
+        document.getElementById('qrDownloadBtn').click();
+      }
+    }
+  });
+
+  // Slide QR button next to header
+  btnAllQR.addEventListener('click', function () {
+    if (records.length === 0) {
+      showIosAlert('Data Kosong', 'Belum ada resi untuk ditampilkan!');
+      return;
+    }
+    openQRModal(0); // Start from first record (newest)
+  });
+});
+</script>
     
     <!-- LOCK SCREEN OVERLAY -->
     <div id="lockScreen">
@@ -1965,168 +1888,155 @@
     </div>
 
     <script>
-        // LOCK SCREEN LOGIC
-        var MASTER_PIN = "888888";
-        var lockScreen = document.getElementById('lockScreen');
-        var pinInput = document.getElementById('pinInput');
+// LOCK SCREEN LOGIC
+var MASTER_PIN = "888888";
+var lockScreen = document.getElementById('lockScreen');
+var pinInput = document.getElementById('pinInput');
 
-        // Generate or get Device ID
-        var myDeviceId = localStorage.getItem('spx_device_id');
-        if (!myDeviceId) {
-            myDeviceId = Math.floor(100000 + Math.random() * 900000).toString();
-            localStorage.setItem('spx_device_id', myDeviceId);
+// Generate or get Device ID
+var myDeviceId = localStorage.getItem('spx_device_id');
+if (!myDeviceId) {
+  myDeviceId = Math.floor(100000 + Math.random() * 900000).toString();
+  localStorage.setItem('spx_device_id', myDeviceId);
+}
+var deviceIdDisplay = document.getElementById('deviceIdDisplay');
+if (deviceIdDisplay) {
+  deviceIdDisplay.innerHTML = 'Device ID Anda:<br><span style="font-size:24px; letter-spacing:3px; font-weight:bold; color:var(--ios-blue); display:block; margin: 5px 0;">' + myDeviceId + '</span><span style="font-size:12px; color:var(--ios-text-muted); font-weight:normal;">Berikan ID ini ke Admin untuk PIN Aktivasi</span>';
+}
+
+// Periksa status lock dari localStorage
+var isUnlocked = localStorage.getItem('deviceUnlocked');
+var expiryTime = localStorage.getItem('deviceExpiry');
+var nowTime = new Date().getTime();
+if (isUnlocked === 'true' && expiryTime && nowTime < parseInt(expiryTime, 10)) {
+  if (lockScreen) lockScreen.style.display = 'none';
+} else {
+  // Jika expired atau belum unlock
+  localStorage.removeItem('deviceUnlocked');
+  localStorage.removeItem('deviceExpiry');
+  if (lockScreen) lockScreen.style.display = 'flex';
+}
+function checkPin() {
+  var currentPin = pinInput.value.trim();
+  var deviceIdNum = parseInt(myDeviceId, 10);
+  var validDurations = [1, 3, 7, 14, 30, 90, 180, 365];
+  var matchedDuration = 0;
+  if (currentPin === MASTER_PIN) {
+    matchedDuration = 9999; // Permanen
+  } else {
+    for (var i = 0; i < validDurations.length; i++) {
+      var dur = validDurations[i];
+      var calcNum = deviceIdNum * 3 + 777 + dur * 123;
+      var expected = ("000000" + calcNum).slice(-6);
+      if (currentPin === expected) {
+        matchedDuration = dur;
+        break;
+      }
+    }
+  }
+  if (matchedDuration > 0) {
+    var now = new Date().getTime();
+    var expiry = matchedDuration === 9999 ? 9999999999999 : now + matchedDuration * 24 * 60 * 60 * 1000;
+    localStorage.setItem('deviceUnlocked', 'true');
+    localStorage.setItem('deviceExpiry', expiry.toString());
+    if (lockScreen) lockScreen.style.display = 'none';
+    var msg = "Aktivasi Berhasil!\nAktif selama: " + (matchedDuration === 9999 ? "Permanen" : matchedDuration + " hari") + ".";
+    alert(msg);
+    pinInput.value = "";
+  } else {
+    alert("PIN SALAH!");
+    pinInput.value = "";
+  }
+}
+
+// ================== IMPORT DATA LOGIC ==================
+var btnOpenImport = document.getElementById('btnOpenImport');
+if (btnOpenImport) {
+  btnOpenImport.addEventListener('click', function () {
+    document.getElementById('importTextarea').value = '';
+    document.getElementById('importModal').classList.add('active');
+  });
+}
+var btnProcessImport = document.getElementById('btnProcessImport');
+if (btnProcessImport) {
+  btnProcessImport.addEventListener('click', function () {
+    var text = document.getElementById('importTextarea').value;
+    if (!text.trim()) {
+      showIosAlert('Gagal', 'Teks tidak boleh kosong!');
+      return;
+    }
+    var lines = text.split('\n');
+    var currentSeller = '-';
+    var currentTrip = '1';
+    var resisToAdd = [];
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+      if (!line) continue;
+      if (line.toLowerCase().indexOf('return ') === 0) {
+        currentSeller = line.substring(7).trim();
+      } else if (line.toLowerCase().indexOf('pickup ') === 0) {
+        currentSeller = line.substring(7).trim();
+      } else if (line.toLowerCase().indexOf('trip ') === 0) {
+        currentTrip = line.substring(5).trim();
+      } else {
+        var match = line.match(/(?:SPX|ID)[A-Z0-9]+/i);
+        if (match) {
+          resisToAdd.push({
+            resi: match[0].toUpperCase(),
+            seller: currentSeller,
+            trip: currentTrip
+          });
         }
-        
-        var deviceIdDisplay = document.getElementById('deviceIdDisplay');
-        if (deviceIdDisplay) {
-            deviceIdDisplay.innerHTML = 'Device ID Anda:<br><span style="font-size:24px; letter-spacing:3px; font-weight:bold; color:var(--ios-blue); display:block; margin: 5px 0;">' + myDeviceId + '</span><span style="font-size:12px; color:var(--ios-text-muted); font-weight:normal;">Berikan ID ini ke Admin untuk PIN Aktivasi</span>';
+      }
+    }
+    if (resisToAdd.length === 0) {
+      showIosAlert('Gagal', 'Tidak ada resi valid yang ditemukan dalam teks.');
+      return;
+    }
+    var addedCount = 0;
+    var dupCount = 0;
+    resisToAdd.forEach(function (item) {
+      var isDuplicate = records.some(function (r) {
+        return r.resi === item.resi;
+      });
+      if (!isDuplicate) {
+        var groupRecords = records.filter(function (r) {
+          return r.trip === item.trip && (r.seller || '-') === item.seller;
+        });
+        var noUrut = groupRecords.length + 1;
+        var now = new Date();
+        function pad2(n) {
+          return (n < 10 ? '0' : '') + n;
         }
+        var timestamp = now.getFullYear() + '-' + pad2(now.getMonth() + 1) + '-' + pad2(now.getDate()) + ' ' + pad2(now.getHours()) + ':' + pad2(now.getMinutes()) + ':' + pad2(now.getSeconds());
+        records.unshift({
+          id: Date.now().toString() + Math.random().toString().substring(2, 6),
+          timestamp: timestamp,
+          trip: item.trip,
+          seller: item.seller,
+          noUrut: noUrut,
+          resi: item.resi
+        });
+        addedCount++;
+      } else {
+        dupCount++;
+      }
+    });
+    recalculateSequence();
+    saveData();
+    renderList();
+    document.getElementById('importModal').classList.remove('active');
+    var msg = "Berhasil import " + addedCount + " resi.";
+    if (dupCount > 0) {
+      msg += "\n(Diabaikan " + dupCount + " resi duplikat)";
+    }
+    showIosAlert('Import Selesai', msg);
+  });
+}
 
-        // Periksa status lock dari localStorage
-        var isUnlocked = localStorage.getItem('deviceUnlocked');
-        var expiryTime = localStorage.getItem('deviceExpiry');
-        var nowTime = new Date().getTime();
-
-        if (isUnlocked === 'true' && expiryTime && nowTime < parseInt(expiryTime, 10)) {
-            if (lockScreen) lockScreen.style.display = 'none';
-        } else {
-            // Jika expired atau belum unlock
-            localStorage.removeItem('deviceUnlocked');
-            localStorage.removeItem('deviceExpiry');
-            if (lockScreen) lockScreen.style.display = 'flex';
-        }
-
-        function checkPin() {
-            var currentPin = pinInput.value.trim();
-            var deviceIdNum = parseInt(myDeviceId, 10);
-            var validDurations = [1, 3, 7, 14, 30, 90, 180, 365];
-            var matchedDuration = 0;
-            
-            if (currentPin === MASTER_PIN) {
-                matchedDuration = 9999; // Permanen
-            } else {
-                for (var i = 0; i < validDurations.length; i++) {
-                    var dur = validDurations[i];
-                    var calcNum = (deviceIdNum * 3) + 777 + (dur * 123);
-                    var expected = ("000000" + calcNum).slice(-6);
-                    if (currentPin === expected) {
-                        matchedDuration = dur;
-                        break;
-                    }
-                }
-            }
-            
-            if (matchedDuration > 0) {
-                var now = new Date().getTime();
-                var expiry = (matchedDuration === 9999) ? 9999999999999 : now + (matchedDuration * 24 * 60 * 60 * 1000);
-                
-                localStorage.setItem('deviceUnlocked', 'true');
-                localStorage.setItem('deviceExpiry', expiry.toString());
-                if (lockScreen) lockScreen.style.display = 'none';
-                
-                var msg = "Aktivasi Berhasil!\nAktif selama: " + (matchedDuration === 9999 ? "Permanen" : matchedDuration + " hari") + ".";
-                alert(msg);
-                pinInput.value = "";
-            } else {
-                alert("PIN SALAH!");
-                pinInput.value = "";
-            }
-        }
-
-        // ================== IMPORT DATA LOGIC ==================
-        var btnOpenImport = document.getElementById('btnOpenImport');
-        if (btnOpenImport) {
-            btnOpenImport.addEventListener('click', function() {
-                document.getElementById('importTextarea').value = '';
-                document.getElementById('importModal').classList.add('active');
-            });
-        }
-
-        var btnProcessImport = document.getElementById('btnProcessImport');
-        if (btnProcessImport) {
-            btnProcessImport.addEventListener('click', function() {
-                var text = document.getElementById('importTextarea').value;
-                if (!text.trim()) {
-                    showIosAlert('Gagal', 'Teks tidak boleh kosong!');
-                    return;
-                }
-                
-                var lines = text.split('\n');
-                var currentSeller = '-';
-                var currentTrip = '1';
-                var resisToAdd = [];
-                
-                for (var i = 0; i < lines.length; i++) {
-                    var line = lines[i].trim();
-                    if (!line) continue;
-                    
-                    if (line.toLowerCase().indexOf('return ') === 0) {
-                        currentSeller = line.substring(7).trim();
-                    } else if (line.toLowerCase().indexOf('pickup ') === 0) {
-                        currentSeller = line.substring(7).trim();
-                    } else if (line.toLowerCase().indexOf('trip ') === 0) {
-                        currentTrip = line.substring(5).trim();
-                    } else {
-                        var match = line.match(/(?:SPX|ID)[A-Z0-9]+/i);
-                        if (match) {
-                            resisToAdd.push({
-                                resi: match[0].toUpperCase(),
-                                seller: currentSeller,
-                                trip: currentTrip
-                            });
-                        }
-                    }
-                }
-                
-                if (resisToAdd.length === 0) {
-                    showIosAlert('Gagal', 'Tidak ada resi valid yang ditemukan dalam teks.');
-                    return;
-                }
-                
-                var addedCount = 0;
-                var dupCount = 0;
-                
-                resisToAdd.forEach(function(item) {
-                    var isDuplicate = records.some(function(r) { return r.resi === item.resi; });
-                    if (!isDuplicate) {
-                        var groupRecords = records.filter(function(r) { return r.trip === item.trip && (r.seller || '-') === item.seller; });
-                        var noUrut = groupRecords.length + 1;
-                        
-                        var now = new Date();
-                        function pad2(n) { return (n < 10 ? '0' : '') + n; }
-                        var timestamp = now.getFullYear() + '-' + pad2(now.getMonth()+1) + '-' + pad2(now.getDate()) + ' ' + pad2(now.getHours()) + ':' + pad2(now.getMinutes()) + ':' + pad2(now.getSeconds());
-                        
-                        records.unshift({
-                            id: Date.now().toString() + Math.random().toString().substring(2, 6),
-                            timestamp: timestamp,
-                            trip: item.trip,
-                            seller: item.seller,
-                            noUrut: noUrut,
-                            resi: item.resi
-                        });
-                        addedCount++;
-                    } else {
-                        dupCount++;
-                    }
-                });
-                
-                recalculateSequence();
-                saveData();
-                renderList();
-                
-                document.getElementById('importModal').classList.remove('active');
-                
-                var msg = "Berhasil import " + addedCount + " resi.";
-                if (dupCount > 0) {
-                    msg += "\n(Diabaikan " + dupCount + " resi duplikat)";
-                }
-                showIosAlert('Import Selesai', msg);
-            });
-        }
-
-        // ================== INITIALIZATION ==================
-        renderList();
-        updateTotalBar();
-    </script>
+// ================== INITIALIZATION ==================
+renderList();
+updateTotalBar();
+</script>
 </body>
 </html>
