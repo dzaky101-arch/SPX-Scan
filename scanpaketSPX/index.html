@@ -1259,9 +1259,10 @@
                             message += `⚠️ Duplikat (Diabaikan): ${dupCount} resi\n`;
                         }
 
-                        await showIosAlert('Proses Bulk Selesai', message);
-                        scanInput.value = '';
-                        setTimeout(() => scanInput.focus(), 50);
+                        showIosAlert('Proses Bulk Selesai', message).then(() => {
+                            scanInput.value = '';
+                            setTimeout(() => scanInput.focus(), 50);
+                        });
                     }
                 }
             });
@@ -1975,4 +1976,12 @@
             btnAllQR.addEventListener('click', () => {
                 if (records.length === 0) {
                     showIosAlert('Data Kosong', 'Belum ada resi untuk ditampilkan!');
-                    ret
+                    return;
+                }
+                openQRModal(0); // Start from first record (newest)
+            });
+        });
+    </script>
+</body>
+</html>
+
