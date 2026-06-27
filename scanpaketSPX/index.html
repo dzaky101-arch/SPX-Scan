@@ -763,20 +763,20 @@
 <body>
     <div class="container">
         <header style="position: relative;">
-            <button onclick="window.location.reload()" style="position: absolute; top: 0; left: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border);">��</button>
-            <button id="btnThemeToggle" style="position: absolute; top: 0; right: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border);">��</button>
+            <button onclick="window.location.reload()" style="position: absolute; top: 0; left: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border);">🔄</button>
+            <button id="btnThemeToggle" style="position: absolute; top: 0; right: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border);">🌓</button>
             <div style="text-align: center; margin-bottom: 15px;">
                 <img src="https://raw.githubusercontent.com/dzaky101-arch/SPX-Scan/main/scanpaketSPX/logo_spx.png" alt="Logo SPX" style="height: 50px;">
             </div>
-            <h1>�� Scan Paket SPX</h1>
+            <h1>📦 Scan Paket SPX</h1>
             <div class="subtitle">Optimasi Safari iPhone & Scanner</div>
             
             <div class="action-grid">
-                <button id="btnCopy" class="btn-success">�� Share (Return)</button>
-                <button id="btnSharePickup" class="btn-warning" style="background-color: #ff9500; color: #fff;">�� Share (Pickup)</button>
-                <button id="btnCopyResiOnly" class="btn-info">�� Copy Hanya Resi</button>
-                <button id="btnOpenImport" class="btn-primary" style="background-color: #8e44ad;">�� Import Data</button>
-                <button id="btnExport" class="btn-primary">�� Export Excel</button>
+                <button id="btnCopy" class="btn-success">📲 Share (Return)</button>
+                <button id="btnSharePickup" class="btn-warning" style="background-color: #ff9500; color: #fff;">📤 Share (Pickup)</button>
+                <button id="btnCopyResiOnly" class="btn-info">📋 Copy Hanya Resi</button>
+                <button id="btnOpenImport" class="btn-primary" style="background-color: #8e44ad;">📥 Import Data</button>
+                <button id="btnExport" class="btn-primary">📊 Export Excel</button>
             </div>
         </header>
 
@@ -790,7 +790,7 @@
                 <div class="form-group" style="width: 60px;">
                     <label>Foto</label>
                     <label for="photoInput" id="photoLabel" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 42px; border-radius: 10px; border: 1px solid var(--ios-border); background: var(--ios-input-bg); cursor: pointer; font-size: 1.2rem; overflow: hidden; position: relative;">
-                        ��
+                        📸
                     </label>
                     <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;">
                 </div>
@@ -813,7 +813,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
                     <label for="scanInput" style="margin: 0;">Scan Resi / Barcode</label>
                     <div style="display: flex; gap: 15px;">
-                        <span id="btnCameraOpen" style="color: var(--ios-blue); font-weight: 600; font-size: 0.9rem; cursor: pointer;">�� Kamera</span>
+                        <span id="btnCameraOpen" style="color: var(--ios-blue); font-weight: 600; font-size: 0.9rem; cursor: pointer;">📸 Kamera</span>
                     </div>
                 </div>
                 <div class="scan-wrapper">
@@ -829,18 +829,18 @@
             <div class="list-header">
                 <h2>Riwayat Scan</h2>
                 <div class="list-header-actions">
-                    <span id="btnAllQR" style="color: var(--ios-blue); font-weight: 600; font-size: 0.9rem; cursor: pointer;">�� Slide QR</span>
-                    <span class="reset-link" id="btnClear">��️ Kosongkan Data</span>
+                    <span id="btnAllQR" style="color: var(--ios-blue); font-weight: 600; font-size: 0.9rem; cursor: pointer;">📱 Slide QR</span>
+                    <span class="reset-link" id="btnClear">🗑️ Kosongkan Data</span>
                 </div>
             </div>
             
             <div style="margin-bottom: 1rem;">
-                <input type="text" id="searchInput" placeholder="�� Cari nomor resi atau seller..." autocomplete="off">
+                <input type="text" id="searchInput" placeholder="🔍 Cari nomor resi atau seller..." autocomplete="off">
             </div>
 
             <div class="records-list" id="recordsList">
                 <div class="empty-state">
-                    <div class="empty-icon">��</div>
+                    <div class="empty-icon">📦</div>
                     <p>Belum ada data scan.</p>
                 </div>
             </div>
@@ -856,7 +856,7 @@
     <div class="modal-overlay" id="cameraModal">
         <div class="modal-card">
             <div class="modal-header">
-                <h3>�� Scan Barcode Kamera</h3>
+                <h3>📸 Scan Barcode Kamera</h3>
                 <button type="button" class="modal-close" id="btnCameraCloseModal">&times;</button>
             </div>
             <div class="modal-body">
@@ -881,7 +881,7 @@
             </div>
 
             <div class="qr-action-buttons">
-                <button type="button" id="qrDownloadBtn" class="qr-btn-download">�� Simpan</button>
+                <button type="button" id="qrDownloadBtn" class="qr-btn-download">💾 Simpan</button>
                 <button type="button" id="qrShareBtn" class="qr-btn-share">↗ Bagikan</button>
             </div>
             
@@ -916,7 +916,7 @@
     <!-- IMPORT MODAL -->
     <div id="importModal" class="ios-alert-overlay">
         <div class="ios-alert-card" style="width: 320px; text-align: left; padding: 20px;">
-            <h3 style="margin-top: 0; color: var(--ios-text); font-size: 18px; text-align: center;">�� Import Data</h3>
+            <h3 style="margin-top: 0; color: var(--ios-text); font-size: 18px; text-align: center;">📥 Import Data</h3>
             <p style="font-size: 13px; color: var(--ios-text-muted); margin-bottom: 15px; text-align: center;">Paste teks laporan yang diterima dari WhatsApp ke kolom di bawah ini.</p>
             <textarea id="importTextarea" style="width: 100%; height: 150px; padding: 10px; border-radius: 8px; border: 1px solid var(--ios-border); background: var(--ios-bg); color: var(--ios-text); font-family: monospace; font-size: 12px; margin-bottom: 15px; resize: none;" placeholder="Contoh:\nReturn JONIDI\n26 Juni 2026\nTrip 1\n1. SPX123\n2. SPX456"></textarea>
             <div style="display: flex; gap: 10px;">
@@ -934,7 +934,7 @@ if (savedTheme === 'light') {
 }
 document.addEventListener('DOMContentLoaded', function () {
   var btnThemeToggle = document.getElementById('btnThemeToggle');
-  btnThemeToggle.textContent = savedTheme === 'light' ? '��' : '☀️';
+  btnThemeToggle.textContent = savedTheme === 'light' ? '🌓' : '☀️';
   btnThemeToggle.addEventListener('click', function () {
     var currentTheme = document.documentElement.getAttribute('data-theme');
     if (currentTheme === 'light') {
@@ -944,7 +944,7 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
       document.documentElement.setAttribute('data-theme', 'light');
       localStorage.setItem('return_spx_theme', 'light');
-      btnThemeToggle.textContent = '��';
+      btnThemeToggle.textContent = '🌓';
     }
   });
   var tripSelect = document.getElementById('tripSelect');
@@ -1034,11 +1034,11 @@ document.addEventListener('DOMContentLoaded', function () {
     soundEnabled = !soundEnabled;
     if (soundEnabled) {
       btnSoundToggle.classList.add('active');
-      btnSoundToggle.textContent = '��';
+      btnSoundToggle.textContent = '🔇';
       playBeep('success');
     } else {
       btnSoundToggle.classList.remove('active');
-      btnSoundToggle.textContent = '��';
+      btnSoundToggle.textContent = '🔊';
     }
     scanInput.focus();
   });
@@ -1119,7 +1119,7 @@ document.addEventListener('DOMContentLoaded', function () {
         cameraWrapper.style.justifyContent = 'center';
         cameraWrapper.style.overflow = 'hidden';
         cameraWrapper.style.fontSize = '24px';
-        cameraWrapper.innerHTML = '��';
+        cameraWrapper.innerHTML = '📸';
         var fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = 'image/*';
@@ -1387,7 +1387,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (filteredRecords.length === 0) {
       recordsList.innerHTML = `
                         <div class="empty-state">
-                            <div class="empty-icon">��</div>
+                            <div class="empty-icon">📦</div>
                             <p>${records.length === 0 ? 'Belum ada data scan.' : 'Pencarian tidak ditemukan.'}</p>
                         </div>
                     `;
