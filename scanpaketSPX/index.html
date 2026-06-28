@@ -2040,3 +2040,1858 @@ updateTotalBar();
 </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Scan SPX">
+    <meta name="description" content="Copyright @ Mbah Sugeng">
+    <title>Scan Paket SPX</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/dzaky101-arch/SPX-Scan/main/scanpaketSPX/logo_spx.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <style>
+        /* ============================================
+           THEME VARIABLES
+           ============================================ */
+        :root {
+            --ios-blue: #007aff;
+            --ios-blue-hover: #0056b3;
+            --ios-green: #34c759;
+            --ios-red: #ff3b30;
+            --ios-red-hover: #d62218;
+            --ios-bg: #000000;
+            --ios-card-bg: #1c1c1e;
+            --ios-card-bg-active: #2c2c2e;
+            --ios-text: #ffffff;
+            --ios-text-muted: #8e8e93;
+            --ios-border: #38383a;
+            --ios-input-bg: #2c2c2e;
+            --ios-btn-primary-bg: #3a3a3c;
+            --ios-btn-primary-text: #ffffff;
+        }
+        [data-theme="light"] {
+            --ios-bg: #f2f2f7;
+            --ios-card-bg: #ffffff;
+            --ios-card-bg-active: #e5e5ea;
+            --ios-text: #000000;
+            --ios-text-muted: #8e8e93;
+            --ios-border: #c6c6c8;
+            --ios-input-bg: #f2f2f7;
+            --ios-btn-primary-bg: #e5e5ea;
+            --ios-btn-primary-text: #007aff;
+        }
+
+        /* ============================================
+           RESET & BASE
+           ============================================ */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+            background-color: var(--ios-bg);
+            color: var(--ios-text);
+            padding: calc(2rem + env(safe-area-inset-top)) 1rem calc(2rem + env(safe-area-inset-bottom));
+            line-height: 1.4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ============================================
+           HEADER
+           ============================================ */
+        header {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--ios-text-muted);
+            margin-bottom: 1.2rem;
+        }
+
+        /* ============================================
+           ACTION BUTTONS GRID
+           ============================================ */
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (min-width: 400px) {
+            .action-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .action-grid button:last-child {
+                grid-column: span 2;
+            }
+        }
+
+        /* ============================================
+           BUTTONS
+           ============================================ */
+        button {
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            height: 48px;
+        }
+        button:active {
+            transform: scale(0.97);
+            opacity: 0.9;
+        }
+        .btn-success { background-color: var(--ios-green); color: white; }
+        .btn-info { background-color: var(--ios-blue); color: white; }
+        .btn-primary { background-color: var(--ios-btn-primary-bg); color: var(--ios-btn-primary-text); }
+        .btn-danger { background-color: rgba(255, 59, 48, 0.15); color: var(--ios-red); }
+        .btn-danger:active { background-color: rgba(255, 59, 48, 0.3); }
+
+        /* ============================================
+           CARD & FORM
+           ============================================ */
+        .card {
+            background-color: var(--ios-card-bg);
+            border-radius: 14px;
+            padding: 1.2rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid var(--ios-border);
+        }
+        .form-row {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1.2rem;
+        }
+        .form-group { flex: 1; }
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.4rem;
+            color: var(--ios-text-muted);
+        }
+        select, input[type="text"] {
+            width: 100%;
+            background-color: var(--ios-input-bg);
+            color: var(--ios-text);
+            border: 1px solid var(--ios-border);
+            border-radius: 10px;
+            padding: 0.75rem;
+            font-size: 16px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+            height: 44px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        select-wrapper {
+            position: relative;
+            display: block;
+            width: 100%;
+        }
+        select-wrapper::after {
+            content: "\25BC";
+            font-size: 0.65rem;
+            color: var(--ios-text-muted);
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+        select:focus, input[type="text"]:focus {
+            border-color: var(--ios-blue);
+        }
+
+        /* ============================================
+           SCAN INPUT AREA
+           ============================================ */
+        .scan-wrapper {
+            display: flex;
+            gap: 0.6rem;
+        }
+        .sound-toggle-btn {
+            background: none;
+            border: 1px solid var(--ios-border);
+            border-radius: 10px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--ios-text-muted);
+            cursor: pointer;
+            padding: 0;
+            transition: background-color 0.2s;
+        }
+        .sound-toggle-btn.active {
+            color: var(--ios-blue);
+            border-color: var(--ios-blue);
+            background-color: rgba(0, 122, 255, 0.1);
+        }
+
+        /* ============================================
+           LIST & HISTORY
+           ============================================ */
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            padding: 0 0.2rem;
+        }
+        .list-header h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .list-header-actions {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+        .list-header .reset-link {
+            font-size: 0.9rem;
+            color: var(--ios-red);
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .records-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+        .record-card {
+            background-color: var(--ios-card-bg);
+            border: 1px solid var(--ios-border);
+            border-radius: 12px;
+            padding: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .record-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            flex: 1;
+            min-width: 0;
+        }
+        .record-meta {
+            font-size: 0.75rem;
+            color: var(--ios-text-muted);
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+        }
+        .badge-trip {
+            background-color: var(--ios-card-bg-active);
+            color: var(--ios-text-muted);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .record-resi {
+            font-family: monospace;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--ios-blue);
+            word-break: break-all;
+        }
+        .record-time {
+            font-size: 0.78rem;
+            color: var(--ios-text-muted);
+        }
+        .btn-delete-row {
+            background: none;
+            border: none;
+            color: var(--ios-red);
+            font-size: 1.1rem;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-left: 0.3rem;
+        }
+        .btn-delete-row:active {
+            background-color: rgba(255, 59, 48, 0.1);
+        }
+        .btn-qr-row {
+            background: none;
+            border: none;
+            color: var(--ios-blue);
+            font-size: 1.1rem;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .btn-qr-row:active {
+            background-color: rgba(0, 122, 255, 0.1);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--ios-text-muted);
+        }
+        .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ============================================
+           MODAL / OVERLAY BASE
+           ============================================ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 100;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        @media (min-width: 600px) {
+            .modal-overlay {
+                align-items: center;
+                padding: 1rem;
+            }
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-card {
+            background: var(--ios-card-bg);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px 16px 0 0;
+            padding: 1.5rem;
+            width: 100%;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.3s cubic-bezier(0.1, 0.8, 0.25, 1);
+            box-shadow: 0 -10px 25px rgba(0,0,0,0.5);
+        }
+        @media (min-width: 600px) {
+            .modal-card {
+                border: 1px solid var(--ios-border);
+                border-radius: 16px;
+                max-width: 480px;
+                animation: zoomIn 0.2s ease-out;
+            }
+        }
+        /* Fullscreen Camera Modal for Mobile */
+        @media (max-width: 599px) {
+            #cameraModal.modal-overlay { align-items: stretch; }
+            #cameraModal .modal-card {
+                height: 100vh;
+                height: 100dvh;
+                max-height: 100vh;
+                max-height: 100dvh;
+                border-radius: 0;
+                border: none;
+                padding: calc(1rem + env(safe-area-inset-top)) 1rem calc(1rem + env(safe-area-inset-bottom));
+            }
+        }
+        #cameraModal .modal-body {
+            padding: 0;
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--ios-border);
+        }
+        .modal-header h3 { font-size: 1.15rem; font-weight: 700; }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--ios-text-muted);
+            padding: 0.2rem;
+            line-height: 1;
+            width: auto;
+            height: auto;
+        }
+
+        /* ============================================
+           iOS ALERT / CONFIRM
+           ============================================ */
+        .ios-alert-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        .ios-alert-overlay.active { display: flex; }
+        .ios-alert-card {
+            background: var(--ios-card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            width: 270px;
+            text-align: center;
+            color: var(--ios-text);
+            animation: iosAlertPop 0.25s cubic-bezier(0.1, 0.8, 0.25, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        @keyframes iosAlertPop {
+            from { transform: scale(1.15); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .ios-alert-title {
+            font-size: 17px;
+            font-weight: 600;
+            padding: 18px 16px 4px;
+            margin: 0;
+        }
+        .ios-alert-message {
+            font-size: 13px;
+            padding: 0 16px 18px;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.4;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.15);
+        }
+        .ios-alert-buttons { display: flex; }
+        .ios-alert-buttons button {
+            background: none;
+            border: none;
+            color: #0a84ff;
+            font-size: 17px;
+            font-weight: 400;
+            padding: 12px 8px;
+            margin: 0;
+            flex: 1;
+            cursor: pointer;
+            outline: none;
+            border-radius: 0;
+            width: auto;
+            height: auto;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .ios-alert-buttons button:active { background-color: rgba(255, 255, 255, 0.08); }
+        .ios-alert-buttons button.btn-danger-ios { color: #ff453a; }
+        .ios-alert-buttons button.btn-bold { font-weight: 600; }
+        .ios-alert-buttons .ios-divider {
+            width: 0.5px;
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* ============================================
+           QR CODE MODAL / SLIDESHOW
+           ============================================ */
+        .qr-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+        .qr-modal-overlay.active { display: flex; }
+        .qr-card-ios {
+            background: #ffffff;
+            color: #000000;
+            border-radius: 20px;
+            padding: 2rem 1.5rem 1.5rem;
+            max-width: 360px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            animation: iosAlertPop 0.25s cubic-bezier(0.1, 0.8, 0.25, 1);
+        }
+        .qr-tag-ios {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #8e8e93;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+        .qr-code-wrapper {
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 1.2rem;
+            padding: 10px;
+            border-radius: 12px;
+            width: 240px;
+            height: 240px;
+            border: 1px solid #e5e5ea;
+        }
+        .qr-code-wrapper canvas, .qr-code-wrapper img { max-width: 100%; height: auto; }
+        .qr-resi-label {
+            font-family: monospace;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 1.2rem;
+            word-break: break-all;
+        }
+        .qr-nav-buttons { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .qr-nav-buttons button {
+            background-color: #f2f2f7;
+            color: #007aff;
+            font-size: 15px;
+            height: 40px;
+            border-radius: 10px;
+            flex: 1;
+            width: auto;
+        }
+        .qr-nav-buttons button:active { background-color: #e5e5ea; transform: none; }
+        .qr-nav-buttons button:disabled { opacity: 0.3; cursor: default; }
+        .qr-action-buttons { display: flex; gap: 0.6rem; margin-bottom: 0.8rem; }
+        .qr-action-buttons button { height: 44px; font-size: 15px; border-radius: 10px; flex: 1; width: auto; }
+        .qr-btn-download { background-color: #007aff; color: #ffffff; }
+        .qr-btn-share { background-color: #e5f1ff; color: #007aff; }
+        .qr-btn-close { background-color: #f2f2f7; color: #ff3b30; height: 44px; border-radius: 10px; width: 100%; }
+
+        /* ============================================
+           LOCK SCREEN OVERLAY
+           ============================================ */
+        #lockScreen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--ios-bg);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        #lockScreen .lock-card {
+            background: var(--ios-card-bg);
+            border: 1px solid var(--ios-border);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        #lockScreen .lock-logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            border-radius: 14px;
+        }
+        #lockScreen .lock-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--ios-text);
+            margin-bottom: 0.5rem;
+        }
+        #lockScreen .lock-subtitle {
+            font-size: 0.85rem;
+            color: var(--ios-text-muted);
+            margin-bottom: 1.5rem;
+        }
+        #lockScreen .device-id-box {
+            background: var(--ios-bg);
+            border: 1px solid var(--ios-border);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 1.5rem;
+        }
+        #lockScreen .device-id-label {
+            font-size: 0.75rem;
+            color: var(--ios-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+        #lockScreen .device-id-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: var(--ios-blue);
+        }
+        #lockScreen .device-id-hint {
+            font-size: 0.7rem;
+            color: var(--ios-text-muted);
+            margin-top: 6px;
+        }
+        #lockScreen input[type="number"] {
+            text-align: center;
+            font-size: 1.5rem;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--ios-border);
+            background: var(--ios-input-bg);
+            color: var(--ios-text);
+            width: 100%;
+            margin-bottom: 1rem;
+            letter-spacing: 4px;
+            outline: none;
+            -moz-appearance: textfield;
+        }
+        #lockScreen input[type="number"]::-webkit-outer-spin-button,
+        #lockScreen input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        #lockScreen input[type="number"]:focus {
+            border-color: var(--ios-blue);
+        }
+        #lockScreen .lock-btn {
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            border: none;
+            background: var(--ios-blue);
+            color: white;
+            width: 100%;
+            cursor: pointer;
+        }
+        #lockScreen .lock-btn:active {
+            background: var(--ios-blue-hover);
+        }
+        #lockScreen .lock-footer {
+            font-size: 0.75rem;
+            color: var(--ios-text-muted);
+            margin-top: 1.5rem;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- ============================================
+         LOCK SCREEN
+         ============================================ -->
+    <div id="lockScreen">
+        <div class="lock-card">
+            <img class="lock-logo" src="https://raw.githubusercontent.com/dzaky101-arch/SPX-Scan/main/scanpaketSPX/logo_spx.png" alt="Logo">
+            <div class="lock-title">Scan Paket SPX</div>
+            <div class="lock-subtitle">Masukkan PIN untuk mengaktifkan aplikasi</div>
+            <div class="device-id-box">
+                <div class="device-id-label">Device ID</div>
+                <div class="device-id-value" id="deviceIdDisplay">------</div>
+                <div class="device-id-hint">Berikan ID ini ke Admin untuk mendapatkan PIN Aktivasi</div>
+            </div>
+            <input type="number" id="pinInput" placeholder="Masukkan PIN" autocomplete="off">
+            <button class="lock-btn" id="btnUnlock">Buka Kunci</button>
+        </div>
+        <div class="lock-footer">&copy; 2026 Mbah Sugeng. All Rights Reserved.</div>
+    </div>
+
+    <!-- ============================================
+         MAIN APPLICATION
+         ============================================ -->
+    <div class="container">
+        <header style="position: relative;">
+            <button onclick="window.location.reload()" style="position: absolute; top: 0; left: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border);">&#x1F504;</button>
+            <button id="btnThemeToggle" style="position: absolute; top: 0; right: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--ios-card-bg-active); padding: 0; color: var(--ios-text); font-size: 1.2rem; border: 1px solid var(--ios-border);">&#x2600;&#xFE0F;</button>
+            <div style="text-align: center; margin-bottom: 15px;">
+                <img src="https://raw.githubusercontent.com/dzaky101-arch/SPX-Scan/main/scanpaketSPX/logo_spx.png" alt="Logo SPX" style="height: 50px;">
+            </div>
+            <h1>&#x1F4E6; Scan Paket SPX</h1>
+            <div class="subtitle">Optimasi Safari iPhone &amp; Scanner</div>
+
+            <div class="action-grid">
+                <button id="btnCopy" class="btn-success">&#x1F4F2; Share (Return)</button>
+                <button id="btnSharePickup" class="btn-warning" style="background-color: #ff9500; color: #fff;">&#x1F4E4; Share (Pickup)</button>
+                <button id="btnCopyResiOnly" class="btn-info">&#x1F4CB; Copy Hanya Resi</button>
+                <button id="btnOpenImport" class="btn-primary" style="background-color: #8e44ad;">&#x1F4E5; Import Data</button>
+                <button id="btnExport" class="btn-primary">&#x1F4CA; Export Excel</button>
+            </div>
+        </header>
+
+        <!-- Selector Card -->
+        <div class="card">
+            <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                    <label for="sellerInput">Nama Seller</label>
+                    <input type="text" id="sellerInput" placeholder="Ketik nama seller...">
+                </div>
+                <div class="form-group" style="width: 60px;">
+                    <label>Foto</label>
+                    <label for="photoInput" id="photoLabel" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 42px; border-radius: 10px; border: 1px solid var(--ios-border); background: var(--ios-input-bg); cursor: pointer; font-size: 1.2rem; overflow: hidden; position: relative;">
+                        &#x1F4F7;
+                    </label>
+                    <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;">
+                </div>
+                <div class="form-group" style="width: 80px;">
+                    <label for="tripSelect">Trip</label>
+                    <select-wrapper>
+                        <select id="tripSelect">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </select-wrapper>
+                </div>
+            </div>
+
+            <!-- Input Scan Form -->
+            <form id="scanForm" class="form-group" style="margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                    <label for="scanInput" style="margin: 0;">Scan Resi / Barcode</label>
+                    <div style="display: flex; gap: 15px;">
+                        <span id="btnCameraOpen" style="color: var(--ios-blue); font-weight: 600; font-size: 0.9rem; cursor: pointer;">&#x1F4F7; Kamera</span>
+                    </div>
+                </div>
+                <div class="scan-wrapper">
+                    <input type="text" id="scanInput" placeholder="Scan barcode..." autocomplete="off">
+                    <button type="submit" class="btn-info" style="width: 44px; height: 44px; padding: 0; flex-shrink: 0; border-radius: 10px;">&#x2795;</button>
+                    <button type="button" id="btnSoundToggle" class="sound-toggle-btn active" title="Ubah Suara Beep">&#x1F50A;</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- History/List Section -->
+        <div>
+            <div class="list-header">
+                <h2>Riwayat Scan</h2>
+                <div class="list-header-actions">
+                    <span id="btnAllQR" style="color: var(--ios-blue); font-weight: 600; font-size: 0.9rem; cursor: pointer;">&#x1F4F1; Slide QR</span>
+                    <span class="reset-link" id="btnClear">&#x1F5D1;&#xFE0F; Kosongkan Data</span>
+                </div>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <input type="text" id="searchInput" placeholder="&#x1F50D; Cari nomor resi atau seller..." autocomplete="off">
+            </div>
+            <div class="records-list" id="recordsList">
+                <div class="empty-state">
+                    <div class="empty-icon">&#x1F4ED;</div>
+                    <p>Belum ada data scan.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align: center; margin-top: 2rem; margin-bottom: 1rem; font-size: 0.85rem; color: var(--ios-text-muted); opacity: 0.8;">
+            &copy; 2026 <strong>Mbah Sugeng</strong>. All Rights Reserved.
+        </div>
+    </div>
+
+    <!-- ============================================
+         CAMERA MODAL
+         ============================================ -->
+    <div class="modal-overlay" id="cameraModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>&#x1F4F7; Scan Barcode Kamera</h3>
+                <button type="button" class="modal-close" id="btnCameraCloseModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="qr-reader" style="width: 100%; border-radius: 12px; overflow: hidden; background: #000;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         QR CODE SLIDESHOW MODAL
+         ============================================ -->
+    <div class="qr-modal-overlay" id="qrModalOverlay">
+        <div class="qr-card-ios">
+            <div class="qr-tag-ios" id="qrTagLabel">1 / 1</div>
+            <div class="qr-code-wrapper" id="qrBox"></div>
+            <div class="qr-resi-label" id="qrResiLabel">&mdash;</div>
+            <div class="qr-nav-buttons">
+                <button type="button" id="qrPrevBtn">&#x25C0; Prev</button>
+                <button type="button" id="qrAutoBtn" style="flex: 0.8; font-weight: bold; color: var(--ios-green);">&#x25B6; Auto</button>
+                <button type="button" id="qrNextBtn">Next &#x25B6;</button>
+            </div>
+            <div class="qr-action-buttons">
+                <button type="button" id="qrDownloadBtn" class="qr-btn-download">&#x1F4BE; Simpan</button>
+                <button type="button" id="qrShareBtn" class="qr-btn-share">&#x2197; Bagikan</button>
+            </div>
+            <button type="button" id="qrCloseBtn" class="qr-btn-close">Tutup</button>
+        </div>
+    </div>
+
+    <!-- ============================================
+         iOS ALERT DIALOG
+         ============================================ -->
+    <div class="ios-alert-overlay" id="iosAlert">
+        <div class="ios-alert-card">
+            <h3 class="ios-alert-title" id="iosAlertTitle">Peringatan</h3>
+            <p class="ios-alert-message" id="iosAlertMessage">Pesan peringatan di sini.</p>
+            <div class="ios-alert-buttons" id="iosAlertButtons">
+                <button class="ios-btn-ok" id="iosAlertBtnOk">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         IMPORT DATA MODAL
+         ============================================ -->
+    <div id="importModal" class="ios-alert-overlay">
+        <div class="ios-alert-card" style="width: 320px; text-align: left; padding: 20px;">
+            <h3 style="margin-top: 0; color: var(--ios-text); font-size: 18px; text-align: center;">&#x1F4E5; Import Data</h3>
+            <p style="font-size: 13px; color: var(--ios-text-muted); margin-bottom: 15px; text-align: center;">Paste teks laporan yang diterima dari WhatsApp ke kolom di bawah ini.</p>
+            <textarea id="importTextarea" style="width: 100%; height: 150px; padding: 10px; border-radius: 8px; border: 1px solid var(--ios-border); background: var(--ios-bg); color: var(--ios-text); font-family: monospace; font-size: 12px; margin-bottom: 15px; resize: none;" placeholder="Contoh:
+Return JONIDI
+26 Juni 2026
+Trip 1
+1. SPX123
+2. SPX456"></textarea>
+            <div style="display: flex; gap: 10px;">
+                <button id="btnCancelImport" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: var(--ios-border); color: var(--ios-text); font-weight: 600;">Batal</button>
+                <button id="btnProcessImport" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: var(--ios-blue); color: #fff; font-weight: 600;">Proses</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         JAVASCRIPT - ALL ES5 COMPATIBLE
+         ============================================ -->
+    <script>
+    // ================================================================
+    // SECTION 1: LOCK SCREEN LOGIC
+    // ================================================================
+    (function () {
+        var MASTER_PIN = "888888";
+        var lockScreen = document.getElementById('lockScreen');
+        var pinInput = document.getElementById('pinInput');
+        var btnUnlock = document.getElementById('btnUnlock');
+        var deviceIdDisplay = document.getElementById('deviceIdDisplay');
+
+        // Generate or retrieve Device ID
+        var myDeviceId = localStorage.getItem('spx_device_id');
+        if (!myDeviceId) {
+            myDeviceId = Math.floor(100000 + Math.random() * 900000).toString();
+            localStorage.setItem('spx_device_id', myDeviceId);
+        }
+        if (deviceIdDisplay) {
+            deviceIdDisplay.textContent = myDeviceId;
+        }
+
+        // Check unlock status
+        var isUnlocked = localStorage.getItem('deviceUnlocked');
+        var expiryTime = localStorage.getItem('deviceExpiry');
+        var nowTime = new Date().getTime();
+
+        if (isUnlocked === 'true' && expiryTime && nowTime < parseInt(expiryTime, 10)) {
+            lockScreen.style.display = 'none';
+        } else {
+            localStorage.removeItem('deviceUnlocked');
+            localStorage.removeItem('deviceExpiry');
+            lockScreen.style.display = 'flex';
+        }
+
+        function checkPin() {
+            var currentPin = pinInput.value.trim();
+            var deviceIdNum = parseInt(myDeviceId, 10);
+            var validDurations = [1, 3, 7, 14, 30, 90, 180, 365];
+            var matchedDuration = 0;
+
+            if (currentPin === MASTER_PIN) {
+                matchedDuration = 9999;
+            } else {
+                for (var i = 0; i < validDurations.length; i++) {
+                    var dur = validDurations[i];
+                    var calcNum = deviceIdNum * 3 + 777 + dur * 123;
+                    var expected = ("000000" + calcNum).slice(-6);
+                    if (currentPin === expected) {
+                        matchedDuration = dur;
+                        break;
+                    }
+                }
+            }
+
+            if (matchedDuration > 0) {
+                var now = new Date().getTime();
+                var expiry = matchedDuration === 9999 ? 9999999999999 : now + matchedDuration * 24 * 60 * 60 * 1000;
+                localStorage.setItem('deviceUnlocked', 'true');
+                localStorage.setItem('deviceExpiry', expiry.toString());
+                lockScreen.style.display = 'none';
+                var durationText = matchedDuration === 9999 ? "Permanen" : matchedDuration + " hari";
+                alert("Aktivasi Berhasil!\nAktif selama: " + durationText + ".");
+                pinInput.value = "";
+            } else {
+                alert("PIN SALAH!");
+                pinInput.value = "";
+            }
+        }
+
+        btnUnlock.addEventListener('click', checkPin);
+        pinInput.addEventListener('keydown', function (e) {
+            if (e.keyCode === 13) checkPin();
+        });
+    })();
+
+    // ================================================================
+    // SECTION 2: THEME
+    // ================================================================
+    var savedTheme = localStorage.getItem('return_spx_theme') || 'dark';
+    if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+    }
+
+    // ================================================================
+    // SECTION 3: MAIN APPLICATION
+    // ================================================================
+    document.addEventListener('DOMContentLoaded', function () {
+        // --- Theme Toggle ---
+        var btnThemeToggle = document.getElementById('btnThemeToggle');
+        btnThemeToggle.textContent = savedTheme === 'light' ? '\uD83C\uDF13' : '\u2600\uFE0F';
+        btnThemeToggle.addEventListener('click', function () {
+            var currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('return_spx_theme', 'dark');
+                btnThemeToggle.textContent = '\u2600\uFE0F';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('return_spx_theme', 'light');
+                btnThemeToggle.textContent = '\uD83C\uDF13';
+            }
+        });
+
+        // --- DOM References ---
+        var tripSelect = document.getElementById('tripSelect');
+        var scanForm = document.getElementById('scanForm');
+        var scanInput = document.getElementById('scanInput');
+        var recordsList = document.getElementById('recordsList');
+        var btnExport = document.getElementById('btnExport');
+        var btnCopy = document.getElementById('btnCopy');
+        var btnCopyResiOnly = document.getElementById('btnCopyResiOnly');
+        var btnClear = document.getElementById('btnClear');
+        var btnSoundToggle = document.getElementById('btnSoundToggle');
+        var btnAllQR = document.getElementById('btnAllQR');
+        var searchInput = document.getElementById('searchInput');
+        var photoInput = document.getElementById('photoInput');
+        var photoLabel = document.getElementById('photoLabel');
+        var btnSharePickup = document.getElementById('btnSharePickup');
+        var btnOpenImport = document.getElementById('btnOpenImport');
+        var btnCancelImport = document.getElementById('btnCancelImport');
+        var btnProcessImport = document.getElementById('btnProcessImport');
+
+        // --- Search ---
+        searchInput.addEventListener('input', function (e) {
+            renderList(e.target.value.trim().toLowerCase());
+        });
+
+        // --- Camera Scanner ---
+        var btnCameraOpen = document.getElementById('btnCameraOpen');
+        var cameraModal = document.getElementById('cameraModal');
+        var btnCameraCloseModal = document.getElementById('btnCameraCloseModal');
+        var html5QrCode = null;
+        var isAlertShowing = false;
+        var lastScannedResi = "";
+        var scanTimeout = null;
+
+        function onScanSuccess(decodedText) {
+            if (isAlertShowing) return;
+            if (decodedText === lastScannedResi) return;
+            lastScannedResi = decodedText;
+            if (scanTimeout) clearTimeout(scanTimeout);
+            scanTimeout = setTimeout(function () { lastScannedResi = ""; }, 2000);
+            scanInput.value = decodedText;
+            scanForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        }
+
+        function onScanFailure() { /* Ignore */ }
+
+        function openCameraModal() {
+            cameraModal.classList.add('active');
+            if (!html5QrCode) {
+                html5QrCode = new Html5Qrcode("qr-reader");
+                html5QrCode.start(
+                    { facingMode: "environment" },
+                    { fps: 15 },
+                    onScanSuccess,
+                    onScanFailure
+                ).catch(function () {
+                    closeCameraModal();
+                    showIosAlert('Kamera Gagal', 'Kamera belakang tidak dapat diakses. Pastikan Anda memberi izin kamera dan menggunakan koneksi HTTPS.');
+                });
+            }
+        }
+
+        function closeCameraModal() {
+            cameraModal.classList.remove('active');
+            if (html5QrCode) {
+                html5QrCode.stop().then(function () {
+                    html5QrCode.clear();
+                    html5QrCode = null;
+                }).catch(function () {
+                    html5QrCode.clear();
+                    html5QrCode = null;
+                });
+            }
+            setTimeout(function () { scanInput.focus(); }, 50);
+        }
+
+        btnCameraOpen.addEventListener('click', openCameraModal);
+        btnCameraCloseModal.addEventListener('click', closeCameraModal);
+        cameraModal.addEventListener('click', function (e) {
+            if (e.target === cameraModal) closeCameraModal();
+        });
+
+        // --- Data Storage ---
+        var STORAGE_KEY = 'scan_paket_spx_data';
+        var records = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        var soundEnabled = true;
+        var currentPhotoFile = null;
+
+        renderList();
+
+        // --- Sound Toggle ---
+        btnSoundToggle.addEventListener('click', function () {
+            soundEnabled = !soundEnabled;
+            if (soundEnabled) {
+                btnSoundToggle.classList.add('active');
+                btnSoundToggle.textContent = '\uD83D\uDD0A';
+                playBeep('success');
+            } else {
+                btnSoundToggle.classList.remove('active');
+                btnSoundToggle.textContent = '\uD83D\uDD07';
+            }
+            scanInput.focus();
+        });
+
+        // --- Audio Beep ---
+        function playBeep(type) {
+            if (!soundEnabled) return;
+            try {
+                var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                var oscillator = audioCtx.createOscillator();
+                var gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                if (type === 'success') {
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+                    gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    oscillator.start();
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+                    oscillator.stop(audioCtx.currentTime + 0.15);
+                } else if (type === 'error') {
+                    oscillator.type = 'sawtooth';
+                    oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
+                    gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    oscillator.start();
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                    oscillator.stop(audioCtx.currentTime + 0.3);
+                }
+            } catch (e) { /* ignore */ }
+        }
+
+        // --- Voice TTS ---
+        function playVoice(text) {
+            if (!soundEnabled) return;
+            try {
+                var utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'id-ID';
+                utterance.rate = 1.0;
+                utterance.pitch = 1.2;
+                window.speechSynthesis.speak(utterance);
+            } catch (e) { /* ignore */ }
+        }
+
+        // --- iOS Alert ---
+        function showIosAlert(title, message) {
+            playBeep('error');
+            isAlertShowing = true;
+            return new Promise(function (resolve) {
+                document.getElementById('iosAlertTitle').textContent = title;
+                document.getElementById('iosAlertMessage').textContent = message;
+                var container = document.getElementById('iosAlertButtons');
+                container.innerHTML = '';
+                var btnOk = document.createElement('button');
+                btnOk.className = 'btn-bold';
+                btnOk.textContent = 'OK';
+                btnOk.addEventListener('click', function () {
+                    document.getElementById('iosAlert').classList.remove('active');
+                    setTimeout(function () { isAlertShowing = false; }, 500);
+                    resolve();
+                });
+                container.appendChild(btnOk);
+                document.getElementById('iosAlert').classList.add('active');
+            });
+        }
+
+        // --- iOS Confirm ---
+        function showIosConfirm(title, message, confirmText) {
+            confirmText = confirmText || 'Hapus';
+            return new Promise(function (resolve) {
+                document.getElementById('iosAlertTitle').textContent = title;
+                document.getElementById('iosAlertMessage').textContent = message;
+                var container = document.getElementById('iosAlertButtons');
+                container.innerHTML = '';
+
+                var btnCancel = document.createElement('button');
+                btnCancel.textContent = 'Batal';
+                btnCancel.addEventListener('click', function () {
+                    document.getElementById('iosAlert').classList.remove('active');
+                    resolve(false);
+                });
+
+                var divider = document.createElement('div');
+                divider.className = 'ios-divider';
+
+                var btnConfirm = document.createElement('button');
+                btnConfirm.className = 'btn-danger-ios btn-bold';
+                btnConfirm.textContent = confirmText;
+                btnConfirm.addEventListener('click', function () {
+                    document.getElementById('iosAlert').classList.remove('active');
+                    resolve(true);
+                });
+
+                container.appendChild(btnCancel);
+                container.appendChild(divider);
+                container.appendChild(btnConfirm);
+                document.getElementById('iosAlert').classList.add('active');
+            });
+        }
+
+        // --- Helpers ---
+        function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+        function getTimestamp() {
+            var now = new Date();
+            return now.getFullYear() + '-' + pad2(now.getMonth() + 1) + '-' + pad2(now.getDate()) + ' ' + pad2(now.getHours()) + ':' + pad2(now.getMinutes()) + ':' + pad2(now.getSeconds());
+        }
+
+        // --- Form Submit ---
+        scanForm.onsubmit = function (e) {
+            if (e && e.preventDefault) e.preventDefault();
+            var resi = scanInput.value.trim();
+            var trip = tripSelect.value;
+            var seller = document.getElementById('sellerInput').value.trim() || '-';
+            if (!resi) return false;
+
+            // Validate prefix
+            if (resi.indexOf('SPX') !== 0 && resi.indexOf('ID') !== 0) {
+                playVoice('Resi tidak valid');
+                showIosAlert('Resi Salah', 'PERINGATAN: Hanya resi dengan awalan "SPX" atau "ID" yang bisa di-scan!').then(function () {
+                    scanInput.value = '';
+                    setTimeout(function () { scanInput.focus(); }, 50);
+                });
+                return false;
+            }
+
+            // Anti duplicate
+            var isDuplicate = false;
+            for (var i = 0; i < records.length; i++) {
+                if (records[i].resi === resi) { isDuplicate = true; break; }
+            }
+            if (isDuplicate) {
+                playVoice('Paket Double');
+                showIosAlert('Resi Duplikat', 'PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(function () {
+                    scanInput.value = '';
+                    setTimeout(function () { scanInput.focus(); }, 50);
+                });
+                return false;
+            }
+
+            playBeep('success');
+            addRecord(trip, seller, resi);
+            scanInput.value = '';
+            setTimeout(function () { scanInput.focus(); }, 50);
+            return false;
+        };
+
+        tripSelect.addEventListener('change', function () { scanInput.focus(); });
+
+        // --- Paste handler ---
+        scanInput.addEventListener('paste', function (e) {
+            var text = (e.originalEvent || e).clipboardData.getData('text/plain');
+            var matches = text.match(/(?:SPX|ID)[A-Z0-9]+/gi);
+            if (matches && matches.length > 0) {
+                e.preventDefault();
+                var cleanMatches = [];
+                for (var m = 0; m < matches.length; m++) {
+                    cleanMatches.push(matches[m].toUpperCase());
+                }
+                var trip = tripSelect.value;
+                var seller = document.getElementById('sellerInput').value.trim() || '-';
+
+                if (cleanMatches.length === 1) {
+                    var resi = cleanMatches[0];
+                    var isDup = false;
+                    for (var i = 0; i < records.length; i++) {
+                        if (records[i].resi === resi) { isDup = true; break; }
+                    }
+                    if (isDup) {
+                        playVoice('Paket Double');
+                        showIosAlert('Resi Duplikat', 'PERINGATAN: Resi "' + resi + '" sudah pernah di-scan! Data DITOLAK.').then(function () {
+                            scanInput.value = '';
+                            setTimeout(function () { scanInput.focus(); }, 50);
+                        });
+                        return;
+                    }
+                    playBeep('success');
+                    addRecord(trip, seller, resi);
+                    scanInput.value = '';
+                    setTimeout(function () { scanInput.focus(); }, 50);
+                } else {
+                    var successCount = 0;
+                    var dupCount = 0;
+                    var toAdd = [];
+                    var seenInBatch = {};
+                    for (var j = 0; j < cleanMatches.length; j++) {
+                        var r = cleanMatches[j];
+                        var isDuplicate = seenInBatch[r] || false;
+                        if (!isDuplicate) {
+                            for (var k = 0; k < records.length; k++) {
+                                if (records[k].resi === r) { isDuplicate = true; break; }
+                            }
+                        }
+                        if (isDuplicate) { dupCount++; } else {
+                            seenInBatch[r] = true;
+                            toAdd.push(r);
+                        }
+                    }
+                    if (toAdd.length > 0) {
+                        addRecordsBulk(trip, seller, toAdd);
+                        successCount = toAdd.length;
+                        playBeep('success');
+                    }
+                    if (dupCount > 0) playVoice('Ada Paket Double');
+                    var message = 'Berhasil ditambahkan: ' + successCount + ' resi\n';
+                    if (dupCount > 0) message += 'Duplikat (Diabaikan): ' + dupCount + ' resi\n';
+                    showIosAlert('Proses Bulk Selesai', message).then(function () {
+                        scanInput.value = '';
+                        setTimeout(function () { scanInput.focus(); }, 50);
+                    });
+                }
+            }
+        });
+
+        // --- Record Management ---
+        function addRecord(trip, seller, resi) {
+            var groupCount = 0;
+            for (var i = 0; i < records.length; i++) {
+                if (records[i].trip === trip && records[i].seller === seller) groupCount++;
+            }
+            records.unshift({
+                id: Date.now().toString(),
+                timestamp: getTimestamp(),
+                trip: trip,
+                seller: seller,
+                noUrut: groupCount + 1,
+                resi: resi
+            });
+            saveData();
+            renderList();
+        }
+
+        function addRecordsBulk(trip, seller, resiList) {
+            var ts = getTimestamp();
+            var currentGroupCount = 0;
+            for (var i = 0; i < records.length; i++) {
+                if (records[i].trip === trip && records[i].seller === seller) currentGroupCount++;
+            }
+            for (var j = 0; j < resiList.length; j++) {
+                currentGroupCount++;
+                records.unshift({
+                    id: (Date.now() + Math.random()).toString(),
+                    timestamp: ts,
+                    trip: trip,
+                    seller: seller,
+                    noUrut: currentGroupCount,
+                    resi: resiList[j]
+                });
+            }
+            saveData();
+            renderList();
+        }
+
+        function deleteRecord(id) {
+            showIosConfirm('Hapus Data', 'Apakah Anda yakin ingin menghapus baris ini?').then(function (confirmed) {
+                if (confirmed) {
+                    var newRecords = [];
+                    for (var i = 0; i < records.length; i++) {
+                        if (records[i].id !== id) newRecords.push(records[i]);
+                    }
+                    records = newRecords;
+                    recalculateSequence();
+                    saveData();
+                    renderList();
+                }
+            });
+        }
+
+        function recalculateSequence() {
+            var chronological = records.slice().reverse();
+            var counts = {};
+            for (var i = 0; i < chronological.length; i++) {
+                var r = chronological[i];
+                var key = 'trip_' + r.trip + '_seller_' + (r.seller || '-');
+                if (!counts[key]) counts[key] = 0;
+                counts[key]++;
+                r.noUrut = counts[key];
+            }
+            records = chronological.reverse();
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+        }
+
+        // --- Render List ---
+        function renderList(filterText) {
+            filterText = filterText || '';
+            recordsList.innerHTML = '';
+            var filteredRecords = [];
+
+            if (filterText) {
+                for (var i = 0; i < records.length; i++) {
+                    if (records[i].resi.toLowerCase().indexOf(filterText) !== -1 ||
+                        (records[i].seller && records[i].seller.toLowerCase().indexOf(filterText) !== -1)) {
+                        filteredRecords.push(records[i]);
+                    }
+                }
+            } else {
+                filteredRecords = records;
+            }
+
+            if (filteredRecords.length === 0) {
+                recordsList.innerHTML = '<div class="empty-state"><div class="empty-icon">\uD83D\uDCED</div><p>' + (records.length === 0 ? 'Belum ada data scan.' : 'Pencarian tidak ditemukan.') + '</p></div>';
+                return;
+            }
+
+            for (var j = 0; j < filteredRecords.length; j++) {
+                var record = filteredRecords[j];
+                var index = records.indexOf(record);
+                var div = document.createElement('div');
+                div.className = 'record-card';
+                div.innerHTML = '<div class="record-details" data-index="' + index + '" style="cursor: pointer;">' +
+                    '<div class="record-resi">' + record.resi + '</div>' +
+                    '<div class="record-meta">' +
+                    '<span class="badge-trip">Trip ' + record.trip + '</span>' +
+                    '<span style="color: var(--ios-blue); font-weight: 600;">No. ' + record.noUrut + '</span>' +
+                    '<span class="badge-trip" style="background: #e5e5ea; color: #333;">' + (record.seller || '-') + '</span>' +
+                    '<span class="record-time">' + record.timestamp.split(' ')[1] + '</span>' +
+                    '</div></div>' +
+                    '<div style="display: flex; align-items: center; gap: 0.2rem;">' +
+                    '<button class="btn-qr-row" data-index="' + index + '">\uD83D\uDCF1</button>' +
+                    '<button class="btn-delete-row" data-id="' + record.id + '" title="Hapus">\u2715</button>' +
+                    '</div>';
+                recordsList.appendChild(div);
+            }
+
+            // Attach events
+            var detailEls = document.querySelectorAll('.record-details');
+            for (var d = 0; d < detailEls.length; d++) {
+                (function (el) {
+                    el.addEventListener('click', function () {
+                        openQRModal(parseInt(el.getAttribute('data-index'), 10));
+                    });
+                })(detailEls[d]);
+            }
+            var qrBtns = document.querySelectorAll('.btn-qr-row');
+            for (var q = 0; q < qrBtns.length; q++) {
+                (function (btn) {
+                    btn.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        openQRModal(parseInt(btn.getAttribute('data-index'), 10));
+                    });
+                })(qrBtns[q]);
+            }
+            var delBtns = document.querySelectorAll('.btn-delete-row');
+            for (var x = 0; x < delBtns.length; x++) {
+                (function (btn) {
+                    btn.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        deleteRecord(btn.getAttribute('data-id'));
+                    });
+                })(delBtns[x]);
+            }
+        }
+
+        // --- Report Data ---
+        function generateReportData() {
+            var groups = {};
+            var chronologicalRecords = records.slice().reverse();
+            for (var i = 0; i < chronologicalRecords.length; i++) {
+                var r = chronologicalRecords[i];
+                var key = 'trip_' + r.trip + '_seller_' + (r.seller || '-');
+                if (!groups[key]) {
+                    groups[key] = { trip: r.trip, seller: r.seller || '-', resis: [] };
+                }
+                groups[key].resis.push({ noUrut: r.noUrut, resi: r.resi });
+            }
+            var monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            var now = new Date();
+            var dateStr = now.getDate() + ' ' + monthNames[now.getMonth()] + ' ' + now.getFullYear();
+            return { groups: groups, dateStr: dateStr };
+        }
+
+        // --- Clipboard ---
+        function copyTextToClipboard(text, successMessage) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function () {
+                    showIosAlert('Berhasil', successMessage);
+                }).catch(function () {
+                    fallbackCopy(text, successMessage);
+                });
+            } else {
+                fallbackCopy(text, successMessage);
+            }
+        }
+
+        function fallbackCopy(text, successMessage) {
+            var textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.cssText = 'position:fixed;top:0;left:0;width:2em;height:2em;padding:0;border:none;outline:none;box-shadow:none;background:transparent;';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            var range = document.createRange();
+            range.selectNodeContents(textArea);
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            textArea.setSelectionRange(0, 999999);
+            try {
+                if (document.execCommand('copy')) {
+                    showIosAlert('Berhasil', successMessage);
+                } else {
+                    showIosAlert('Gagal', 'Gagal menyalin teks.');
+                }
+            } catch (err) {
+                showIosAlert('Gagal', 'Peramban tidak mendukung penyalinan otomatis.');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // --- Photo Input ---
+        if (photoInput) {
+            photoInput.addEventListener('change', function (e) {
+                if (e.target.files && e.target.files[0]) {
+                    currentPhotoFile = e.target.files[0];
+                    var reader = new FileReader();
+                    reader.onload = function (ev) {
+                        photoLabel.innerHTML = '<img src="' + ev.target.result + '" style="width: 100%; height: 100%; object-fit: cover;">';
+                    };
+                    reader.readAsDataURL(currentPhotoFile);
+                } else {
+                    currentPhotoFile = null;
+                    photoLabel.innerHTML = '\uD83D\uDCF7';
+                }
+            });
+        }
+
+        // --- Share Return ---
+        btnCopy.addEventListener('click', function () {
+            if (records.length === 0) {
+                showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
+                return;
+            }
+            var data = generateReportData();
+            var report = [];
+            for (var key in data.groups) {
+                var g = data.groups[key];
+                report.push('Return ' + g.seller);
+                report.push(data.dateStr);
+                report.push('Trip ' + g.trip);
+                g.resis.sort(function (a, b) { return a.noUrut - b.noUrut; });
+                for (var i = 0; i < g.resis.length; i++) {
+                    report.push(g.resis[i].noUrut + '. ' + g.resis[i].resi);
+                }
+                report.push('Keterangan: ');
+                report.push('');
+            }
+            var finalString = report.join('\n').trim();
+            if (navigator.share) {
+                var shareData = { title: 'Data Return', text: finalString };
+                if (currentPhotoFile && navigator.canShare) {
+                    var filesArray = [new File([currentPhotoFile], "bukti_return.jpg", { type: currentPhotoFile.type })];
+                    if (navigator.canShare({ files: filesArray })) {
+                        shareData.files = filesArray;
+                    }
+                }
+                navigator.share(shareData).then(function () {
+                    currentPhotoFile = null;
+                    photoLabel.innerHTML = '\uD83D\uDCF7';
+                    photoInput.value = '';
+                }).catch(function (err) {
+                    if (err.name !== 'AbortError') {
+                        copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
+                    }
+                });
+            } else {
+                copyTextToClipboard(finalString, 'Laporan berhasil disalin!');
+            }
+        });
+
+        // --- Share Pickup ---
+        btnSharePickup.addEventListener('click', function () {
+            var currentTrip = tripSelect.value;
+            var currentSeller = document.getElementById('sellerInput').value.trim() || '-';
+            var groupRecords = [];
+            for (var i = 0; i < records.length; i++) {
+                if (records[i].trip === currentTrip && (records[i].seller || '-') === currentSeller) {
+                    groupRecords.push(records[i]);
+                }
+            }
+            if (groupRecords.length === 0) {
+                showIosAlert('Data Kosong', 'Tidak ada data untuk Seller "' + currentSeller + '" di Trip ' + currentTrip + '.');
+                return;
+            }
+            var monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            var now = new Date();
+            var dateStr = now.getDate() + ' ' + monthNames[now.getMonth()] + ' ' + now.getFullYear();
+            var report = [];
+            report.push('Pickup ' + currentSeller);
+            report.push(dateStr);
+            report.push('Trip ' + currentTrip);
+            groupRecords.sort(function (a, b) { return a.noUrut - b.noUrut; });
+            for (var j = 0; j < groupRecords.length; j++) {
+                report.push(groupRecords[j].noUrut + '. ' + groupRecords[j].resi);
+            }
+            report.push('Keterangan: Paket sudah di-pickup');
+            var finalString = report.join('\n').trim();
+
+            if (navigator.share) {
+                var shareData = { title: 'Daftar Pickup', text: finalString };
+                if (currentPhotoFile && navigator.canShare) {
+                    var filesArray = [new File([currentPhotoFile], "bukti_pickup.jpg", { type: currentPhotoFile.type })];
+                    if (navigator.canShare({ files: filesArray })) {
+                        shareData.files = filesArray;
+                    }
+                }
+                navigator.share(shareData).then(function () {
+                    currentPhotoFile = null;
+                    photoLabel.innerHTML = '\uD83D\uDCF7';
+                    photoInput.value = '';
+                }).catch(function (err) {
+                    if (err.name !== 'AbortError') {
+                        copyTextToClipboard(finalString, 'Teks disalin (Gagal membagikan foto).');
+                    }
+                });
+            } else {
+                copyTextToClipboard(finalString, 'Daftar Pickup disalin!');
+            }
+        });
+
+        // --- Copy Resi Only ---
+        btnCopyResiOnly.addEventListener('click', function () {
+            if (records.length === 0) {
+                showIosAlert('Data Kosong', 'Tidak ada data untuk disalin!');
+                return;
+            }
+            var resis = [];
+            var reversed = records.slice().reverse();
+            for (var i = 0; i < reversed.length; i++) {
+                resis.push(reversed[i].resi);
+            }
+            copyTextToClipboard(resis.join('\n'), 'Resi berhasil disalin!');
+        });
+
+        // --- Export Excel ---
+        btnExport.addEventListener('click', function () {
+            if (records.length === 0) {
+                showIosAlert('Data Kosong', 'Tidak ada data untuk diexport!');
+                return;
+            }
+            var data = generateReportData();
+            var aoa = [];
+            for (var key in data.groups) {
+                var g = data.groups[key];
+                aoa.push(['Data Paket SPX/ID']);
+                aoa.push([data.dateStr]);
+                aoa.push(['Trip ' + g.trip + ' | Seller: ' + g.seller]);
+                g.resis.sort(function (a, b) { return a.noUrut - b.noUrut; });
+                for (var i = 0; i < g.resis.length; i++) {
+                    aoa.push([g.resis[i].noUrut + '. ' + g.resis[i].resi]);
+                }
+                aoa.push(['']);
+            }
+            var worksheet = XLSX.utils.aoa_to_sheet(aoa);
+            var workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Data Return");
+            var now = new Date();
+            var fileDateStr = now.getFullYear() + '' + pad2(now.getMonth() + 1) + '' + pad2(now.getDate());
+            XLSX.writeFile(workbook, 'Rekap_Return_' + fileDateStr + '.xlsx');
+        });
+
+        // --- Clear All ---
+        btnClear.addEventListener('click', function () {
+            if (records.length === 0) return;
+            showIosConfirm('Kosongkan Data', 'PERINGATAN! Anda akan menghapus SEMUA data dari layar.\nPastikan Anda sudah menyalin atau mengekspor data.\n\nLanjutkan?', 'Kosongkan').then(function (confirmed) {
+                if (confirmed) {
+                    records = [];
+                    saveData();
+                    renderList();
+                }
+            });
+        });
+
+        // --- Import Data ---
+        btnOpenImport.addEventListener('click', function () {
+            document.getElementById('importTextarea').value = '';
+            document.getElementById('importModal').classList.add('active');
+        });
+        btnCancelImport.addEventListener('click', function () {
+            document.getElementById('importModal').classList.remove('active');
+        });
+        btnProcessImport.addEventListener('click', function () {
+            var text = document.getElementById('importTextarea').value;
+            if (!text.trim()) {
+                showIosAlert('Gagal', 'Teks tidak boleh kosong!');
+                return;
+            }
+            var lines = text.split('\n');
+            var currentSeller = '-';
+            var currentTrip = '1';
+            var resisToAdd = [];
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i].trim();
+                if (!line) continue;
+                if (line.toLowerCase().indexOf('return ') === 0) {
+                    currentSeller = line.substring(7).trim();
+                } else if (line.toLowerCase().indexOf('pickup ') === 0) {
+                    currentSeller = line.substring(7).trim();
+                } else if (line.toLowerCase().indexOf('trip ') === 0) {
+                    currentTrip = line.substring(5).trim();
+                } else {
+                    var match = line.match(/(?:SPX|ID)[A-Z0-9]+/i);
+                    if (match) {
+                        resisToAdd.push({ resi: match[0].toUpperCase(), seller: currentSeller, trip: currentTrip });
+                    }
+                }
+            }
+            if (resisToAdd.length === 0) {
+                showIosAlert('Gagal', 'Tidak ada resi valid yang ditemukan dalam teks.');
+                return;
+            }
+            var addedCount = 0;
+            var dupCount = 0;
+            for (var j = 0; j < resisToAdd.length; j++) {
+                var item = resisToAdd[j];
+                var isDuplicate = false;
+                for (var k = 0; k < records.length; k++) {
+                    if (records[k].resi === item.resi) { isDuplicate = true; break; }
+                }
+                if (!isDuplicate) {
+                    var groupCount = 0;
+                    for (var g = 0; g < records.length; g++) {
+                        if (records[g].trip === item.trip && (records[g].seller || '-') === item.seller) groupCount++;
+                    }
+                    records.unshift({
+                        id: Date.now().toString() + Math.random().toString().substring(2, 6),
+                        timestamp: getTimestamp(),
+                        trip: item.trip,
+                        seller: item.seller,
+                        noUrut: groupCount + 1,
+                        resi: item.resi
+                    });
+                    addedCount++;
+                } else {
+                    dupCount++;
+                }
+            }
+            recalculateSequence();
+            saveData();
+            renderList();
+            document.getElementById('importModal').classList.remove('active');
+            var msg = 'Berhasil import ' + addedCount + ' resi.';
+            if (dupCount > 0) msg += '\n(Diabaikan ' + dupCount + ' resi duplikat)';
+            showIosAlert('Import Selesai', msg);
+        });
+
+        // ================================================================
+        // QR CODE MODAL & SLIDESHOW
+        // ================================================================
+        var qrIndex = 0;
+        var autoSlideInterval = null;
+
+        function stopAutoSlide() {
+            if (autoSlideInterval) {
+                clearInterval(autoSlideInterval);
+                autoSlideInterval = null;
+                var btn = document.getElementById('qrAutoBtn');
+                btn.innerHTML = '\u25B6 Auto';
+                btn.style.color = 'var(--ios-green)';
+            }
+        }
+
+        function toggleAutoSlide() {
+            var btn = document.getElementById('qrAutoBtn');
+            if (autoSlideInterval) {
+                stopAutoSlide();
+            } else {
+                btn.innerHTML = '\u23F8 Stop';
+                btn.style.color = 'var(--ios-red)';
+                if (qrIndex === records.length - 1) {
+                    qrIndex = 0;
+                    renderQR();
+                }
+                autoSlideInterval = setInterval(function () {
+                    if (qrIndex < records.length - 1) {
+                        qrIndex++;
+                        renderQR();
+                    } else {
+                        stopAutoSlide();
+                    }
+                }, 1250);
+            }
+        }
+
+        function openQRModal(index) {
+            if (records.length === 0) return;
+            qrIndex = index;
+            document.getElementById('qrModalOverlay').classList.add('active');
+            renderQR();
+        }
+
+        function renderQR() {
+            var record = records[qrIndex];
+            document.getElementById('qrResiLabel').textContent = record.resi;
+            document.getElementById('qrTagLabel').textContent = (qrIndex + 1) + ' / ' + records.length + ' \u2022 (Trip ' + record.trip + ')';
+            var box = document.getElementById('qrBox');
+            box.innerHTML = '';
+            new QRCode(box, {
+                text: record.resi,
+                width: 220,
+                height: 220,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            document.getElementById('qrPrevBtn').disabled = qrIndex === 0;
+            document.getElementById('qrNextBtn').disabled = qrIndex === records.length - 1;
+        }
+
+        function closeQRModal() {
+            stopAutoSlide();
+            document.getElementById('qrModalOverlay').classList.remove('active');
+            document.getElementById('qrBox').innerHTML = '';
+            setTimeout(function () { scanInput.focus(); }, 50);
+        }
+
+        document.getElementById('qrCloseBtn').addEventListener('click', closeQRModal);
+        document.getElementById('qrAutoBtn').addEventListener('click', toggleAutoSlide);
+        document.getElementById('qrPrevBtn').addEventListener('click', function () {
+            stopAutoSlide();
+            if (qrIndex > 0) { qrIndex--; renderQR(); }
+        });
+        document.getElementById('qrNextBtn').addEventListener('click', function () {
+            stopAutoSlide();
+            if (qrIndex < records.length - 1) { qrIndex++; renderQR(); }
+        });
+        document.getElementById('qrModalOverlay').addEventListener('click', function (e) {
+            if (e.target === document.getElementById('qrModalOverlay')) closeQRModal();
+        });
+
+        function getQRCanvas() {
+            return document.getElementById('qrBox').querySelector('canvas');
+        }
+
+        document.getElementById('qrDownloadBtn').addEventListener('click', function () {
+            var canvas = getQRCanvas();
+            if (canvas) {
+                var record = records[qrIndex];
+                var link = document.createElement('a');
+                link.download = 'QR_' + record.resi + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+        });
+
+        document.getElementById('qrShareBtn').addEventListener('click', function () {
+            var canvas = getQRCanvas();
+            if (canvas) {
+                var record = records[qrIndex];
+                if (navigator.share && navigator.canShare) {
+                    canvas.toBlob(function (blob) {
+                        var file = new File([blob], 'QR_' + record.resi + '.png', { type: 'image/png' });
+                        if (navigator.canShare({ files: [file] })) {
+                            navigator.share({ files: [file], title: 'QR ' + record.resi }).catch(function () {});
+                        } else {
+                            document.getElementById('qrDownloadBtn').click();
+                        }
+                    });
+                } else {
+                    document.getElementById('qrDownloadBtn').click();
+                }
+            }
+        });
+
+        btnAllQR.addEventListener('click', function () {
+            if (records.length === 0) {
+                showIosAlert('Data Kosong', 'Belum ada resi untuk ditampilkan!');
+                return;
+            }
+            openQRModal(0);
+        });
+
+        // --- Auto-focus on load ---
+        setTimeout(function () { scanInput.focus(); }, 100);
+    });
+    </script>
+</body>
+</html>
