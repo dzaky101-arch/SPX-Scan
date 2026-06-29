@@ -53,6 +53,26 @@
             --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Light Mode Overrides */
+        body.light-mode {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f1f5f9;
+            --bg-input: #f8fafc;
+            --bg-modal: rgba(255, 255, 255, 0.95);
+
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --border-light: #cbd5e1;
+
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+            --shadow-lg: 0 20px 48px rgba(0,0,0,0.12);
+        }
+
         /* ============ BASE STYLES ============ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -456,6 +476,13 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 8px;
+            padding: 0 20px; margin-bottom: 12px;
+        }
+        
+        .action-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
             padding: 0 20px; margin-bottom: 16px;
         }
 
@@ -730,76 +757,91 @@
         .bulk-import-btn:active { transform: scale(0.98); }
         .bulk-import-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* QR Slide Modal */
+        /* QR Slide Modal New Look */
+        #qrModal .modal-content {
+            padding: 24px 20px;
+            background: #ffffff;
+            border-radius: 20px;
+            max-width: 320px;
+            width: 90%;
+        }
+        #qrModal .modal-header { display: none; }
+        
         .qr-display {
             display: flex; flex-direction: column;
             align-items: center; gap: 16px;
         }
 
-        .qr-slide-nav {
-            display: flex; align-items: center; gap: 16px; width: 100%;
-            justify-content: center;
+        .qr-counter {
+            font-size: 11px; font-weight: 700;
+            color: #888;
+            text-align: center;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
-        .qr-nav-btn {
-            width: 44px; height: 44px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-full);
-            color: var(--text-secondary);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 20px;
-            transition: var(--transition-fast);
-            flex-shrink: 0;
-        }
-        .qr-nav-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--accent); }
-        .qr-nav-btn:active { transform: scale(0.9); }
-        .qr-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-
-        .qr-canvas-wrap {
+        .qr-card {
             background: white;
-            padding: 20px;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            transition: var(--transition-normal);
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid #eaeaea;
+            display: flex; flex-direction: column;
+            align-items: center;
+            margin-bottom: 2px;
         }
 
         #qrCanvas { display: block; }
 
-        .qr-counter {
-            font-size: 14px; font-weight: 700;
-            color: var(--accent);
+        .qr-resi-text-large {
+            font-size: 15px; font-weight: 800;
+            color: #000;
             text-align: center;
-        }
-
-        .qr-label {
-            font-size: 15px; font-weight: 700;
-            color: var(--text-primary);
-            text-align: center; max-width: 300px;
-            word-break: break-all;
-            padding: 8px 16px;
-            background: var(--accent-subtle);
-            border: 1px solid rgba(255,107,0,0.15);
-            border-radius: var(--radius-md);
             letter-spacing: 0.5px;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 6px;
         }
 
-        .qr-actions {
-            display: flex; gap: 8px; width: 100%;
+        .qr-nav-row, .qr-action-row {
+            display: flex; gap: 10px; width: 100%;
         }
 
-        .qr-action-btn {
-            flex: 1; padding: 12px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            color: var(--text-secondary);
-            font-size: 13px; font-weight: 600;
+        .qr-btn {
+            flex: 1; padding: 12px 0;
+            border-radius: 10px;
+            font-size: 14px; font-weight: 700;
             cursor: pointer; text-align: center;
             transition: var(--transition-fast);
+            border: none;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
         }
-        .qr-action-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
-        .qr-action-btn.active-play { background: var(--accent); color: white; border-color: var(--accent); }
+
+        .qr-btn-nav {
+            background: #f5f6f8;
+            color: #007bff;
+        }
+        .qr-btn-nav.green { color: #28a745; }
+        .qr-btn-nav:hover { background: #e9ecef; }
+        .qr-btn-nav:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .qr-btn-primary {
+            background: #007bff;
+            color: white;
+            flex: 1.2;
+        }
+        .qr-btn-primary:hover { background: #0069d9; }
+
+        .qr-btn-secondary {
+            background: #edf2fa;
+            color: #007bff;
+        }
+        .qr-btn-secondary:hover { background: #e2e8f0; }
+
+        .qr-btn-danger {
+            background: #f5f6f8;
+            color: #dc3545;
+            width: 100%;
+        }
+        .qr-btn-danger:hover { background: #e9ecef; }
 
         /* ============ TOAST ============ */
         .toast-container {
@@ -942,7 +984,8 @@
                 <div class="header-title">SPX Scanner Pro</div>
             </div>
             <div class="header-actions">
-                <button class="header-btn" onclick="showQrModal()" title="QR Code">📱</button>
+                <button class="header-btn" onclick="toggleTheme()" title="Ganti Tema" id="themeToggleBtn">☀️</button>
+                <button class="header-btn" onclick="showQrModal()" title="Slide QR">📱</button>
                 <button class="header-btn" onclick="lockApp()" title="Kunci Aplikasi">🔒</button>
             </div>
         </div>
@@ -1007,11 +1050,23 @@
             Excel
         </div>
     </div>
+    
+    <div class="action-grid-2">
+        <div class="action-btn return" onclick="triggerPhotoShare('return')">
+            <div class="action-icon">📸</div>
+            Return + Foto
+        </div>
+        <div class="action-btn pickup" onclick="triggerPhotoShare('pickup')">
+            <div class="action-icon">📸</div>
+            Pickup + Foto
+        </div>
+    </div>
+    <input type="file" id="sharePhotoFile" accept="image/*" style="display: none;" onchange="handlePhotoShare(this)">
 
     <!-- Extra Buttons -->
     <div class="extra-actions">
         <button class="extra-btn" onclick="showBulkModal()">📥 Input Bulky</button>
-        <button class="extra-btn" onclick="showQrModal()">📱 QR Code</button>
+        <button class="extra-btn" onclick="showQrModal()">📱 Slide QR</button>
     </div>
 
     <!-- Resi List -->
@@ -1064,26 +1119,29 @@
 <!-- ==================== QR CODE SLIDE MODAL ==================== -->
 <div class="modal-overlay" id="qrModal">
     <div class="modal-content center">
-        <div class="modal-header">
-            <div class="modal-title">📱 QR Slide Resi</div>
-            <button class="modal-close" onclick="closeQrModal()">✕</button>
-        </div>
-        <div class="modal-body">
+        <div class="modal-header"></div>
+        <div class="modal-body" style="padding: 0;">
             <div class="qr-display">
-                <div class="qr-counter" id="qrCounter">0 / 0</div>
-                <div class="qr-slide-nav">
-                    <button class="qr-nav-btn" onclick="qrPrev()" id="qrPrevBtn">◀</button>
-                    <div class="qr-canvas-wrap" id="qrCanvasWrap">
-                        <canvas id="qrCanvas"></canvas>
-                    </div>
-                    <button class="qr-nav-btn" onclick="qrNext()" id="qrNextBtn">▶</button>
+                <div class="qr-counter" id="qrCounter">1 / 5 • (TRIP 1)</div>
+                
+                <div class="qr-card" id="qrCanvasWrap">
+                    <div id="qrCanvas"></div>
                 </div>
-                <div class="qr-label" id="qrLabel">Tidak ada resi</div>
-                <div class="qr-actions">
-                    <button class="qr-action-btn" onclick="toggleAutoPlay()" id="autoPlayBtn">▶ Auto</button>
-                    <button class="qr-action-btn" onclick="downloadQr()">💾 Simpan</button>
-                    <button class="qr-action-btn" onclick="shareQrImage()">📤 Share</button>
+                
+                <div class="qr-resi-text-large" id="qrResiTextLarge">-</div>
+                
+                <div class="qr-nav-row">
+                    <button class="qr-btn qr-btn-nav" onclick="qrPrev()" id="qrPrevBtn">◀ Prev</button>
+                    <button class="qr-btn qr-btn-nav green" onclick="toggleAutoPlay()" id="autoPlayBtn">▶ Auto</button>
+                    <button class="qr-btn qr-btn-nav" onclick="qrNext()" id="qrNextBtn">Next ▶</button>
                 </div>
+
+                <div class="qr-action-row">
+                    <button class="qr-btn qr-btn-primary" onclick="downloadQr()">💾 Simpan</button>
+                    <button class="qr-btn qr-btn-secondary" onclick="shareQrImage()">↗ Bagikan</button>
+                </div>
+                
+                <button class="qr-btn qr-btn-danger" onclick="closeQrModal()">Tutup</button>
             </div>
         </div>
     </div>
@@ -1105,7 +1163,7 @@
 
 <!-- ==================== SCRIPTS ==================== -->
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
 
 <script>
@@ -1123,8 +1181,27 @@ const SCAN_COOLDOWN = 2000; // 2 detik jeda antar scan kamera
 let timerInterval = null;
 let feedbackTimeout = null;
 let audioCtx = null;
+let lockTimer = null;
+let lockDuration = 0;
+// ============ THEME MANAGEMENT ============
+function toggleTheme() {
+    const isLight = document.body.classList.toggle('light-mode');
+    localStorage.setItem('spx_theme', isLight ? 'light' : 'dark');
+    document.getElementById('themeToggleBtn').textContent = isLight ? '🌙' : '☀️';
+}
 
-// ============ CONSTANTS ============
+function initTheme() {
+    const savedTheme = localStorage.getItem('spx_theme');
+    const btn = document.getElementById('themeToggleBtn');
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        if (btn) btn.textContent = '🌙';
+    } else {
+        if (btn) btn.textContent = '☀️';
+    }
+}
+
+// ============ SOUND SYSTEM ============
 const STORAGE_KEYS = {
     DEVICE_ID: 'spx_device_id',
     UNLOCK_EXPIRY: 'spx_unlock_expiry',
@@ -1136,6 +1213,11 @@ const DURATIONS = [1, 3, 7, 14, 30, 90, 180, 365];
 
 // ============ INITIALIZATION ============
 document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    checkLockState();
+    if (!isLocked) {
+        initScanner();
+    }
     initDeviceId();
     loadResiList();
     checkUnlockStatus();
@@ -1685,54 +1767,62 @@ function getFormattedTime() {
     return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 }
 
-function shareReturn() {
-    if (resiList.length === 0) { showToast('Tidak ada resi untuk di-share', 'warning'); return; }
-
+function getShareText(type) {
     const seller = document.getElementById('sellerName').value.trim();
     const trip = document.getElementById('tripName').value.trim();
 
-    let text = '📦 LAPORAN RETURN SPX\n';
-    text += '━━━━━━━━━━━━━━━━━━━━━━━\n';
-    if (seller) text += '👤 Seller     : ' + seller + '\n';
-    if (trip) text += '🚛 Trip         : ' + trip + '\n';
-    text += '📅 Tanggal : ' + getFormattedDate() + '\n';
-    text += '🕐 Waktu     : ' + getFormattedTime() + '\n';
-    text += '📊 Total        : ' + resiList.length + ' Paket\n';
-    text += '━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+    let text = type === 'return' ? 'LAPORAN RETURN SPX\n\n' : 'LAPORAN PICKUP SPX\n\n';
+    if (seller) text += 'Seller: ' + seller + '\n';
+    if (trip) text += 'Trip: ' + trip + '\n';
+    text += 'Tanggal: ' + getFormattedDate() + '\n';
+    text += 'Waktu: ' + getFormattedTime() + '\n';
+    text += 'Total: ' + resiList.length + ' Paket\n\n';
 
     resiList.forEach((r, i) => {
         text += (i + 1) + '. ' + r.code + '\n';
     });
+    return text;
+}
 
-    text += '\n━━━━━━━━━━━━━━━━━━━━━━━\n';
-    text += '📱 SPX Scanner Pro';
-
-    shareText(text, 'Return Manifest');
+function shareReturn() {
+    if (resiList.length === 0) { showToast('Tidak ada resi untuk di-share', 'warning'); return; }
+    shareText(getShareText('return'), 'Return Manifest');
 }
 
 function sharePickup() {
     if (resiList.length === 0) { showToast('Tidak ada resi untuk di-share', 'warning'); return; }
+    shareText(getShareText('pickup'), 'Pickup Manifest');
+}
 
-    const seller = document.getElementById('sellerName').value.trim();
-    const trip = document.getElementById('tripName').value.trim();
+let pendingShareType = '';
+function triggerPhotoShare(type) {
+    if (resiList.length === 0) { showToast('Tidak ada resi untuk di-share', 'warning'); return; }
+    pendingShareType = type;
+    document.getElementById('sharePhotoFile').click();
+}
 
-    let text = '🚚 LAPORAN PICKUP SPX\n';
-    text += '━━━━━━━━━━━━━━━━━━━━━━━\n';
-    if (seller) text += '👤 Seller     : ' + seller + '\n';
-    if (trip) text += '🚛 Trip         : ' + trip + '\n';
-    text += '📅 Tanggal : ' + getFormattedDate() + '\n';
-    text += '🕐 Waktu     : ' + getFormattedTime() + '\n';
-    text += '📊 Total        : ' + resiList.length + ' Paket\n';
-    text += '━━━━━━━━━━━━━━━━━━━━━━━\n\n';
-
-    resiList.forEach((r, i) => {
-        text += (i + 1) + '. ' + r.code + '\n';
-    });
-
-    text += '\n━━━━━━━━━━━━━━━━━━━━━━━\n';
-    text += '📱 SPX Scanner Pro';
-
-    shareText(text, 'Pickup Manifest');
+async function handlePhotoShare(input) {
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    const text = getShareText(pendingShareType);
+    const title = pendingShareType === 'return' ? 'Return Manifest' : 'Pickup Manifest';
+    
+    try {
+        if (navigator.share) {
+            await navigator.share({
+                title: title,
+                text: text,
+                files: [file]
+            });
+            showToast('Berhasil share dengan foto', 'success');
+        } else {
+            showToast('Perangkat tidak mendukung share foto langsung', 'error');
+        }
+    } catch (err) {
+        console.log('Error sharing:', err);
+        showToast('Batal share atau perangkat tidak support', 'warning');
+    }
+    input.value = ''; // Reset file input
 }
 
 function shareResi() {
@@ -1845,26 +1935,22 @@ function showSingleQr(code) {
 }
 
 function renderQrSlide() {
-    const canvas = document.getElementById('qrCanvas');
-    const label = document.getElementById('qrLabel');
+    const canvasContainer = document.getElementById('qrCanvas');
+    const resiTextLarge = document.getElementById('qrResiTextLarge');
     const counter = document.getElementById('qrCounter');
     const prevBtn = document.getElementById('qrPrevBtn');
     const nextBtn = document.getElementById('qrNextBtn');
     const wrap = document.getElementById('qrCanvasWrap');
 
+    const tripInput = document.getElementById('tripName');
+    const tripName = tripInput && tripInput.value.trim() ? tripInput.value.trim() : 'NO TRIP';
+
     if (resiList.length === 0) {
-        counter.textContent = '0 / 0';
-        label.textContent = 'Tidak ada resi';
+        counter.textContent = '0 / 0 • (' + tripName + ')';
+        if (resiTextLarge) resiTextLarge.textContent = '-';
         prevBtn.disabled = true;
         nextBtn.disabled = true;
-        const ctx = canvas.getContext('2d');
-        canvas.width = 220; canvas.height = 220;
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, 220, 220);
-        ctx.fillStyle = '#999';
-        ctx.font = '14px Inter';
-        ctx.textAlign = 'center';
-        ctx.fillText('Tidak ada data', 110, 110);
+        canvasContainer.innerHTML = '<div style="width:250px;height:250px;display:flex;align-items:center;justify-content:center;color:#999;font-size:14px;font-family:Inter">Tidak ada data</div>';
         return;
     }
 
@@ -1873,14 +1959,14 @@ function renderQrSlide() {
     if (qrSlideIndex >= resiList.length) qrSlideIndex = 0;
 
     const resi = resiList[qrSlideIndex];
-    counter.textContent = (qrSlideIndex + 1) + ' / ' + resiList.length;
-    label.textContent = resi.code;
+    counter.textContent = (qrSlideIndex + 1) + ' / ' + resiList.length + ' • (' + tripName + ')';
+    if (resiTextLarge) resiTextLarge.textContent = resi.code;
     prevBtn.disabled = resiList.length <= 1;
     nextBtn.disabled = resiList.length <= 1;
 
     // Animate
-    wrap.style.transform = 'scale(0.92)';
-    wrap.style.opacity = '0.5';
+    wrap.style.transform = 'scale(0.95)';
+    wrap.style.opacity = '0.7';
     setTimeout(() => {
         wrap.style.transform = 'scale(1)';
         wrap.style.opacity = '1';
@@ -1888,14 +1974,24 @@ function renderQrSlide() {
 
     try {
         if (typeof QRCode !== 'undefined') {
-            QRCode.toCanvas(canvas, resi.code, {
-                width: 240,
-                margin: 2,
-                color: { dark: '#000000', light: '#ffffff' }
+            canvasContainer.innerHTML = ''; // Clear previous QR
+            new QRCode(canvasContainer, {
+                text: resi.code,
+                width: 250,
+                height: 250,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
             });
+        } else {
+            // Library not loaded yet
+            if (resiTextLarge) resiTextLarge.textContent = 'Loading QR...';
+            setTimeout(() => {
+                renderQrSlide();
+            }, 1000);
         }
     } catch(e) {
-        label.textContent = 'Error: ' + e.message;
+        if (resiTextLarge) resiTextLarge.textContent = 'App Error: ' + e.message;
     }
 }
 
@@ -1940,7 +2036,8 @@ function stopAutoPlay() {
 }
 
 function downloadQr() {
-    const canvas = document.getElementById('qrCanvas');
+    const canvas = document.querySelector('#qrCanvas canvas');
+    if (!canvas) { showToast('QR Code belum dimuat', 'error'); return; }
     const resi = resiList[qrSlideIndex];
     const name = resi ? resi.code : 'SPX_QR';
     const link = document.createElement('a');
@@ -1951,7 +2048,8 @@ function downloadQr() {
 }
 
 function shareQrImage() {
-    const canvas = document.getElementById('qrCanvas');
+    const canvas = document.querySelector('#qrCanvas canvas');
+    if (!canvas) { showToast('QR Code belum dimuat', 'error'); return; }
     const resi = resiList[qrSlideIndex];
     const name = resi ? resi.code : 'SPX_QR';
     canvas.toBlob(blob => {
