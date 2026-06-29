@@ -327,16 +327,16 @@
         }
 
         .scan-input-wrap {
-            display: flex; gap: 8px; margin-bottom: 12px;
+            display: flex; gap: 6px; margin-bottom: 12px;
         }
 
         .scan-input {
-            flex: 1; padding: 14px 18px;
+            flex: 1; padding: 12px 14px;
             background: var(--bg-card);
             border: 2px solid var(--border);
             border-radius: var(--radius-md);
             color: var(--text-primary);
-            font-size: 16px; font-weight: 600;
+            font-size: 15px; font-weight: 600;
             letter-spacing: 1px;
             outline: none;
             transition: var(--transition-fast);
@@ -348,10 +348,10 @@
         .scan-input::placeholder { font-weight: 400; letter-spacing: 0; color: var(--text-muted); }
 
         .scan-btn, .camera-btn {
-            width: 50px; height: 50px;
+            width: 45px; height: 45px;
             border: none; border-radius: var(--radius-md);
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 20px;
+            cursor: pointer; font-size: 18px;
             transition: var(--transition-fast);
             flex-shrink: 0;
         }
@@ -957,7 +957,7 @@
 
         <div class="pin-input-group">
             <label class="pin-label">Masukkan PIN Aktivasi</label>
-            <input type="number" class="pin-input" id="pinInput"
+            <input type="text" class="pin-input" id="pinInput"
                    placeholder="6 digit PIN" maxlength="6"
                    inputmode="numeric" pattern="[0-9]*"
                    onkeyup="if(event.key==='Enter') unlock()">
@@ -1950,7 +1950,7 @@ function renderQrSlide() {
         if (resiTextLarge) resiTextLarge.textContent = '-';
         prevBtn.disabled = true;
         nextBtn.disabled = true;
-        canvasContainer.innerHTML = '<div style="width:250px;height:250px;display:flex;align-items:center;justify-content:center;color:#999;font-size:14px;font-family:Inter">Tidak ada data</div>';
+        canvasContainer.innerHTML = '<div style="width:180px;height:180px;display:flex;align-items:center;justify-content:center;color:#999;font-size:14px;font-family:Inter">Tidak ada data</div>';
         return;
     }
 
@@ -1977,8 +1977,8 @@ function renderQrSlide() {
             canvasContainer.innerHTML = ''; // Clear previous QR
             new QRCode(canvasContainer, {
                 text: resi.code,
-                width: 250,
-                height: 250,
+                width: 180,
+                height: 180,
                 colorDark : "#000000",
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.H
