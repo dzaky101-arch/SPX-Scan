@@ -730,29 +730,62 @@
         .bulk-import-btn:active { transform: scale(0.98); }
         .bulk-import-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* QR Modal */
+        /* QR Slide Modal */
         .qr-display {
             display: flex; flex-direction: column;
             align-items: center; gap: 16px;
         }
+
+        .qr-slide-nav {
+            display: flex; align-items: center; gap: 16px; width: 100%;
+            justify-content: center;
+        }
+
+        .qr-nav-btn {
+            width: 44px; height: 44px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            color: var(--text-secondary);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 20px;
+            transition: var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .qr-nav-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--accent); }
+        .qr-nav-btn:active { transform: scale(0.9); }
+        .qr-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
         .qr-canvas-wrap {
             background: white;
             padding: 20px;
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-md);
+            transition: var(--transition-normal);
         }
 
         #qrCanvas { display: block; }
 
+        .qr-counter {
+            font-size: 14px; font-weight: 700;
+            color: var(--accent);
+            text-align: center;
+        }
+
         .qr-label {
-            font-size: 13px; color: var(--text-secondary);
-            text-align: center; max-width: 280px;
+            font-size: 15px; font-weight: 700;
+            color: var(--text-primary);
+            text-align: center; max-width: 300px;
             word-break: break-all;
+            padding: 8px 16px;
+            background: var(--accent-subtle);
+            border: 1px solid rgba(255,107,0,0.15);
+            border-radius: var(--radius-md);
+            letter-spacing: 0.5px;
         }
 
         .qr-actions {
-            display: flex; gap: 10px; width: 100%;
+            display: flex; gap: 8px; width: 100%;
         }
 
         .qr-action-btn {
@@ -766,6 +799,7 @@
             transition: var(--transition-fast);
         }
         .qr-action-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+        .qr-action-btn.active-play { background: var(--accent); color: white; border-color: var(--accent); }
 
         /* ============ TOAST ============ */
         .toast-container {
@@ -1027,20 +1061,26 @@
     </div>
 </div>
 
-<!-- ==================== QR CODE MODAL ==================== -->
+<!-- ==================== QR CODE SLIDE MODAL ==================== -->
 <div class="modal-overlay" id="qrModal">
     <div class="modal-content center">
         <div class="modal-header">
-            <div class="modal-title">📱 QR Code</div>
+            <div class="modal-title">📱 QR Slide Resi</div>
             <button class="modal-close" onclick="closeQrModal()">✕</button>
         </div>
         <div class="modal-body">
             <div class="qr-display">
-                <div class="qr-canvas-wrap">
-                    <canvas id="qrCanvas"></canvas>
+                <div class="qr-counter" id="qrCounter">0 / 0</div>
+                <div class="qr-slide-nav">
+                    <button class="qr-nav-btn" onclick="qrPrev()" id="qrPrevBtn">◀</button>
+                    <div class="qr-canvas-wrap" id="qrCanvasWrap">
+                        <canvas id="qrCanvas"></canvas>
+                    </div>
+                    <button class="qr-nav-btn" onclick="qrNext()" id="qrNextBtn">▶</button>
                 </div>
-                <div class="qr-label" id="qrLabel">Tidak ada resi untuk ditampilkan</div>
+                <div class="qr-label" id="qrLabel">Tidak ada resi</div>
                 <div class="qr-actions">
+                    <button class="qr-action-btn" onclick="toggleAutoPlay()" id="autoPlayBtn">▶ Auto</button>
                     <button class="qr-action-btn" onclick="downloadQr()">💾 Simpan</button>
                     <button class="qr-action-btn" onclick="shareQrImage()">📤 Share</button>
                 </div>
@@ -1780,46 +1820,78 @@ function shareExcel() {
 }
 
 // ============ QR CODE ============
+// ============ QR SLIDE SYSTEM ============
+let qrSlideIndex = 0;
+let qrAutoPlayInterval = null;
+let qrAutoPlaying = false;
+
 function showQrModal() {
+    qrSlideIndex = 0;
     document.getElementById('qrModal').classList.add('active');
-    generateQrCode();
+    renderQrSlide();
 }
 
 function closeQrModal() {
+    stopAutoPlay();
     document.getElementById('qrModal').classList.remove('active');
 }
 
-function generateQrCode() {
+function showSingleQr(code) {
+    // Find index of this code in resiList
+    const idx = resiList.findIndex(r => r.code === code);
+    qrSlideIndex = idx >= 0 ? idx : 0;
+    document.getElementById('qrModal').classList.add('active');
+    renderQrSlide();
+}
+
+function renderQrSlide() {
     const canvas = document.getElementById('qrCanvas');
     const label = document.getElementById('qrLabel');
+    const counter = document.getElementById('qrCounter');
+    const prevBtn = document.getElementById('qrPrevBtn');
+    const nextBtn = document.getElementById('qrNextBtn');
+    const wrap = document.getElementById('qrCanvasWrap');
 
     if (resiList.length === 0) {
-        label.textContent = 'Tidak ada resi untuk ditampilkan';
+        counter.textContent = '0 / 0';
+        label.textContent = 'Tidak ada resi';
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
         const ctx = canvas.getContext('2d');
-        canvas.width = 200;
-        canvas.height = 200;
+        canvas.width = 220; canvas.height = 220;
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, 200, 200);
-        ctx.fillStyle = '#999999';
+        ctx.fillRect(0, 0, 220, 220);
+        ctx.fillStyle = '#999';
         ctx.font = '14px Inter';
         ctx.textAlign = 'center';
-        ctx.fillText('Tidak ada data', 100, 100);
+        ctx.fillText('Tidak ada data', 110, 110);
         return;
     }
 
-    const qrData = resiList.map(r => r.code).join('\n');
-    label.textContent = resiList.length + ' resi SPX';
+    // Clamp index
+    if (qrSlideIndex < 0) qrSlideIndex = resiList.length - 1;
+    if (qrSlideIndex >= resiList.length) qrSlideIndex = 0;
+
+    const resi = resiList[qrSlideIndex];
+    counter.textContent = (qrSlideIndex + 1) + ' / ' + resiList.length;
+    label.textContent = resi.code;
+    prevBtn.disabled = resiList.length <= 1;
+    nextBtn.disabled = resiList.length <= 1;
+
+    // Animate
+    wrap.style.transform = 'scale(0.92)';
+    wrap.style.opacity = '0.5';
+    setTimeout(() => {
+        wrap.style.transform = 'scale(1)';
+        wrap.style.opacity = '1';
+    }, 80);
 
     try {
         if (typeof QRCode !== 'undefined') {
-            QRCode.toCanvas(canvas, qrData, {
-                width: 280,
+            QRCode.toCanvas(canvas, resi.code, {
+                width: 240,
                 margin: 2,
                 color: { dark: '#000000', light: '#ffffff' }
-            }, (err) => {
-                if (err) {
-                    label.textContent = 'Gagal membuat QR: ' + err.message;
-                }
             });
         }
     } catch(e) {
@@ -1827,50 +1899,86 @@ function generateQrCode() {
     }
 }
 
-function showSingleQr(code) {
-    document.getElementById('qrModal').classList.add('active');
-    const canvas = document.getElementById('qrCanvas');
-    const label = document.getElementById('qrLabel');
-    label.textContent = code;
+function qrPrev() {
+    qrSlideIndex--;
+    renderQrSlide();
+}
 
-    try {
-        if (typeof QRCode !== 'undefined') {
-            QRCode.toCanvas(canvas, code, {
-                width: 280,
-                margin: 2,
-                color: { dark: '#000000', light: '#ffffff' }
-            });
-        }
-    } catch(e) {
-        label.textContent = 'Error: ' + e.message;
+function qrNext() {
+    qrSlideIndex++;
+    renderQrSlide();
+}
+
+function toggleAutoPlay() {
+    if (qrAutoPlaying) {
+        stopAutoPlay();
+    } else {
+        startAutoPlay();
+    }
+}
+
+function startAutoPlay() {
+    if (resiList.length <= 1) return;
+    qrAutoPlaying = true;
+    document.getElementById('autoPlayBtn').textContent = '⏸ Stop';
+    document.getElementById('autoPlayBtn').classList.add('active-play');
+    qrAutoPlayInterval = setInterval(() => {
+        qrSlideIndex++;
+        renderQrSlide();
+    }, 2000);
+}
+
+function stopAutoPlay() {
+    qrAutoPlaying = false;
+    if (qrAutoPlayInterval) clearInterval(qrAutoPlayInterval);
+    qrAutoPlayInterval = null;
+    const btn = document.getElementById('autoPlayBtn');
+    if (btn) {
+        btn.textContent = '▶ Auto';
+        btn.classList.remove('active-play');
     }
 }
 
 function downloadQr() {
     const canvas = document.getElementById('qrCanvas');
+    const resi = resiList[qrSlideIndex];
+    const name = resi ? resi.code : 'SPX_QR';
     const link = document.createElement('a');
-    link.download = 'SPX_QR_' + Date.now() + '.png';
+    link.download = name + '.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
-    showToast('📱 QR Code disimpan!', 'success');
+    showToast('📱 QR ' + name + ' disimpan!', 'success');
 }
 
 function shareQrImage() {
     const canvas = document.getElementById('qrCanvas');
+    const resi = resiList[qrSlideIndex];
+    const name = resi ? resi.code : 'SPX_QR';
     canvas.toBlob(blob => {
         if (navigator.share && navigator.canShare) {
-            const file = new File([blob], 'SPX_QR.png', { type: 'image/png' });
-            navigator.share({
-                title: 'SPX QR Code',
-                files: [file]
-            }).catch(() => {
-                downloadQr();
-            });
+            const file = new File([blob], name + '.png', { type: 'image/png' });
+            navigator.share({ title: 'QR ' + name, files: [file] }).catch(() => downloadQr());
         } else {
             downloadQr();
         }
     }, 'image/png');
 }
+
+// Swipe support for QR slide
+(function() {
+    let touchStartX = 0;
+    document.addEventListener('DOMContentLoaded', () => {
+        const wrap = document.getElementById('qrCanvasWrap');
+        if (!wrap) return;
+        wrap.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+        wrap.addEventListener('touchend', e => {
+            const diff = e.changedTouches[0].screenX - touchStartX;
+            if (Math.abs(diff) > 50) {
+                if (diff < 0) qrNext(); else qrPrev();
+            }
+        }, {passive: true});
+    });
+})();
 
 // ============ UI HELPERS ============
 function updateDateDisplay() {
