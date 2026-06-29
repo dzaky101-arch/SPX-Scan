@@ -347,7 +347,7 @@
         }
         .scan-input::placeholder { font-weight: 400; letter-spacing: 0; color: var(--text-muted); }
 
-        .scan-btn, .camera-btn {
+        .scan-btn {
             width: 45px; height: 45px;
             border: none; border-radius: var(--radius-md);
             display: flex; align-items: center; justify-content: center;
@@ -364,14 +364,21 @@
         .scan-btn:active { transform: scale(0.92); }
 
         .camera-btn {
+            width: 100%; padding: 12px;
             background: var(--bg-card);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
+            border: 2px dashed var(--border-light);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 15px; font-weight: 600;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            cursor: pointer; transition: var(--transition-fast);
+            margin-bottom: 12px;
         }
+        .camera-btn:active { transform: scale(0.98); }
         .camera-btn.active {
-            background: var(--accent);
+            background: var(--accent-subtle);
             border-color: var(--accent);
-            color: white;
+            color: var(--accent);
         }
 
         /* Scan feedback */
@@ -1002,13 +1009,13 @@
 
     <!-- Scan Area -->
     <div class="scan-section">
+        <button class="camera-btn" id="cameraToggle" onclick="toggleCamera()" title="Kamera">📷 Scan via Kamera</button>
         <div class="scan-input-wrap">
             <input type="text" class="scan-input" id="scanInput"
                    placeholder="Scan / ketik resi SPX..."
                    autocomplete="off" autocapitalize="characters"
                    onkeyup="if(event.key==='Enter') processResi()">
             <button class="scan-btn" onclick="processResi()" title="Proses">▶</button>
-            <button class="camera-btn" id="cameraToggle" onclick="toggleCamera()" title="Kamera">📷</button>
         </div>
         <div class="scan-feedback" id="scanFeedback"></div>
     </div>
