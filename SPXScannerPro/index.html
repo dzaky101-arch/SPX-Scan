@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SPX Scanner Pro</title>
+    <meta name="description" content="Aplikasi scan resi SPX Express - anti duplikat, kamera scanner, share manifest & excel">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ============ CSS VARIABLES ============ */
+        :root {
+            --bg-primary: #06090f;
+            --bg-secondary: #0d1321;
+            --bg-card: #131a2e;
+            --bg-card-hover: #182040;
+            --bg-input: #0a0f1e;
+            --bg-modal: rgba(6, 9, 15, 0.92);
+
+            --accent: #FF6B00;
+            --accent-light: #FF8C33;
+            --accent-dark: #CC5500;
+            --accent-glow: rgba(255, 107, 0, 0.25);
+            --accent-subtle: rgba(255, 107, 0, 0.08);
+
+            --green: #10b981;
+            --green-glow: rgba(16, 185, 129, 0.25);
+            --red: #ef4444;
+            --red-glow: rgba(239, 68, 68, 0.25);
+            --yellow: #f59e0b;
+            --blue: #3b82f6;
+            --purple: #8b5cf6;
+
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #1e293b;
+            --border-light: #334155;
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-full: 9999px;
+
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+            --shadow-lg: 0 20px 48px rgba(0,0,0,0.5);
+            --shadow-glow: 0 0 20px var(--accent-glow);
+
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ============ BASE STYLES ============ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* ============ LOCK SCREEN ============ */
+        #lockScreen {
+            position: fixed; inset: 0; z-index: 9999;
+            background: var(--bg-primary);
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+        }
+
+        #lockScreen::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 50% 30%, rgba(255,107,0,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .lock-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 40px 32px;
+            width: 100%; max-width: 380px;
+            text-align: center;
+            position: relative;
+            box-shadow: var(--shadow-lg);
+            animation: lockCardIn 0.6s ease;
+        }
+
+        @keyframes lockCardIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .lock-icon {
+            width: 64px; height: 64px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            border-radius: var(--radius-lg);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .lock-title {
+            font-size: 22px; font-weight: 700;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .lock-subtitle {
+            font-size: 13px; color: var(--text-muted);
+            margin-bottom: 28px;
+        }
+
+        .device-id-box {
+            background: var(--bg-input);
+            border: 1px dashed var(--accent);
+            border-radius: var(--radius-md);
+            padding: 14px; margin-bottom: 20px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        .device-id-box:active { transform: scale(0.98); }
+
+        .device-id-label {
+            font-size: 11px; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 1.5px;
+            margin-bottom: 6px;
+        }
+
+        .device-id-value {
+            font-size: 28px; font-weight: 800;
+            letter-spacing: 6px; color: var(--accent);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .device-id-hint {
+            font-size: 10px; color: var(--text-muted); margin-top: 6px;
+        }
+
+        .pin-input-group { margin-bottom: 20px; text-align: left; }
+
+        .pin-label {
+            font-size: 13px; font-weight: 500;
+            color: var(--text-secondary); margin-bottom: 8px;
+            display: block;
+        }
+
+        .pin-input {
+            width: 100%; padding: 14px 18px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 22px; font-weight: 700;
+            letter-spacing: 6px; text-align: center;
+            outline: none;
+            transition: var(--transition-fast);
+        }
+        .pin-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .pin-input::placeholder {
+            font-size: 14px; letter-spacing: 0; font-weight: 400; color: var(--text-muted);
+        }
+
+        .unlock-btn {
+            width: 100%; padding: 15px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white; border: none;
+            border-radius: var(--radius-md);
+            font-size: 16px; font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            box-shadow: var(--shadow-glow);
+        }
+        .unlock-btn:hover { transform: translateY(-1px); box-shadow: 0 0 30px var(--accent-glow); }
+        .unlock-btn:active { transform: scale(0.98); }
+
+        .lock-error {
+            color: var(--red); font-size: 13px;
+            margin-top: 12px; display: none;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .trial-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--accent-subtle);
+            border: 1px solid rgba(255,107,0,0.2);
+            color: var(--accent-light);
+            padding: 6px 14px; border-radius: var(--radius-full);
+            font-size: 12px; font-weight: 600;
+            margin-top: 16px;
+        }
+
+        /* ============ MAIN APP ============ */
+        #mainApp { display: none; padding-bottom: 100px; }
+
+        /* Footer Copyright */
+        .app-footer {
+            text-align: center;
+            padding: 24px 20px 16px;
+            margin-top: 32px;
+            border-top: 1px solid var(--border);
+        }
+        .app-footer p {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .app-footer .copyright-name {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 20px;
+            position: sticky; top: 0; z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+
+        .header-top {
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .header-brand {
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .header-logo {
+            width: 36px; height: 36px;
+            border-radius: var(--radius-sm);
+            object-fit: contain;
+        }
+
+        .header-title {
+            font-size: 18px; font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .header-btn {
+            width: 38px; height: 38px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 16px;
+            transition: var(--transition-fast);
+        }
+        .header-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+
+        .timer-badge {
+            background: var(--accent-subtle);
+            border: 1px solid rgba(255,107,0,0.15);
+            color: var(--accent-light);
+            padding: 4px 10px; border-radius: var(--radius-full);
+            font-size: 11px; font-weight: 600;
+            margin-top: 10px; display: inline-flex; align-items: center; gap: 4px;
+        }
+
+        /* ============ SCAN AREA ============ */
+        .info-bar {
+            display: flex; gap: 8px;
+            padding: 12px 20px 0;
+        }
+        .info-input {
+            flex: 1; padding: 10px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 13px; font-weight: 500;
+            outline: none;
+            transition: var(--transition-fast);
+        }
+        .info-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .info-input::placeholder { color: var(--text-muted); font-weight: 400; }
+
+        .scan-section {
+            padding: 20px;
+        }
+
+        .scan-input-wrap {
+            display: flex; gap: 8px; margin-bottom: 12px;
+        }
+
+        .scan-input {
+            flex: 1; padding: 14px 18px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 16px; font-weight: 600;
+            letter-spacing: 1px;
+            outline: none;
+            transition: var(--transition-fast);
+        }
+        .scan-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .scan-input::placeholder { font-weight: 400; letter-spacing: 0; color: var(--text-muted); }
+
+        .scan-btn, .camera-btn {
+            width: 50px; height: 50px;
+            border: none; border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 20px;
+            transition: var(--transition-fast);
+            flex-shrink: 0;
+        }
+
+        .scan-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+        .scan-btn:active { transform: scale(0.92); }
+
+        .camera-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .camera-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        /* Scan feedback */
+        .scan-feedback {
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            font-size: 13px; font-weight: 600;
+            display: none; align-items: center; gap: 8px;
+            margin-bottom: 12px;
+            animation: feedbackIn 0.3s ease;
+        }
+        @keyframes feedbackIn { from { opacity:0; transform: translateY(-8px); } }
+
+        .scan-feedback.success {
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.3);
+            color: var(--green);
+            display: flex;
+        }
+        .scan-feedback.error {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: var(--red);
+            display: flex;
+        }
+        .scan-feedback.warning {
+            background: rgba(245,158,11,0.1);
+            border: 1px solid rgba(245,158,11,0.3);
+            color: var(--yellow);
+            display: flex;
+        }
+
+        /* ============ CAMERA VIEW ============ */
+        .camera-container {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin: 0 20px 16px;
+            position: relative;
+        }
+
+        .camera-container.active { display: block; animation: feedbackIn 0.3s ease; }
+
+        #cameraReader {
+            width: 100%;
+            min-height: 280px;
+        }
+        #cameraReader video { border-radius: var(--radius-lg) !important; }
+
+        .camera-close {
+            position: absolute; top: 10px; right: 10px; z-index: 10;
+            width: 32px; height: 32px;
+            background: rgba(0,0,0,0.7);
+            border: none; border-radius: var(--radius-full);
+            color: white; font-size: 18px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+        }
+
+        /* html5-qrcode overrides */
+        #cameraReader img[alt="Info icon"] { display: none !important; }
+        #cameraReader__dashboard_section { display: none !important; }
+        #cameraReader__scan_region { border: none !important; }
+        #cameraReader__scan_region video {
+            border-radius: var(--radius-md) !important;
+            object-fit: cover !important;
+        }
+
+        /* ============ STATS BAR ============ */
+        .stats-bar {
+            display: flex; gap: 10px;
+            padding: 0 20px; margin-bottom: 16px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            text-align: center;
+            transition: var(--transition-fast);
+        }
+
+        .stat-value {
+            font-size: 28px; font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 4px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-label {
+            font-size: 11px; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* ============ ACTION BUTTONS GRID ============ */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding: 0 20px; margin-bottom: 16px;
+        }
+
+        .action-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 12px 6px;
+            display: flex; flex-direction: column;
+            align-items: center; gap: 6px;
+            cursor: pointer; color: var(--text-secondary);
+            transition: var(--transition-fast);
+            font-size: 10px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .action-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--border-light); }
+        .action-btn:active { transform: scale(0.95); }
+
+        .action-btn .action-icon {
+            font-size: 22px;
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: var(--radius-sm);
+        }
+
+        .action-btn.return .action-icon { background: rgba(239,68,68,0.1); }
+        .action-btn.pickup .action-icon { background: rgba(59,130,246,0.1); }
+        .action-btn.resi .action-icon { background: rgba(16,185,129,0.1); }
+        .action-btn.excel .action-icon { background: rgba(139,92,246,0.1); }
+
+        /* Extra action row */
+        .extra-actions {
+            display: flex; gap: 8px;
+            padding: 0 20px; margin-bottom: 20px;
+        }
+
+        .extra-btn {
+            flex: 1; padding: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            cursor: pointer; font-size: 13px; font-weight: 600;
+            transition: var(--transition-fast);
+        }
+        .extra-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+        .extra-btn:active { transform: scale(0.95); }
+
+        /* ============ RESI LIST ============ */
+        .resi-section {
+            padding: 0 20px;
+        }
+
+        .resi-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .resi-title {
+            font-size: 15px; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .resi-count-badge {
+            background: var(--accent);
+            color: white;
+            font-size: 11px; font-weight: 700;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            min-width: 24px; text-align: center;
+        }
+
+        .clear-all-btn {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.2);
+            color: var(--red);
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 12px; font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        .clear-all-btn:hover { background: rgba(239,68,68,0.2); }
+
+        .resi-list {
+            display: flex; flex-direction: column; gap: 6px;
+        }
+
+        .resi-item {
+            display: flex; align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            animation: resiIn 0.3s ease;
+            transition: var(--transition-fast);
+            cursor: pointer;
+        }
+        .resi-item:hover { border-color: var(--accent); background: var(--bg-card-hover); }
+        .resi-item:active { transform: scale(0.98); }
+
+        @keyframes resiIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .resi-num {
+            width: 28px; height: 28px;
+            background: var(--accent-subtle);
+            border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700; color: var(--accent);
+            flex-shrink: 0; margin-right: 12px;
+        }
+
+        .resi-info { flex: 1; min-width: 0; }
+
+        .resi-code {
+            font-size: 13px; font-weight: 700;
+            letter-spacing: 0.5px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        .resi-time {
+            font-size: 10px; color: var(--text-muted); margin-top: 2px;
+        }
+
+        .resi-actions {
+            display: flex; gap: 6px; flex-shrink: 0;
+        }
+
+        .resi-action-btn {
+            width: 32px; height: 32px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 14px;
+            transition: var(--transition-fast);
+        }
+        .resi-action-btn:hover { color: var(--text-primary); border-color: var(--border-light); }
+        .resi-action-btn.delete:hover { color: var(--red); border-color: var(--red); }
+
+        .empty-state {
+            text-align: center; padding: 48px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+        .empty-state p { font-size: 14px; }
+
+        /* ============ MODALS ============ */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 1000;
+            background: var(--bg-modal);
+            backdrop-filter: blur(8px);
+            display: none; align-items: flex-end; justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; animation: modalBgIn 0.2s ease; }
+
+        @keyframes modalBgIn { from { opacity: 0; } }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            width: 100%; max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: modalSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-content.center {
+            border-radius: var(--radius-xl);
+            align-self: center;
+            max-height: 80vh;
+        }
+
+        @keyframes modalSlideUp {
+            from { opacity: 0; transform: translateY(100px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 0;
+            background: var(--bg-card);
+            z-index: 1;
+        }
+
+        .modal-title {
+            font-size: 17px; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .modal-close {
+            width: 32px; height: 32px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            color: var(--text-secondary);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 16px;
+        }
+
+        .modal-body { padding: 24px; }
+
+        /* Bulk Input */
+        .bulk-textarea {
+            width: 100%; min-height: 200px; max-height: 300px;
+            padding: 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: 'Inter', monospace;
+            font-size: 14px; line-height: 1.6;
+            resize: vertical; outline: none;
+            transition: var(--transition-fast);
+        }
+        .bulk-textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .bulk-textarea::placeholder { color: var(--text-muted); }
+
+        .bulk-info {
+            font-size: 12px; color: var(--text-muted);
+            margin-top: 10px; margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .bulk-preview {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            margin-bottom: 20px;
+            max-height: 150px; overflow-y: auto;
+            display: none;
+        }
+        .bulk-preview .preview-title {
+            font-size: 12px; color: var(--accent);
+            font-weight: 600; margin-bottom: 8px;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .bulk-preview .preview-item {
+            font-size: 13px; color: var(--green);
+            padding: 3px 0;
+            font-family: monospace;
+        }
+        .bulk-preview .preview-rejected {
+            font-size: 13px; color: var(--red);
+            padding: 3px 0;
+            text-decoration: line-through;
+            font-family: monospace;
+        }
+
+        .bulk-import-btn {
+            width: 100%; padding: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white; border: none;
+            border-radius: var(--radius-md);
+            font-size: 15px; font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-normal);
+        }
+        .bulk-import-btn:active { transform: scale(0.98); }
+        .bulk-import-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* QR Modal */
+        .qr-display {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 16px;
+        }
+
+        .qr-canvas-wrap {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        #qrCanvas { display: block; }
+
+        .qr-label {
+            font-size: 13px; color: var(--text-secondary);
+            text-align: center; max-width: 280px;
+            word-break: break-all;
+        }
+
+        .qr-actions {
+            display: flex; gap: 10px; width: 100%;
+        }
+
+        .qr-action-btn {
+            flex: 1; padding: 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            font-size: 13px; font-weight: 600;
+            cursor: pointer; text-align: center;
+            transition: var(--transition-fast);
+        }
+        .qr-action-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+
+        /* ============ TOAST ============ */
+        .toast-container {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 10000;
+            display: flex; flex-direction: column; gap: 8px;
+            pointer-events: none; width: calc(100% - 40px); max-width: 400px;
+        }
+
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+            display: flex; align-items: center; gap: 10px;
+            font-size: 13px; font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            pointer-events: auto;
+            animation: toastIn 0.35s ease;
+        }
+        .toast.success { border-left: 3px solid var(--green); }
+        .toast.error { border-left: 3px solid var(--red); }
+        .toast.warning { border-left: 3px solid var(--yellow); }
+        .toast.info { border-left: 3px solid var(--blue); }
+
+        .toast.hide { animation: toastOut 0.3s ease forwards; }
+
+        @keyframes toastIn { from { opacity:0; transform: translateY(-20px); } }
+        @keyframes toastOut { to { opacity:0; transform: translateY(-20px); } }
+
+        /* ============ CONFIRM DIALOG ============ */
+        .confirm-overlay {
+            position: fixed; inset: 0; z-index: 11000;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            display: none; align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        .confirm-overlay.active { display: flex; }
+
+        .confirm-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            width: 100%; max-width: 340px;
+            text-align: center;
+            animation: lockCardIn 0.3s ease;
+        }
+
+        .confirm-msg {
+            font-size: 15px; font-weight: 600;
+            margin-bottom: 24px; line-height: 1.5;
+        }
+
+        .confirm-actions {
+            display: flex; gap: 10px;
+        }
+
+        .confirm-btn {
+            flex: 1; padding: 12px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 14px; font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        .confirm-btn.cancel {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .confirm-btn.danger {
+            background: var(--red);
+            color: white;
+        }
+        .confirm-btn:active { transform: scale(0.95); }
+
+        /* ============ RESPONSIVE ============ */
+        @media (min-width: 500px) {
+            .modal-content { border-radius: var(--radius-xl); align-self: center; }
+            .modal-overlay { align-items: center; }
+        }
+
+        /* ============ SCROLLBAR ============ */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* ============ PULSE ANIMATION ============ */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .pulse { animation: pulse 1.5s ease infinite; }
+    </style>
+</head>
+<body>
+
+<!-- ==================== LOCK SCREEN ==================== -->
+<div id="lockScreen">
+    <div class="lock-card">
+        <div class="lock-icon">🔒</div>
+        <div class="lock-title">SPX Scanner Pro</div>
+        <div class="lock-subtitle">Masukkan PIN untuk membuka aplikasi</div>
+
+        <div class="device-id-box" onclick="copyDeviceId()" title="Tap untuk salin">
+            <div class="device-id-label">Device ID</div>
+            <div class="device-id-value" id="deviceIdDisplay">------</div>
+            <div class="device-id-hint">Tap untuk menyalin • Berikan ke Admin</div>
+        </div>
+
+        <div class="pin-input-group">
+            <label class="pin-label">Masukkan PIN Aktivasi</label>
+            <input type="number" class="pin-input" id="pinInput"
+                   placeholder="6 digit PIN" maxlength="6"
+                   inputmode="numeric" pattern="[0-9]*"
+                   onkeyup="if(event.key==='Enter') unlock()">
+        </div>
+
+        <button class="unlock-btn" onclick="unlock()">🔓 Buka Kunci</button>
+
+        <div class="lock-error" id="lockError">PIN tidak valid! Hubungi admin.</div>
+
+        <div class="trial-badge" id="trialBadge" style="display:none">
+            ⏱ Sisa: <span id="trialRemaining">-</span>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MAIN APP ==================== -->
+<div id="mainApp">
+
+    <!-- Header -->
+    <div class="app-header">
+        <div class="header-top">
+            <div class="header-brand">
+                <img src="logo_spx.png" alt="SPX" class="header-logo" onerror="this.style.display='none'">
+                <div class="header-title">SPX Scanner Pro</div>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" onclick="showQrModal()" title="QR Code">📱</button>
+                <button class="header-btn" onclick="lockApp()" title="Kunci Aplikasi">🔒</button>
+            </div>
+        </div>
+        <div class="timer-badge" id="appTimerBadge" style="display:none">
+            ⏱ <span id="appTrialTimer">-</span>
+        </div>
+    </div>
+
+    <!-- Seller & Trip Info -->
+    <div class="info-bar">
+        <input type="text" class="info-input" id="sellerName" placeholder="👤 Nama Seller" autocomplete="off">
+        <input type="text" class="info-input" id="tripName" placeholder="🚛 Trip" autocomplete="off">
+    </div>
+
+    <!-- Scan Area -->
+    <div class="scan-section">
+        <div class="scan-input-wrap">
+            <input type="text" class="scan-input" id="scanInput"
+                   placeholder="Scan / ketik resi SPX..."
+                   autocomplete="off" autocapitalize="characters"
+                   onkeyup="if(event.key==='Enter') processResi()">
+            <button class="scan-btn" onclick="processResi()" title="Proses">▶</button>
+            <button class="camera-btn" id="cameraToggle" onclick="toggleCamera()" title="Kamera">📷</button>
+        </div>
+        <div class="scan-feedback" id="scanFeedback"></div>
+    </div>
+
+    <!-- Camera -->
+    <div class="camera-container" id="cameraContainer">
+        <button class="camera-close" onclick="toggleCamera()">✕</button>
+        <div id="cameraReader"></div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-value" id="totalCount">0</div>
+            <div class="stat-label">Total Scan</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="todayDate">-</div>
+            <div class="stat-label">Tanggal</div>
+        </div>
+    </div>
+
+    <!-- Share Action Buttons -->
+    <div class="action-grid">
+        <div class="action-btn return" onclick="shareReturn()">
+            <div class="action-icon">📦</div>
+            Return
+        </div>
+        <div class="action-btn pickup" onclick="sharePickup()">
+            <div class="action-icon">🚚</div>
+            Pickup
+        </div>
+        <div class="action-btn resi" onclick="shareResi()">
+            <div class="action-icon">📋</div>
+            Resi
+        </div>
+        <div class="action-btn excel" onclick="shareExcel()">
+            <div class="action-icon">📊</div>
+            Excel
+        </div>
+    </div>
+
+    <!-- Extra Buttons -->
+    <div class="extra-actions">
+        <button class="extra-btn" onclick="showBulkModal()">📥 Input Bulky</button>
+        <button class="extra-btn" onclick="showQrModal()">📱 QR Code</button>
+    </div>
+
+    <!-- Resi List -->
+    <div class="resi-section">
+        <div class="resi-header">
+            <div class="resi-title">
+                Daftar Resi
+                <span class="resi-count-badge" id="resiCountBadge">0</span>
+            </div>
+            <button class="clear-all-btn" onclick="confirmClearAll()">🗑 Hapus Semua</button>
+        </div>
+        <div class="resi-list" id="resiList">
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">📦</div>
+                <p>Belum ada resi yang di-scan</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Copyright -->
+    <div class="app-footer">
+        <p>© 2026 <span class="copyright-name">Mbah Sugeng</span> — All Rights Reserved</p>
+    </div>
+</div>
+
+<!-- ==================== BULK INPUT MODAL ==================== -->
+<div class="modal-overlay" id="bulkModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">📥 Input Resi Bulky</div>
+            <button class="modal-close" onclick="closeBulkModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <textarea class="bulk-textarea" id="bulkTextarea"
+                      placeholder="Tempel daftar resi di sini...&#10;Satu resi per baris, atau pisahkan dengan koma/spasi.&#10;&#10;Contoh:&#10;SPXID0123456789&#10;SPXID0987654321&#10;JNE12345 (akan ditolak - bukan SPX)"></textarea>
+            <div class="bulk-info">
+                ℹ️ Hanya resi berawalan <strong>SPX</strong> yang akan diterima. Resi duplikat otomatis dilewati.
+            </div>
+            <div class="bulk-preview" id="bulkPreview">
+                <div class="preview-title">Preview Hasil Filter</div>
+                <div id="bulkPreviewContent"></div>
+            </div>
+            <button class="bulk-import-btn" id="bulkImportBtn" onclick="processBulkImport()" disabled>
+                Import Resi SPX
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== QR CODE MODAL ==================== -->
+<div class="modal-overlay" id="qrModal">
+    <div class="modal-content center">
+        <div class="modal-header">
+            <div class="modal-title">📱 QR Code</div>
+            <button class="modal-close" onclick="closeQrModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="qr-display">
+                <div class="qr-canvas-wrap">
+                    <canvas id="qrCanvas"></canvas>
+                </div>
+                <div class="qr-label" id="qrLabel">Tidak ada resi untuk ditampilkan</div>
+                <div class="qr-actions">
+                    <button class="qr-action-btn" onclick="downloadQr()">💾 Simpan</button>
+                    <button class="qr-action-btn" onclick="shareQrImage()">📤 Share</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== CONFIRM DIALOG ==================== -->
+<div class="confirm-overlay" id="confirmDialog">
+    <div class="confirm-box">
+        <div class="confirm-msg" id="confirmMsg">Yakin ingin menghapus?</div>
+        <div class="confirm-actions">
+            <button class="confirm-btn cancel" onclick="closeConfirm()">Batal</button>
+            <button class="confirm-btn danger" id="confirmAction">Hapus</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TOAST CONTAINER ==================== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+
+<script>
+/* ============================================================
+   SPX SCANNER PRO — Main Application Script
+   ============================================================ */
+
+// ============ STATE ============
+let resiList = [];
+let cameraScanner = null;
+let cameraActive = false;
+let lastScanTime = 0;
+let lastScanCode = '';
+const SCAN_COOLDOWN = 2000; // 2 detik jeda antar scan kamera
+let timerInterval = null;
+let feedbackTimeout = null;
+let audioCtx = null;
+
+// ============ CONSTANTS ============
+const STORAGE_KEYS = {
+    DEVICE_ID: 'spx_device_id',
+    UNLOCK_EXPIRY: 'spx_unlock_expiry',
+    RESI_LIST: 'spx_resi_list',
+    IS_PERMANENT: 'spx_permanent'
+};
+
+const DURATIONS = [1, 3, 7, 14, 30, 90, 180, 365];
+
+// ============ INITIALIZATION ============
+document.addEventListener('DOMContentLoaded', () => {
+    initDeviceId();
+    loadResiList();
+    checkUnlockStatus();
+    updateDateDisplay();
+
+    // Bulk textarea live preview
+    document.getElementById('bulkTextarea').addEventListener('input', previewBulk);
+
+    // Pin input max length enforcement
+    document.getElementById('pinInput').addEventListener('input', function() {
+        if (this.value.length > 6) this.value = this.value.slice(0, 6);
+    });
+});
+
+// ============ DEVICE ID ============
+function initDeviceId() {
+    let deviceId = localStorage.getItem(STORAGE_KEYS.DEVICE_ID);
+    if (!deviceId) {
+        deviceId = String(Math.floor(100000 + Math.random() * 900000));
+        localStorage.setItem(STORAGE_KEYS.DEVICE_ID, deviceId);
+    }
+    document.getElementById('deviceIdDisplay').textContent = deviceId;
+}
+
+function getDeviceId() {
+    return localStorage.getItem(STORAGE_KEYS.DEVICE_ID) || '000000';
+}
+
+function copyDeviceId() {
+    const id = getDeviceId();
+    navigator.clipboard.writeText(id).then(() => {
+        showToast('Device ID disalin: ' + id, 'success');
+    }).catch(() => {
+        prompt('Salin Device ID:', id);
+    });
+}
+
+// ============ LOCK / UNLOCK SYSTEM ============
+function checkUnlockStatus() {
+    const isPermanent = localStorage.getItem(STORAGE_KEYS.IS_PERMANENT) === 'true';
+    const expiry = localStorage.getItem(STORAGE_KEYS.UNLOCK_EXPIRY);
+
+    if (isPermanent) {
+        showMainApp();
+        return;
+    }
+
+    if (expiry) {
+        const remaining = parseInt(expiry) - Date.now();
+        if (remaining > 0) {
+            showMainApp();
+            startTrialTimer(parseInt(expiry));
+            return;
+        } else {
+            // Expired
+            localStorage.removeItem(STORAGE_KEYS.UNLOCK_EXPIRY);
+        }
+    }
+
+    showLockScreen();
+}
+
+function unlock() {
+    const pin = document.getElementById('pinInput').value.trim();
+    const deviceId = parseInt(getDeviceId());
+    const errorEl = document.getElementById('lockError');
+
+    if (!pin || pin.length !== 6) {
+        errorEl.textContent = 'Masukkan PIN 6 digit!';
+        errorEl.style.display = 'block';
+        vibrateDevice();
+        return;
+    }
+
+    // Check master PIN
+    if (pin === '888888') {
+        localStorage.setItem(STORAGE_KEYS.IS_PERMANENT, 'true');
+        playSuccessSound();
+        showToast('✅ Aktivasi Permanen berhasil!', 'success');
+        showMainApp();
+        return;
+    }
+
+    // Check calculated PIN for each duration
+    let matchedDuration = null;
+    for (const dur of DURATIONS) {
+        let calculated = deviceId * 3 + 777 + (dur * 123);
+        let expectedPin = calculated.toString().slice(-6);
+        if (expectedPin === pin) {
+            matchedDuration = dur;
+            break;
+        }
+    }
+
+    if (matchedDuration) {
+        const expiryTime = Date.now() + (matchedDuration * 24 * 60 * 60 * 1000);
+        localStorage.setItem(STORAGE_KEYS.UNLOCK_EXPIRY, expiryTime.toString());
+        localStorage.removeItem(STORAGE_KEYS.IS_PERMANENT);
+        playSuccessSound();
+        showToast('✅ Aktivasi berhasil! ' + matchedDuration + ' hari.', 'success');
+        showMainApp();
+        startTrialTimer(expiryTime);
+    } else {
+        errorEl.textContent = 'PIN tidak valid! Hubungi admin.';
+        errorEl.style.display = 'block';
+        vibrateDevice();
+        playErrorSound();
+    }
+}
+
+function showLockScreen() {
+    document.getElementById('lockScreen').style.display = 'flex';
+    document.getElementById('mainApp').style.display = 'none';
+    document.getElementById('pinInput').value = '';
+    document.getElementById('lockError').style.display = 'none';
+
+    // Show remaining if close to expiry
+    const expiry = localStorage.getItem(STORAGE_KEYS.UNLOCK_EXPIRY);
+    if (expiry) {
+        const remaining = parseInt(expiry) - Date.now();
+        if (remaining > 0) {
+            document.getElementById('trialBadge').style.display = 'inline-flex';
+            document.getElementById('trialRemaining').textContent = formatDuration(remaining);
+        }
+    }
+}
+
+function showMainApp() {
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    renderResiList();
+    setTimeout(() => document.getElementById('scanInput').focus(), 300);
+}
+
+function lockApp() {
+    if (cameraActive) toggleCamera();
+    showLockScreen();
+}
+
+function startTrialTimer(expiryTime) {
+    const badgeMain = document.getElementById('appTimerBadge');
+    const timerText = document.getElementById('appTrialTimer');
+
+    const isPermanent = localStorage.getItem(STORAGE_KEYS.IS_PERMANENT) === 'true';
+    if (isPermanent) {
+        badgeMain.style.display = 'inline-flex';
+        timerText.textContent = 'Permanen ✓';
+        return;
+    }
+
+    badgeMain.style.display = 'inline-flex';
+
+    if (timerInterval) clearInterval(timerInterval);
+
+    timerInterval = setInterval(() => {
+        const remaining = expiryTime - Date.now();
+        if (remaining <= 0) {
+            clearInterval(timerInterval);
+            showToast('⏰ Masa aktif habis!', 'warning');
+            setTimeout(() => showLockScreen(), 1500);
+            return;
+        }
+        timerText.textContent = formatDuration(remaining);
+    }, 1000);
+}
+
+function formatDuration(ms) {
+    const days = Math.floor(ms / (24*60*60*1000));
+    const hours = Math.floor((ms % (24*60*60*1000)) / (60*60*1000));
+    const mins = Math.floor((ms % (60*60*1000)) / (60*1000));
+    if (days > 0) return days + 'h ' + hours + 'j ' + mins + 'm';
+    if (hours > 0) return hours + 'j ' + mins + 'm';
+    return mins + ' menit';
+}
+
+// ============ AUDIO SYSTEM ============
+function getAudioCtx() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return audioCtx;
+}
+
+function playBeep(freq, duration, type = 'sine', vol = 0.4) {
+    try {
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = freq;
+        osc.type = type;
+        gain.gain.setValueAtTime(vol, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + duration);
+    } catch(e) { /* silent fail */ }
+}
+
+function playSuccessSound() {
+    playBeep(880, 0.12);
+    setTimeout(() => playBeep(1100, 0.15), 120);
+}
+
+function playErrorSound() {
+    playBeep(300, 0.25, 'square', 0.3);
+    setTimeout(() => playBeep(200, 0.35, 'square', 0.3), 250);
+}
+
+function playDuplicateSound() {
+    playBeep(400, 0.15, 'sawtooth', 0.2);
+    setTimeout(() => playBeep(400, 0.15, 'sawtooth', 0.2), 200);
+    setTimeout(() => playBeep(400, 0.15, 'sawtooth', 0.2), 400);
+}
+
+function speakWarning(text) {
+    try {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'id-ID';
+            utterance.rate = 1.1;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+            window.speechSynthesis.speak(utterance);
+        }
+    } catch(e) { /* silent fail */ }
+}
+
+function vibrateDevice() {
+    try { navigator.vibrate && navigator.vibrate([100, 50, 100]); } catch(e) {}
+}
+
+// ============ SCAN PROCESSING ============
+function processResi(value) {
+    const input = document.getElementById('scanInput');
+    const resi = (value || input.value).trim().toUpperCase();
+    input.value = '';
+    input.focus();
+
+    if (!resi) return;
+
+    // Validate SPX prefix
+    if (!resi.startsWith('SPX')) {
+        showFeedback('⚠️ Bukan resi SPX! → ' + resi, 'warning');
+        playErrorSound();
+        speakWarning('Bukan resi SPX!');
+        vibrateDevice();
+        return;
+    }
+
+    // Check for duplicate
+    if (resiList.some(r => r.code === resi)) {
+        showFeedback('🔁 Resi sudah di-scan! → ' + resi, 'error');
+        playDuplicateSound();
+        speakWarning('Resi sudah di scan!');
+        vibrateDevice();
+        return;
+    }
+
+    // Add resi
+    const now = new Date();
+    resiList.unshift({
+        code: resi,
+        time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        date: now.toLocaleDateString('id-ID'),
+        timestamp: now.getTime()
+    });
+
+    saveResiList();
+    renderResiList();
+    showFeedback('✅ ' + resi + ' — #' + resiList.length, 'success');
+    playSuccessSound();
+
+    // Quick vibrate on success
+    try { navigator.vibrate && navigator.vibrate(50); } catch(e) {}
+}
+
+function showFeedback(text, type) {
+    const el = document.getElementById('scanFeedback');
+    el.textContent = text;
+    el.className = 'scan-feedback ' + type;
+    el.style.display = 'flex';
+
+    if (feedbackTimeout) clearTimeout(feedbackTimeout);
+    feedbackTimeout = setTimeout(() => {
+        el.style.display = 'none';
+    }, 3000);
+}
+
+function deleteResi(index) {
+    const removed = resiList.splice(index, 1);
+    saveResiList();
+    renderResiList();
+    showToast('Resi ' + removed[0].code + ' dihapus', 'info');
+}
+
+function confirmClearAll() {
+    if (resiList.length === 0) {
+        showToast('Tidak ada resi untuk dihapus', 'warning');
+        return;
+    }
+    showConfirm('Hapus semua ' + resiList.length + ' resi?', () => {
+        resiList = [];
+        saveResiList();
+        renderResiList();
+        showToast('Semua resi dihapus', 'info');
+    });
+}
+
+// ============ RESI LIST RENDERING ============
+function renderResiList() {
+    const container = document.getElementById('resiList');
+    const empty = document.getElementById('emptyState');
+    const badge = document.getElementById('resiCountBadge');
+    const totalCount = document.getElementById('totalCount');
+
+    badge.textContent = resiList.length;
+    totalCount.textContent = resiList.length;
+
+    if (resiList.length === 0) {
+        container.innerHTML = '';
+        container.appendChild(createEmptyState());
+        return;
+    }
+
+    container.innerHTML = resiList.map((r, i) => `
+        <div class="resi-item" id="resi-${i}" onclick="showSingleQr('${r.code}')">
+            <div class="resi-num">${resiList.length - i}</div>
+            <div class="resi-info">
+                <div class="resi-code">${r.code}</div>
+                <div class="resi-time">${r.time} • ${r.date}</div>
+            </div>
+            <div class="resi-actions">
+                <button class="resi-action-btn delete" onclick="event.stopPropagation(); deleteResi(${i})" title="Hapus">🗑</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function createEmptyState() {
+    const div = document.createElement('div');
+    div.className = 'empty-state';
+    div.id = 'emptyState';
+    div.innerHTML = '<div class="empty-icon">📦</div><p>Belum ada resi yang di-scan</p>';
+    return div;
+}
+
+// ============ PERSISTENCE ============
+function saveResiList() {
+    localStorage.setItem(STORAGE_KEYS.RESI_LIST, JSON.stringify(resiList));
+}
+
+function loadResiList() {
+    try {
+        const data = localStorage.getItem(STORAGE_KEYS.RESI_LIST);
+        resiList = data ? JSON.parse(data) : [];
+    } catch(e) {
+        resiList = [];
+    }
+}
+
+// ============ CAMERA SCANNER ============
+function toggleCamera() {
+    const container = document.getElementById('cameraContainer');
+    const toggle = document.getElementById('cameraToggle');
+
+    if (cameraActive) {
+        stopCamera();
+        container.classList.remove('active');
+        toggle.classList.remove('active');
+        cameraActive = false;
+    } else {
+        container.classList.add('active');
+        toggle.classList.add('active');
+        cameraActive = true;
+        startCamera();
+    }
+}
+
+function startCamera() {
+    try {
+        if (typeof Html5Qrcode === 'undefined') {
+            showToast('Library kamera belum dimuat. Cek koneksi internet.', 'error');
+            toggleCamera();
+            return;
+        }
+
+        cameraScanner = new Html5Qrcode("cameraReader");
+        cameraScanner.start(
+            { facingMode: "environment" },
+            {
+                fps: 15,
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0,
+                formatsToSupport: [
+                    Html5QrcodeSupportedFormats.QR_CODE,
+                    Html5QrcodeSupportedFormats.CODE_128,
+                    Html5QrcodeSupportedFormats.CODE_39,
+                    Html5QrcodeSupportedFormats.EAN_13,
+                    Html5QrcodeSupportedFormats.EAN_8,
+                    Html5QrcodeSupportedFormats.CODE_93,
+                    Html5QrcodeSupportedFormats.CODABAR,
+                    Html5QrcodeSupportedFormats.ITF,
+                    Html5QrcodeSupportedFormats.DATA_MATRIX
+                ]
+            },
+            (decodedText) => {
+                const now = Date.now();
+                const code = decodedText.trim().toUpperCase();
+                // Jeda 2 detik untuk kode yang sama agar tidak langsung double
+                if (code === lastScanCode && (now - lastScanTime) < SCAN_COOLDOWN) {
+                    return; // skip, masih dalam jeda
+                }
+                lastScanCode = code;
+                lastScanTime = now;
+                processResi(decodedText);
+            },
+            () => { /* ignore scan errors */ }
+        ).catch(err => {
+            showToast('Gagal akses kamera: ' + err, 'error');
+            toggleCamera();
+        });
+    } catch(e) {
+        showToast('Error kamera: ' + e.message, 'error');
+        toggleCamera();
+    }
+}
+
+function stopCamera() {
+    if (cameraScanner) {
+        cameraScanner.stop().then(() => {
+            cameraScanner.clear();
+        }).catch(() => {});
+    }
+}
+
+// ============ BULK INPUT ============
+function showBulkModal() {
+    document.getElementById('bulkModal').classList.add('active');
+    document.getElementById('bulkTextarea').value = '';
+    document.getElementById('bulkPreview').style.display = 'none';
+    document.getElementById('bulkImportBtn').disabled = true;
+    setTimeout(() => document.getElementById('bulkTextarea').focus(), 300);
+}
+
+function closeBulkModal() {
+    document.getElementById('bulkModal').classList.remove('active');
+}
+
+function previewBulk() {
+    const raw = document.getElementById('bulkTextarea').value;
+    const preview = document.getElementById('bulkPreview');
+    const content = document.getElementById('bulkPreviewContent');
+    const importBtn = document.getElementById('bulkImportBtn');
+
+    // Parse resi from text
+    const allResi = raw
+        .split(/[\n,;\s\t]+/)
+        .map(r => r.trim().toUpperCase())
+        .filter(r => r.length > 3);
+
+    if (allResi.length === 0) {
+        preview.style.display = 'none';
+        importBtn.disabled = true;
+        return;
+    }
+
+    const accepted = [];
+    const rejected = [];
+    const existingCodes = new Set(resiList.map(r => r.code));
+    const seenInBatch = new Set();
+
+    allResi.forEach(r => {
+        if (!r.startsWith('SPX')) {
+            rejected.push({ code: r, reason: 'Bukan SPX' });
+        } else if (existingCodes.has(r)) {
+            rejected.push({ code: r, reason: 'Sudah di-scan' });
+        } else if (seenInBatch.has(r)) {
+            rejected.push({ code: r, reason: 'Duplikat batch' });
+        } else {
+            accepted.push(r);
+            seenInBatch.add(r);
+        }
+    });
+
+    let html = '';
+    if (accepted.length > 0) {
+        html += '<div class="preview-title">✅ Diterima (' + accepted.length + ')</div>';
+        accepted.forEach(r => html += '<div class="preview-item">• ' + r + '</div>');
+    }
+    if (rejected.length > 0) {
+        html += '<div class="preview-title" style="margin-top:12px;color:var(--red)">❌ Ditolak (' + rejected.length + ')</div>';
+        rejected.forEach(r => html += '<div class="preview-rejected">• ' + r.code + ' — ' + r.reason + '</div>');
+    }
+
+    content.innerHTML = html;
+    preview.style.display = 'block';
+    importBtn.disabled = accepted.length === 0;
+    importBtn.textContent = 'Import ' + accepted.length + ' Resi SPX';
+}
+
+function processBulkImport() {
+    const raw = document.getElementById('bulkTextarea').value;
+    const allResi = raw
+        .split(/[\n,;\s\t]+/)
+        .map(r => r.trim().toUpperCase())
+        .filter(r => r.length > 3);
+
+    const existingCodes = new Set(resiList.map(r => r.code));
+    const seenInBatch = new Set();
+    let addedCount = 0;
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const dateStr = now.toLocaleDateString('id-ID');
+
+    allResi.forEach(r => {
+        if (r.startsWith('SPX') && !existingCodes.has(r) && !seenInBatch.has(r)) {
+            resiList.unshift({
+                code: r,
+                time: timeStr,
+                date: dateStr,
+                timestamp: now.getTime()
+            });
+            existingCodes.add(r);
+            seenInBatch.add(r);
+            addedCount++;
+        }
+    });
+
+    saveResiList();
+    renderResiList();
+    closeBulkModal();
+    playSuccessSound();
+    showToast('✅ ' + addedCount + ' resi SPX berhasil diimport!', 'success');
+}
+
+// ============ SHARE FUNCTIONS ============
+function getFormattedDate() {
+    const now = new Date();
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    return now.toLocaleDateString('id-ID', options);
+}
+
+function getFormattedTime() {
+    return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+}
+
+function shareReturn() {
+    if (resiList.length === 0) { showToast('Tidak ada resi untuk di-share', 'warning'); return; }
+
+    const seller = document.getElementById('sellerName').value.trim();
+    const trip = document.getElementById('tripName').value.trim();
+
+    let text = '📦 LAPORAN RETURN SPX\n';
+    text += '━━━━━━━━━━━━━━━━━━━━━━━\n';
+    if (seller) text += '👤 Seller     : ' + seller + '\n';
+    if (trip) text += '🚛 Trip         : ' + trip + '\n';
+    text += '📅 Tanggal : ' + getFormattedDate() + '\n';
+    text += '🕐 Waktu     : ' + getFormattedTime() + '\n';
+    text += '📊 Total        : ' + resiList.length + ' Paket\n';
+    text += '━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+
+    resiList.forEach((r, i) => {
+        text += (i + 1) + '. ' + r.code + '\n';
+    });
+
+    text += '\n━━━━━━━━━━━━━━━━━━━━━━━\n';
+    text += '📱 SPX Scanner Pro';
+
+    shareText(text, 'Return Manifest');
+}
+
+function sharePickup() {
+    if (resiList.length === 0) { showToast('Tidak ada resi untuk di-share', 'warning'); return; }
+
+    const seller = document.getElementById('sellerName').value.trim();
+    const trip = document.getElementById('tripName').value.trim();
+
+    let text = '🚚 LAPORAN PICKUP SPX\n';
+    text += '━━━━━━━━━━━━━━━━━━━━━━━\n';
+    if (seller) text += '👤 Seller     : ' + seller + '\n';
+    if (trip) text += '🚛 Trip         : ' + trip + '\n';
+    text += '📅 Tanggal : ' + getFormattedDate() + '\n';
+    text += '🕐 Waktu     : ' + getFormattedTime() + '\n';
+    text += '📊 Total        : ' + resiList.length + ' Paket\n';
+    text += '━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+
+    resiList.forEach((r, i) => {
+        text += (i + 1) + '. ' + r.code + '\n';
+    });
+
+    text += '\n━━━━━━━━━━━━━━━━━━━━━━━\n';
+    text += '📱 SPX Scanner Pro';
+
+    shareText(text, 'Pickup Manifest');
+}
+
+function shareResi() {
+    if (resiList.length === 0) { showToast('Tidak ada resi untuk di-share', 'warning'); return; }
+
+    const text = resiList.map(r => r.code).join('\n');
+    shareText(text, 'Daftar Resi SPX');
+}
+
+function shareText(text, title) {
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            text: text
+        }).catch(() => {
+            copyToClipboard(text);
+        });
+    } else {
+        copyToClipboard(text);
+    }
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('📋 Disalin ke clipboard!', 'success');
+    }).catch(() => {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('📋 Disalin ke clipboard!', 'success');
+    });
+}
+
+// ============ EXCEL EXPORT ============
+function shareExcel() {
+    if (resiList.length === 0) { showToast('Tidak ada resi untuk di-export', 'warning'); return; }
+
+    try {
+        if (typeof XLSX === 'undefined') {
+            showToast('Library Excel belum dimuat. Cek koneksi internet.', 'error');
+            return;
+        }
+
+        const seller = document.getElementById('sellerName').value.trim();
+        const trip = document.getElementById('tripName').value.trim();
+
+        const data = resiList.map((r, i) => ({
+            'No': i + 1,
+            'Resi': r.code,
+            'Seller': seller || '-',
+            'Trip': trip || '-',
+            'Waktu Scan': r.time,
+            'Tanggal': r.date
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(data);
+
+        // Column widths
+        ws['!cols'] = [
+            { wch: 5 },
+            { wch: 25 },
+            { wch: 20 },
+            { wch: 12 },
+            { wch: 12 },
+            { wch: 15 }
+        ];
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Resi SPX');
+
+        const dateStr = new Date().toISOString().split('T')[0];
+        const filename = 'SPX_Resi_' + dateStr + '.xlsx';
+        XLSX.writeFile(wb, filename);
+
+        showToast('📊 File Excel berhasil diunduh!', 'success');
+    } catch(e) {
+        showToast('Error export Excel: ' + e.message, 'error');
+    }
+}
+
+// ============ QR CODE ============
+function showQrModal() {
+    document.getElementById('qrModal').classList.add('active');
+    generateQrCode();
+}
+
+function closeQrModal() {
+    document.getElementById('qrModal').classList.remove('active');
+}
+
+function generateQrCode() {
+    const canvas = document.getElementById('qrCanvas');
+    const label = document.getElementById('qrLabel');
+
+    if (resiList.length === 0) {
+        label.textContent = 'Tidak ada resi untuk ditampilkan';
+        const ctx = canvas.getContext('2d');
+        canvas.width = 200;
+        canvas.height = 200;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, 200, 200);
+        ctx.fillStyle = '#999999';
+        ctx.font = '14px Inter';
+        ctx.textAlign = 'center';
+        ctx.fillText('Tidak ada data', 100, 100);
+        return;
+    }
+
+    const qrData = resiList.map(r => r.code).join('\n');
+    label.textContent = resiList.length + ' resi SPX';
+
+    try {
+        if (typeof QRCode !== 'undefined') {
+            QRCode.toCanvas(canvas, qrData, {
+                width: 280,
+                margin: 2,
+                color: { dark: '#000000', light: '#ffffff' }
+            }, (err) => {
+                if (err) {
+                    label.textContent = 'Gagal membuat QR: ' + err.message;
+                }
+            });
+        }
+    } catch(e) {
+        label.textContent = 'Error: ' + e.message;
+    }
+}
+
+function showSingleQr(code) {
+    document.getElementById('qrModal').classList.add('active');
+    const canvas = document.getElementById('qrCanvas');
+    const label = document.getElementById('qrLabel');
+    label.textContent = code;
+
+    try {
+        if (typeof QRCode !== 'undefined') {
+            QRCode.toCanvas(canvas, code, {
+                width: 280,
+                margin: 2,
+                color: { dark: '#000000', light: '#ffffff' }
+            });
+        }
+    } catch(e) {
+        label.textContent = 'Error: ' + e.message;
+    }
+}
+
+function downloadQr() {
+    const canvas = document.getElementById('qrCanvas');
+    const link = document.createElement('a');
+    link.download = 'SPX_QR_' + Date.now() + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast('📱 QR Code disimpan!', 'success');
+}
+
+function shareQrImage() {
+    const canvas = document.getElementById('qrCanvas');
+    canvas.toBlob(blob => {
+        if (navigator.share && navigator.canShare) {
+            const file = new File([blob], 'SPX_QR.png', { type: 'image/png' });
+            navigator.share({
+                title: 'SPX QR Code',
+                files: [file]
+            }).catch(() => {
+                downloadQr();
+            });
+        } else {
+            downloadQr();
+        }
+    }, 'image/png');
+}
+
+// ============ UI HELPERS ============
+function updateDateDisplay() {
+    const el = document.getElementById('todayDate');
+    const now = new Date();
+    el.textContent = now.getDate() + '/' + (now.getMonth() + 1);
+}
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 300);
+    }, 2800);
+}
+
+function showConfirm(message, onConfirm) {
+    const overlay = document.getElementById('confirmDialog');
+    const msg = document.getElementById('confirmMsg');
+    const btn = document.getElementById('confirmAction');
+
+    msg.textContent = message;
+    overlay.classList.add('active');
+
+    // Clone to remove old event listeners
+    const newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+
+    newBtn.addEventListener('click', () => {
+        overlay.classList.remove('active');
+        onConfirm();
+    });
+}
+
+function closeConfirm() {
+    document.getElementById('confirmDialog').classList.remove('active');
+}
+
+// ============ CLOSE MODALS ON BACKDROP ============
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal-overlay')) {
+        e.target.classList.remove('active');
+    }
+    if (e.target.id === 'confirmDialog') {
+        closeConfirm();
+    }
+});
+
+// ============ KEYBOARD SHORTCUTS ============
+document.addEventListener('keydown', (e) => {
+    // Escape closes modals
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+        closeConfirm();
+    }
+});
+
+</script>
+</body>
+</html>
