@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html> -->
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -1165,6 +1165,21 @@
     </div>
 </div>
 
+<!-- ==================== PHOTO SHARE MODAL ==================== -->
+<div class="modal-overlay" id="photoShareModal">
+    <div class="modal-content center" style="text-align: center;">
+        <div class="modal-header">
+            <h2>Kirim dengan Foto</h2>
+            <button class="modal-close" onclick="cancelPhotoShare()">✕</button>
+        </div>
+        <img id="photoSharePreview" style="max-width: 100%; max-height: 250px; border-radius: 12px; margin-bottom: 20px; object-fit: contain; background: var(--bg-body);" />
+        <div style="display: flex; gap: 12px;">
+            <button class="qr-btn" style="flex: 1; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border);" onclick="cancelPhotoShare()">Batal</button>
+            <button class="qr-btn" style="flex: 1; background: var(--accent); color: white; border: none;" onclick="executePhotoShare()">Kirim Sekarang</button>
+        </div>
+    </div>
+</div>
+
 <!-- ==================== TOAST CONTAINER ==================== -->
 <div class="toast-container" id="toastContainer"></div>
 
@@ -1213,7 +1228,9 @@ const STORAGE_KEYS = {
     DEVICE_ID: 'spx_device_id',
     UNLOCK_EXPIRY: 'spx_unlock_expiry',
     RESI_LIST: 'spx_resi_list',
-    IS_PERMANENT: 'spx_permanent'
+    IS_PERMANENT: 'spx_permanent',
+    SELLER_NAME: 'spx_seller_name',
+    TRIP_NAME: 'spx_trip_name'
 };
 
 const DURATIONS = [1, 3, 7, 14, 30, 90, 180, 365];
@@ -1237,6 +1254,20 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('pinInput').addEventListener('input', function() {
         if (this.value.length > 6) this.value = this.value.slice(0, 6);
     });
+
+    // Load and save seller/trip info
+    const sellerInput = document.getElementById('sellerName');
+    const tripInput = document.getElementById('tripName');
+    
+    if (localStorage.getItem(STORAGE_KEYS.SELLER_NAME)) {
+        sellerInput.value = localStorage.getItem(STORAGE_KEYS.SELLER_NAME);
+    }
+    if (localStorage.getItem(STORAGE_KEYS.TRIP_NAME)) {
+        tripInput.value = localStorage.getItem(STORAGE_KEYS.TRIP_NAME);
+    }
+    
+    sellerInput.addEventListener('input', () => localStorage.setItem(STORAGE_KEYS.SELLER_NAME, sellerInput.value));
+    tripInput.addEventListener('input', () => localStorage.setItem(STORAGE_KEYS.TRIP_NAME, tripInput.value));
 });
 
 // ============ DEVICE ID ============
@@ -1320,13 +1351,11 @@ function unlock() {
     }
 
     if (matchedDuration) {
-        const expiryTime = Date.now() + (matchedDuration * 24 * 60 * 60 * 1000);
-        localStorage.setItem(STORAGE_KEYS.UNLOCK_EXPIRY, expiryTime.toString());
-        localStorage.removeItem(STORAGE_KEYS.IS_PERMANENT);
+        localStorage.setItem(STORAGE_KEYS.IS_PERMANENT, 'true');
+        localStorage.removeItem(STORAGE_KEYS.UNLOCK_EXPIRY);
         playSuccessSound();
-        showToast('✅ Aktivasi berhasil! ' + matchedDuration + ' hari.', 'success');
+        showToast('✅ Aktivasi berhasil! Aplikasi terbuka permanen.', 'success');
         showMainApp();
-        startTrialTimer(expiryTime);
     } else {
         errorEl.textContent = 'PIN tidak valid! Hubungi admin.';
         errorEl.style.display = 'block';
@@ -1766,8 +1795,11 @@ function processBulkImport() {
 // ============ SHARE FUNCTIONS ============
 function getFormattedDate() {
     const now = new Date();
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
-    return now.toLocaleDateString('id-ID', options);
+    const months = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+    return now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
 }
 
 function getFormattedTime() {
@@ -1775,19 +1807,24 @@ function getFormattedTime() {
 }
 
 function getShareText(type) {
-    const seller = document.getElementById('sellerName').value.trim();
-    const trip = document.getElementById('tripName').value.trim();
+    const seller = document.getElementById('sellerName').value.trim() || '';
+    const trip = document.getElementById('tripName').value.trim() || '-';
 
-    let text = type === 'return' ? 'LAPORAN RETURN SPX\n\n' : 'LAPORAN PICKUP SPX\n\n';
-    if (seller) text += 'Seller: ' + seller + '\n';
-    if (trip) text += 'Trip: ' + trip + '\n';
-    text += 'Tanggal: ' + getFormattedDate() + '\n';
-    text += 'Waktu: ' + getFormattedTime() + '\n';
-    text += 'Total: ' + resiList.length + ' Paket\n\n';
+    let titleType = type === 'return' ? 'Return' : 'Pickup';
+    let text = `${titleType} ${seller}`.trim() + '\n';
+
+    text += `Trip: ${trip}\n`;
+    text += `Tanggal: ${getFormattedDate()}\n`;
+    text += `Waktu: ${getFormattedTime()}\n`;
+    text += `Total: ${resiList.length}\n`;
 
     resiList.forEach((r, i) => {
-        text += (i + 1) + '. ' + r.code + '\n';
+        text += `${i + 1}. ${r.code}\n`;
     });
+
+    let ket = type === 'return' ? '' : 'Paket sudah di-pickup';
+    text += `Keterangan : ${ket}`;
+
     return text;
 }
 
@@ -1808,9 +1845,28 @@ function triggerPhotoShare(type) {
     document.getElementById('sharePhotoFile').click();
 }
 
-async function handlePhotoShare(input) {
+let pendingShareFile = null;
+
+function handlePhotoShare(input) {
     if (!input.files || input.files.length === 0) return;
-    const file = input.files[0];
+    pendingShareFile = input.files[0];
+    
+    // Show preview modal to get a synchronous user click for navigator.share
+    const preview = document.getElementById('photoSharePreview');
+    preview.src = URL.createObjectURL(pendingShareFile);
+    document.getElementById('photoShareModal').classList.add('active');
+    
+    input.value = ''; // Reset file input
+}
+
+function cancelPhotoShare() {
+    pendingShareFile = null;
+    document.getElementById('photoShareModal').classList.remove('active');
+}
+
+async function executePhotoShare() {
+    if (!pendingShareFile) return;
+    
     const text = getShareText(pendingShareType);
     const title = pendingShareType === 'return' ? 'Return Manifest' : 'Pickup Manifest';
     
@@ -1819,7 +1875,7 @@ async function handlePhotoShare(input) {
             await navigator.share({
                 title: title,
                 text: text,
-                files: [file]
+                files: [pendingShareFile]
             });
             showToast('Berhasil share dengan foto', 'success');
         } else {
@@ -1829,7 +1885,7 @@ async function handlePhotoShare(input) {
         console.log('Error sharing:', err);
         showToast('Batal share atau perangkat tidak support', 'warning');
     }
-    input.value = ''; // Reset file input
+    cancelPhotoShare();
 }
 
 function shareResi() {
