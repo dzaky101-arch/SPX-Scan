@@ -1530,14 +1530,21 @@ function vibrateDevice() {
 // ============ SCAN PROCESSING ============
 function processResi(value) {
     const input = document.getElementById('scanInput');
-    const resi = (value || input.value).trim().toUpperCase();
+    let raw = (value || input.value).trim();
     input.value = '';
     input.focus();
 
+    if (!raw) return;
+
+    // Bersihkan karakter non-alphanumeric di depan/belakang
+    // (scanner fisik kadang menambahkan karakter tambahan)
+    let resi = raw.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, '').toUpperCase();
+
     if (!resi) return;
 
-    // Validate SPX or ID prefix
-    if (!resi.startsWith('SPX') && !resi.startsWith('ID')) {
+    // Validasi awalan: harus SPX atau ID
+    const validPrefix = resi.startsWith('SPX') || resi.startsWith('ID');
+    if (!validPrefix) {
         showFeedback('⚠️ Bukan resi SPX/ID! → ' + resi, 'warning');
         playErrorSound();
         speakWarning('Bukan resi valid!');
@@ -1545,7 +1552,16 @@ function processResi(value) {
         return;
     }
 
-    // Check for duplicate
+    // Validasi panjang minimum: SPX minimal 8 karakter, ID minimal 5 karakter
+    const minLength = resi.startsWith('SPX') ? 8 : 5;
+    if (resi.length < minLength) {
+        showFeedback('⚠️ Resi terlalu pendek! → ' + resi, 'warning');
+        playErrorSound();
+        vibrateDevice();
+        return;
+    }
+
+    // Cek duplikat
     if (resiList.some(r => r.code === resi)) {
         showFeedback('🔁 Resi sudah di-scan! → ' + resi, 'error');
         playDuplicateSound();
@@ -1554,7 +1570,7 @@ function processResi(value) {
         return;
     }
 
-    // Add resi
+    // Tambah resi
     const now = new Date();
     resiList.unshift({
         code: resi,
