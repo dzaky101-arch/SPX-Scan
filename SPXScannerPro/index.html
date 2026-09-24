@@ -1108,17 +1108,23 @@
         </div>
         <div class="modal-body">
             <textarea class="bulk-textarea" id="bulkTextarea"
-                      placeholder="Tempel daftar resi di sini...&#10;Satu resi per baris, atau pisahkan dengan koma/spasi.&#10;&#10;Contoh:&#10;SPXID0123456789&#10;ID123456789&#10;JNE12345 (akan ditolak)"></textarea>
+                      placeholder="Paste / ketik daftar resi di sini...&#10;&#10;Contoh:&#10;SPXID064145325069&#10;SPXID061606013699&#10;SPXID060609432659&#10;&#10;Satu resi per baris. Format lain (koma, spasi) juga didukung."></textarea>
             <div class="bulk-info">
-                ℹ️ Hanya resi berawalan <strong>SPX</strong> atau <strong>ID</strong> yang akan diterima. Resi duplikat otomatis dilewati.
+                ℹ️ Hanya resi berawalan <strong>SPX</strong> atau <strong>ID</strong> yang diterima. Duplikat otomatis dilewati.
+            </div>
+            <div style="display:flex; gap:8px; margin-bottom:12px;">
+                <button class="bulk-import-btn" id="bulkPreviewBtn" onclick="previewBulk()"
+                    style="background:var(--bg-card);border:1px solid var(--accent);color:var(--accent);font-size:13px;padding:10px;">
+                    🔍 Preview
+                </button>
+                <button class="bulk-import-btn" id="bulkImportBtn" onclick="processBulkImport()" disabled
+                    style="flex:2;">
+                    Import Resi
+                </button>
             </div>
             <div class="bulk-preview" id="bulkPreview">
-                <div class="preview-title">Preview Hasil Filter</div>
                 <div id="bulkPreviewContent"></div>
             </div>
-            <button class="bulk-import-btn" id="bulkImportBtn" onclick="processBulkImport()" disabled>
-                Import Resi
-            </button>
         </div>
     </div>
 </div>
@@ -1267,8 +1273,12 @@ document.addEventListener('DOMContentLoaded', () => {
     checkUnlockStatus();  // ← Tampilkan UI sesuai status
     updateDateDisplay();
 
-    // Bulk textarea live preview
-    document.getElementById('bulkTextarea').addEventListener('input', previewBulk);
+    // Bulk textarea: dukung input, paste, dan change agar preview selalu terpicu
+    const bulkTA = document.getElementById('bulkTextarea');
+    bulkTA.addEventListener('input', previewBulk);
+    bulkTA.addEventListener('change', previewBulk);
+    // paste: setTimeout agar nilai sudah terisi dulu sebelum diproses
+    bulkTA.addEventListener('paste', () => setTimeout(previewBulk, 100));
 
     // Pin input max length enforcement
     document.getElementById('pinInput').addEventListener('input', function() {
@@ -1736,31 +1746,35 @@ function closeBulkModal() {
 
 /**
  * Ekstrak semua resi valid dari teks mentah.
- * Mendukung: per baris, dipisah koma, spasi, tab, atau campur.
- * Pola diterima: awalan SPX atau ID diikuti minimal 5 karakter alphanumeric.
+ * Cocok untuk format: SPXID064145325069, per baris atau koma/spasi.
  */
 function extractResiFromText(raw) {
-    // Normalisasi: ganti koma, titik koma, tab, pipe dengan spasi/newline
-    const normalized = raw
-        .replace(/[,;|\t]+/g, '\n')
-        .replace(/[ ]{2,}/g, '\n'); // 2+ spasi berurutan → newline
+    if (!raw || !raw.trim()) return [];
 
-    // Ambil semua token (kata-kata non-spasi)
-    const tokens = normalized.split(/\s+/).map(t => t.trim()).filter(t => t.length > 0);
+    // Pisah berdasarkan semua pemisah umum: newline, koma, titik koma, tab, pipe
+    const tokens = raw
+        .split(/[\n\r,;|\t]+/)
+        .map(t => t.trim())
+        .filter(t => t.length >= 5);
 
     const resiSet = new Set();
     const result = [];
 
     tokens.forEach(token => {
-        // Bersihkan karakter non-alphanumeric di depan/belakang
-        const clean = token.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, '').toUpperCase();
-        // Validasi: harus berawalan SPX atau ID, minimal total 7 karakter
-        if (/^(SPX|ID)[A-Z0-9]{5,}$/.test(clean)) {
-            if (!resiSet.has(clean)) {
-                resiSet.add(clean);
-                result.push(clean);
+        // Jika satu token mengandung spasi (beberapa resi dalam satu baris)
+        // maka pecah lagi berdasarkan spasi
+        const parts = token.split(/\s+/);
+        parts.forEach(part => {
+            // Hapus karakter non-alphanumeric di depan/belakang (tanda baca, dll)
+            const clean = part.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, '').toUpperCase();
+            // Validasi: awalan SPX atau ID, minimal 5 karakter total
+            if (clean.length >= 5 && (clean.startsWith('SPX') || clean.startsWith('ID'))) {
+                if (!resiSet.has(clean)) {
+                    resiSet.add(clean);
+                    result.push(clean);
+                }
             }
-        }
+        });
     });
     return result;
 }
@@ -1771,11 +1785,21 @@ function previewBulk() {
     const content = document.getElementById('bulkPreviewContent');
     const importBtn = document.getElementById('bulkImportBtn');
 
+    if (!raw.trim()) {
+        preview.style.display = 'none';
+        importBtn.disabled = true;
+        importBtn.textContent = 'Import Resi';
+        return;
+    }
+
     const allResi = extractResiFromText(raw);
 
     if (allResi.length === 0) {
         preview.style.display = 'block';
-        content.innerHTML = '<div style="color:var(--text-muted);font-size:13px">⚠️ Tidak ada resi SPX/ID yang terdeteksi. Pastikan format benar (contoh: SPXID1234567890 atau ID1234567890)</div>';
+        content.innerHTML = '<div style="color:var(--yellow);font-size:12px;line-height:1.6">' +
+            '⚠️ Tidak ada resi SPX/ID terdeteksi.<br>' +
+            '<span style="color:var(--text-muted)">Format valid: <code style="color:var(--accent)">SPXID1234567890</code> atau <code style="color:var(--accent)">ID1234567890</code><br>' +
+            'Cek apakah teks sudah di-paste dengan benar.</span></div>';
         importBtn.disabled = true;
         importBtn.textContent = 'Import Resi';
         return;
@@ -1799,20 +1823,19 @@ function previewBulk() {
 
     let html = '';
     if (accepted.length > 0) {
-        html += '<div class="preview-title">✅ Diterima (' + accepted.length + ')</div>';
-        // Tampilkan max 50 item agar tidak overflow
+        html += '<div class="preview-title">✅ Akan diimport (' + accepted.length + ')</div>';
         const displayList = accepted.slice(0, 50);
         displayList.forEach(r => html += '<div class="preview-item">• ' + r + '</div>');
         if (accepted.length > 50) {
-            html += '<div class="preview-item" style="opacity:0.6">... dan ' + (accepted.length - 50) + ' lainnya</div>';
+            html += '<div class="preview-item" style="opacity:0.6">... dan ' + (accepted.length - 50) + ' resi lainnya</div>';
         }
     }
     if (rejected.length > 0) {
-        html += '<div class="preview-title" style="margin-top:12px;color:var(--red)">❌ Ditolak (' + rejected.length + ')</div>';
-        const displayRej = rejected.slice(0, 20);
+        html += '<div class="preview-title" style="margin-top:12px;color:var(--red)">⛔ Dilewati (' + rejected.length + ')</div>';
+        const displayRej = rejected.slice(0, 15);
         displayRej.forEach(r => html += '<div class="preview-rejected">• ' + r.code + ' — ' + r.reason + '</div>');
-        if (rejected.length > 20) {
-            html += '<div class="preview-rejected" style="opacity:0.6">... dan ' + (rejected.length - 20) + ' lainnya</div>';
+        if (rejected.length > 15) {
+            html += '<div class="preview-rejected" style="opacity:0.6">... dan ' + (rejected.length - 15) + ' lainnya</div>';
         }
     }
 
@@ -1821,7 +1844,7 @@ function previewBulk() {
     importBtn.disabled = accepted.length === 0;
     importBtn.textContent = accepted.length > 0
         ? '📥 Import ' + accepted.length + ' Resi'
-        : 'Tidak ada resi baru untuk diimport';
+        : '⛔ Tidak ada resi baru';
 }
 
 function processBulkImport() {
