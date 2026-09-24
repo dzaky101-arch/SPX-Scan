@@ -1205,6 +1205,29 @@ let feedbackTimeout = null;
 let audioCtx = null;
 let lockTimer = null;
 let lockDuration = 0;
+let isLocked = true;
+
+// ============ CHECK LOCK STATE ============
+function checkLockState() {
+    const isPermanent = localStorage.getItem(STORAGE_KEYS.IS_PERMANENT) === 'true';
+    const expiry = localStorage.getItem(STORAGE_KEYS.UNLOCK_EXPIRY);
+
+    if (isPermanent) {
+        isLocked = false;
+        return;
+    }
+    if (expiry) {
+        const remaining = parseInt(expiry) - Date.now();
+        if (remaining > 0) {
+            isLocked = false;
+            return;
+        } else {
+            localStorage.removeItem(STORAGE_KEYS.UNLOCK_EXPIRY);
+        }
+    }
+    isLocked = true;
+}
+
 // ============ THEME MANAGEMENT ============
 function toggleTheme() {
     const isLight = document.body.classList.toggle('light-mode');
@@ -1238,13 +1261,10 @@ const DURATIONS = [1, 3, 7, 14, 30, 90, 180, 365];
 // ============ INITIALIZATION ============
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
-    checkLockState();
-    if (!isLocked) {
-        initScanner();
-    }
     initDeviceId();
-    loadResiList();
-    checkUnlockStatus();
+    loadResiList();       // ← Wajib: muat data dulu sebelum cek status
+    checkLockState();     // ← Set isLocked berdasarkan localStorage
+    checkUnlockStatus();  // ← Tampilkan UI sesuai status
     updateDateDisplay();
 
     // Bulk textarea live preview
@@ -1299,13 +1319,16 @@ function checkUnlockStatus() {
     const expiry = localStorage.getItem(STORAGE_KEYS.UNLOCK_EXPIRY);
 
     if (isPermanent) {
+        isLocked = false;
         showMainApp();
+        startTrialTimer(null); // Tampilkan badge "Permanen"
         return;
     }
 
     if (expiry) {
         const remaining = parseInt(expiry) - Date.now();
         if (remaining > 0) {
+            isLocked = false;
             showMainApp();
             startTrialTimer(parseInt(expiry));
             return;
@@ -1315,6 +1338,7 @@ function checkUnlockStatus() {
         }
     }
 
+    isLocked = true;
     showLockScreen();
 }
 
@@ -1333,9 +1357,11 @@ function unlock() {
     // Check master PIN
     if (pin === '888888') {
         localStorage.setItem(STORAGE_KEYS.IS_PERMANENT, 'true');
+        isLocked = false;
         playSuccessSound();
         showToast('✅ Aktivasi Permanen berhasil!', 'success');
         showMainApp();
+        startTrialTimer(null);
         return;
     }
 
@@ -1353,9 +1379,11 @@ function unlock() {
     if (matchedDuration) {
         localStorage.setItem(STORAGE_KEYS.IS_PERMANENT, 'true');
         localStorage.removeItem(STORAGE_KEYS.UNLOCK_EXPIRY);
+        isLocked = false;
         playSuccessSound();
         showToast('✅ Aktivasi berhasil! Aplikasi terbuka permanen.', 'success');
         showMainApp();
+        startTrialTimer(null);
     } else {
         errorEl.textContent = 'PIN tidak valid! Hubungi admin.';
         errorEl.style.display = 'block';
@@ -1384,7 +1412,8 @@ function showLockScreen() {
 function showMainApp() {
     document.getElementById('lockScreen').style.display = 'none';
     document.getElementById('mainApp').style.display = 'block';
-    renderResiList();
+    loadResiList();       // ← Pastikan data selalu dimuat ulang dari localStorage
+    renderResiList();     // ← Render ulang daftar resi
     setTimeout(() => document.getElementById('scanInput').focus(), 300);
 }
 
@@ -1398,7 +1427,7 @@ function startTrialTimer(expiryTime) {
     const timerText = document.getElementById('appTrialTimer');
 
     const isPermanent = localStorage.getItem(STORAGE_KEYS.IS_PERMANENT) === 'true';
-    if (isPermanent) {
+    if (isPermanent || expiryTime === null) {
         badgeMain.style.display = 'inline-flex';
         timerText.textContent = 'Permanen ✓';
         return;
@@ -1412,6 +1441,7 @@ function startTrialTimer(expiryTime) {
         const remaining = expiryTime - Date.now();
         if (remaining <= 0) {
             clearInterval(timerInterval);
+            isLocked = true;
             showToast('⏰ Masa aktif habis!', 'warning');
             setTimeout(() => showLockScreen(), 1500);
             return;
@@ -1704,19 +1734,50 @@ function closeBulkModal() {
     document.getElementById('bulkModal').classList.remove('active');
 }
 
+/**
+ * Ekstrak semua resi valid dari teks mentah.
+ * Mendukung: per baris, dipisah koma, spasi, tab, atau campur.
+ * Pola diterima: awalan SPX atau ID diikuti minimal 5 karakter alphanumeric.
+ */
+function extractResiFromText(raw) {
+    // Normalisasi: ganti koma, titik koma, tab, pipe dengan spasi/newline
+    const normalized = raw
+        .replace(/[,;|\t]+/g, '\n')
+        .replace(/[ ]{2,}/g, '\n'); // 2+ spasi berurutan → newline
+
+    // Ambil semua token (kata-kata non-spasi)
+    const tokens = normalized.split(/\s+/).map(t => t.trim()).filter(t => t.length > 0);
+
+    const resiSet = new Set();
+    const result = [];
+
+    tokens.forEach(token => {
+        // Bersihkan karakter non-alphanumeric di depan/belakang
+        const clean = token.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, '').toUpperCase();
+        // Validasi: harus berawalan SPX atau ID, minimal total 7 karakter
+        if (/^(SPX|ID)[A-Z0-9]{5,}$/.test(clean)) {
+            if (!resiSet.has(clean)) {
+                resiSet.add(clean);
+                result.push(clean);
+            }
+        }
+    });
+    return result;
+}
+
 function previewBulk() {
     const raw = document.getElementById('bulkTextarea').value;
     const preview = document.getElementById('bulkPreview');
     const content = document.getElementById('bulkPreviewContent');
     const importBtn = document.getElementById('bulkImportBtn');
 
-    // Extract only valid resi formats using regex, ignoring all other text
-    const matches = raw.match(/(?:SPX|ID)[A-Z0-9]{2,}/gi);
-    const allResi = matches ? matches.map(r => r.toUpperCase()) : [];
+    const allResi = extractResiFromText(raw);
 
     if (allResi.length === 0) {
-        preview.style.display = 'none';
+        preview.style.display = 'block';
+        content.innerHTML = '<div style="color:var(--text-muted);font-size:13px">⚠️ Tidak ada resi SPX/ID yang terdeteksi. Pastikan format benar (contoh: SPXID1234567890 atau ID1234567890)</div>';
         importBtn.disabled = true;
+        importBtn.textContent = 'Import Resi';
         return;
     }
 
@@ -1739,51 +1800,78 @@ function previewBulk() {
     let html = '';
     if (accepted.length > 0) {
         html += '<div class="preview-title">✅ Diterima (' + accepted.length + ')</div>';
-        accepted.forEach(r => html += '<div class="preview-item">• ' + r + '</div>');
+        // Tampilkan max 50 item agar tidak overflow
+        const displayList = accepted.slice(0, 50);
+        displayList.forEach(r => html += '<div class="preview-item">• ' + r + '</div>');
+        if (accepted.length > 50) {
+            html += '<div class="preview-item" style="opacity:0.6">... dan ' + (accepted.length - 50) + ' lainnya</div>';
+        }
     }
     if (rejected.length > 0) {
         html += '<div class="preview-title" style="margin-top:12px;color:var(--red)">❌ Ditolak (' + rejected.length + ')</div>';
-        rejected.forEach(r => html += '<div class="preview-rejected">• ' + r.code + ' — ' + r.reason + '</div>');
+        const displayRej = rejected.slice(0, 20);
+        displayRej.forEach(r => html += '<div class="preview-rejected">• ' + r.code + ' — ' + r.reason + '</div>');
+        if (rejected.length > 20) {
+            html += '<div class="preview-rejected" style="opacity:0.6">... dan ' + (rejected.length - 20) + ' lainnya</div>';
+        }
     }
 
     content.innerHTML = html;
     preview.style.display = 'block';
     importBtn.disabled = accepted.length === 0;
-    importBtn.textContent = 'Import ' + accepted.length + ' Resi SPX/ID';
+    importBtn.textContent = accepted.length > 0
+        ? '📥 Import ' + accepted.length + ' Resi'
+        : 'Tidak ada resi baru untuk diimport';
 }
 
 function processBulkImport() {
     const raw = document.getElementById('bulkTextarea').value;
-    const matches = raw.match(/(?:SPX|ID)[A-Z0-9]{2,}/gi);
-    const allResi = matches ? matches.map(r => r.toUpperCase()) : [];
+    const allResi = extractResiFromText(raw); // gunakan fungsi yang sama dengan preview
+
+    if (allResi.length === 0) {
+        showToast('⚠️ Tidak ada resi valid untuk diimport', 'warning');
+        return;
+    }
 
     const existingCodes = new Set(resiList.map(r => r.code));
     const seenInBatch = new Set();
     let addedCount = 0;
+    let skippedCount = 0;
 
     const now = new Date();
     const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     const dateStr = now.toLocaleDateString('id-ID');
+    const ts = now.getTime();
 
+    // Tambahkan semua sekaligus, dibalik supaya urutan baris atas = terakhir diimport
+    const toAdd = [];
     allResi.forEach(r => {
         if (!existingCodes.has(r) && !seenInBatch.has(r)) {
-            resiList.unshift({
+            toAdd.push({
                 code: r,
                 time: timeStr,
                 date: dateStr,
-                timestamp: now.getTime()
+                timestamp: ts
             });
             existingCodes.add(r);
             seenInBatch.add(r);
             addedCount++;
+        } else {
+            skippedCount++;
         }
     });
+
+    // Masukkan di depan list (yang terakhir di textarea = paling atas)
+    resiList.unshift(...toAdd.reverse());
 
     saveResiList();
     renderResiList();
     closeBulkModal();
     playSuccessSound();
-    showToast('✅ ' + addedCount + ' resi berhasil diimport!', 'success');
+
+    let msg = '✅ ' + addedCount + ' resi berhasil diimport!';
+    if (skippedCount > 0) msg += ' (' + skippedCount + ' dilewati)';
+    showToast(msg, 'success');
 }
 
 // ============ SHARE FUNCTIONS ============
